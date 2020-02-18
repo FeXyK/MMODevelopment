@@ -17,7 +17,7 @@ namespace MMOLoginServer.LoginServerLogic
 
         private List<Account> accounts = new List<Account>();
         private List<GameServer> gameServers = new List<GameServer>();
-        const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMOLoginServer\MMOGameServer\MMODatabase.mdf;Integrated Security=True";
+        const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMODevelopment\MMOLoginServer\MMOGameServer\MMODatabase.mdf;Integrated Security=True";
 
 
 
