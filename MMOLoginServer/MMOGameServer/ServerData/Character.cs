@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MMOLoginServer.ServerData
 {
-    class Character
+    public class Character
     {
         public int maxHealth;
         public int maxMana;

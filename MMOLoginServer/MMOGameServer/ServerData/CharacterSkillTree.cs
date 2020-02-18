@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MMOLoginServer.ServerData
 {
-    class CharacterSkillTree
+   public class CharacterSkillTree
     {
         private string v;
 

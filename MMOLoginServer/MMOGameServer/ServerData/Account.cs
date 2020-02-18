@@ -3,7 +3,7 @@ using Lidgren.Network;
 
 namespace MMOLoginServer.ServerData
 {
-     class Account
+    public class Account
     {
         public string publicKey;
         public NetConnection connection;
