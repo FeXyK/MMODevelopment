@@ -6,16 +6,15 @@ namespace MMOLoginServer.LoginServerLogic
 {
     public class BasicFunctions
     {
-        public string GenerateSalt(int lengthOfSalt)
+        public byte[] GenerateRandomSequence(int length)
         {
-            string salt = "";
-            for (int i = 0; i < lengthOfSalt; i++)
+            byte[] seq = new byte[length];
+            for (int i = 0; i < length; i++)
             {
-                salt += new Random().Next(0, 300);
+                new Random().NextBytes(seq);
             }
-            return salt;
+            return seq;
         }
-
         public byte[] ConcatByteArrays(params byte[][] arrays)
         {
             byte[] data;

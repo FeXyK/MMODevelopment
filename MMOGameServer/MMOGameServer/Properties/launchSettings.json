@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "MMOGameServer": {
+      "commandName": "Project"
+    }
+  }
+}

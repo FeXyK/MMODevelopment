@@ -20,14 +20,14 @@ namespace MMOLoginServer.LoginServerLogic
             int result = DeleteSqlData("DELETE FROM Character WHERE Name = @characterName AND accountID = @accountId", new SqlParameter("characterName", characterName), new SqlParameter("accountId", accountId));
             return result;
         }
-        public int CreateCharacter(string characterName, Account account)
+        public int CreateCharacter(string characterName, ClientData account)
         {
-            int result = InsertSqlData("INSERT INTO Character(AccountID,Name) VALUES(@accountId,@name)", new SqlParameter("accountId", account.id), new SqlParameter("Name", characterName));
+            int result = InsertSqlData("INSERT INTO Character(AccountID,Name) VALUES(@accountId,@name)", new SqlParameter("accountId", account.id), new SqlParameter("name", characterName));
             return result;
         }
         public int UserAuthentication(string username, byte[] password)
         {
-            List<Account> accounts = GetSqlAccountData("SELECT Username, Password, Salt, Id FROM Account WHERE Username = @0", new SqlParameter("0", username));
+            List<ClientData> accounts = GetSqlClientData("SELECT Username, Password, Salt, Id FROM Account WHERE Username = @0", new SqlParameter("0", username));
 
             if (accounts.Count == 0)
                 return -1;
@@ -45,19 +45,19 @@ namespace MMOLoginServer.LoginServerLogic
             Console.WriteLine(BitConverter.ToString(passwordSalted));
             Console.WriteLine(BitConverter.ToString(accounts[0].password));
 
-            if (username.ToLower() == accounts[0].username.ToLower() && BitConverter.ToString(passwordSalted) == BitConverter.ToString(accounts[0].password))
+            if (username.ToLower() == accounts[0].name.ToLower() && BitConverter.ToString(passwordSalted) == BitConverter.ToString(accounts[0].password))
             {
                 return accounts[0].id;
             }
             return -1;
         }
-        public List<Character> GetCharactersData(int accountId)
+        public List<CharacterData> GetCharactersData(int accountId)
         {
-            List<Character> characters = new List<Character>();
+            List<CharacterData> characters = new List<CharacterData>();
             List<string[]> rows = GetSqlData("SELECT * FROM Character WHERE AccountID = @0", new SqlParameter("0", accountId)); ;
             foreach (var row in rows)
             {
-                characters.Add(new Character(row));
+                characters.Add(new CharacterData(row));
             }
             return characters;
         }
@@ -129,9 +129,9 @@ namespace MMOLoginServer.LoginServerLogic
             }
             return data;
         }
-        public List<Account> GetSqlAccountData(string selection, params SqlParameter[] sqlParam)
+        public List<ClientData> GetSqlClientData(string selection, params SqlParameter[] sqlParam)
         {
-            List<Account> data = new List<Account>();
+            List<ClientData> data = new List<ClientData>();
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = connectionString;
@@ -146,8 +146,8 @@ namespace MMOLoginServer.LoginServerLogic
                 {
                     while (reader.Read())
                     {
-                        Account acc = new Account();
-                        acc.username = (string)reader[0];
+                        ClientData acc = new ClientData();
+                        acc.name = (string)reader[0];
                         acc.password = (byte[])reader[1];
                         acc.salt = (byte[])reader[2];
                         acc.id = (int)reader[3];

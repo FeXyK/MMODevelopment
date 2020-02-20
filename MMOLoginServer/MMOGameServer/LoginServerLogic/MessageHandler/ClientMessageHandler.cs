@@ -22,22 +22,22 @@ namespace MMOLoginServer.LoginServerLogic
             dbSelection = new DatabaseSelection(connectionString);
         }
 
-        public void SendCharacterData(Account account, NetServer netServer)
+        public void SendCharacterData(ClientData account)
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
 
-            List<Character> characters = dbSelection.GetCharactersData(account.id);
+            List<CharacterData> characters = dbSelection.GetCharactersData(account.id);
 
             foreach (var character in characters)
             {
+                Console.WriteLine(character.ToString());
                 msgOut = netServer.CreateMessage();
-                msgOut.Write((byte)MessageType.Encrypted);
                 msgOut.Write((byte)MessageType.CharacterData);
                 PacketHandler.WriteEncryptedByteArray(msgOut, character.ToString(), account.publicKey);
                 account.connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 2);
             }
         }
-        public void HandleCreateMessage(NetIncomingMessage msgIn , Account account)
+        public void HandleCreateMessage(NetIncomingMessage msgIn, ClientData account)
         {
             byte[] characterNameEncrypted = PacketHandler.ReadEncryptedByteArray(msgIn);
             string characterName = Encoding.UTF8.GetString(characterNameEncrypted);
@@ -45,7 +45,7 @@ namespace MMOLoginServer.LoginServerLogic
             dbSelection.CreateCharacter(characterName, account);
             SendCharacterData(account);
         }
-        public void HandleDeleteMessage(NetIncomingMessage msgIn, Account account)
+        public void HandleDeleteMessage(NetIncomingMessage msgIn, ClientData account)
         {
             int accountId = account.id;
             byte[] characterNameEncrypted = PacketHandler.ReadEncryptedByteArray(msgIn);
@@ -55,17 +55,17 @@ namespace MMOLoginServer.LoginServerLogic
             SendCharacterData(account);
 
         }
-        public void HandleRegisterMessage(NetIncomingMessage msgIn, Account account)
+        public void HandleRegisterMessage(NetIncomingMessage msgIn, ClientData account)
         {
             if (account != null)
             {
-                string salt = basicFunction.GenerateSalt(16);
+                //string salt = basicFunction.GenerateRandomSequence(16);
 
                 byte[] username = PacketHandler.ReadEncryptedByteArray(msgIn);
                 byte[] password = PacketHandler.ReadEncryptedByteArray(msgIn);
                 byte[] email = PacketHandler.ReadEncryptedByteArray(msgIn);
 
-                byte[] saltBytes = (Encoding.UTF8.GetBytes(salt));
+                byte[] saltBytes = basicFunction.GenerateRandomSequence(16);
                 byte[] passwordSalted = new byte[password.Length + saltBytes.Length];
 
                 passwordSalted = basicFunction.ConcatByteArrays(password, saltBytes);
@@ -95,7 +95,7 @@ namespace MMOLoginServer.LoginServerLogic
                 RegisterErrorMessage("Error, not existing connection", msgIn.SenderConnection);
             }
         }
-        public void HandleLoginMessage(NetIncomingMessage msgIn, Account account)
+        public void HandleLoginMessage(NetIncomingMessage msgIn, ClientData account, List<GameServerData> gameServers)
         {
             string usernameDecoded;
 
@@ -107,7 +107,7 @@ namespace MMOLoginServer.LoginServerLogic
             Debug.Log("Logging in: " + usernameDecoded);
             if ((account.id = dbSelection.UserAuthentication(usernameDecoded, password)) != -1)
             {
-                account.username = usernameDecoded;
+                account.name = usernameDecoded;
                 account.characters = dbSelection.GetCharactersData(account.id);
 
                 NetOutgoingMessage msgOut = netServer.CreateMessage();
@@ -115,8 +115,30 @@ namespace MMOLoginServer.LoginServerLogic
                 msgOut.Write("Authenticated");
                 msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
 
+                account.authToken = basicFunction.GenerateRandomSequence(40);
+
                 SendCharacterData(account);
 
+                msgOut = netServer.CreateMessage();
+                msgOut.Write((byte)MessageType.AuthToken);
+                PacketHandler.WriteEncryptedByteArray(msgOut, account.authToken, account.publicKey);
+                msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+
+
+                msgOut = netServer.CreateMessage();
+                msgOut.Write((byte)MessageType.GameServersData);
+
+                msgOut.Write(gameServers.Count, 16);
+                foreach (var server in gameServers)
+                {
+                    msgOut.Write(server.name);
+                    msgOut.Write(server.ip);
+                    msgOut.Write(server.port, 16);
+                }
+                msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+
+                Console.WriteLine(account.authToken.Length);
+                Console.WriteLine(BitConverter.ToString(account.authToken));
 
                 Debug.Log(usernameDecoded + ": Authenticated");
             }
@@ -128,6 +150,23 @@ namespace MMOLoginServer.LoginServerLogic
                 msgError.Write("Bad Username or Password");
                 msgIn.SenderConnection.SendMessage(msgError, NetDeliveryMethod.ReliableOrdered, 1);
             }
+        }
+
+        public void HandleConnectionApproval(NetIncomingMessage msgIn, List<ClientData> accounts)
+        {
+            MessageType msgType;
+            Debug.Log("New Connection: {0}, {1}, {2}", msgIn.ReceiveTime, msgIn.SenderEndPoint.Address, msgIn.SenderEndPoint.Port);
+
+            msgType = (MessageType)msgIn.ReadByte();
+            {
+                ClientData account = new ClientData();
+                account.connection = msgIn.SenderConnection;
+                account.publicKey = msgIn.ReadString();
+                accounts.Add(account);
+            }
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write(DataEncryption.publicKey);
+            msgIn.SenderConnection.Approve(msgOut);
         }
         private void RegisterSuccessfullMessage(string msgSucc, NetConnection senderConnection)
         {
@@ -144,21 +183,6 @@ namespace MMOLoginServer.LoginServerLogic
             msgRegError.Write(msgErr);
 
             senderConnection.SendMessage(msgRegError, NetDeliveryMethod.ReliableOrdered, 1);
-        }
-        private void SendCharacterData(Account account)
-        {
-            NetOutgoingMessage msgOut = netServer.CreateMessage();
-
-            List<Character> characters = dbSelection.GetCharactersData(account.id);
-
-            foreach (var character in characters)
-            {
-                msgOut = netServer.CreateMessage();
-                msgOut.Write((byte)MessageType.Encrypted);
-                msgOut.Write((byte)MessageType.CharacterData);
-                PacketHandler.WriteEncryptedByteArray(msgOut, character.ToString(), account.publicKey);
-                account.connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 2);
-            }
-        }
+        }   
     }
 }

@@ -10,11 +10,21 @@ namespace Lidgren.Network.ServerFiles
         RegisterRequest,
         RegisterAnswerOk,
         RegisterAnswerError,
-        Encrypted,
+
         CharacterData,
         CreateCharacter,
         DeleteCharacter,
-        GameServer,
-        Client
+
+        LoginToken,
+        AuthToken,
+        LoginServerConnect,
+        LoginServerAuthentication,
+        ClientAuthentication,   
+
+        CharacterLogin,
+
+        NewLoginToken,
+        GameServersData,
+        KeyExchange
     }
 }

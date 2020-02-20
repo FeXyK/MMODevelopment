@@ -18,34 +18,22 @@ public class LoginMaster : MonoBehaviour
     private static NetClient netClient;
     NetPeerConfiguration netPeerConfiguration;
 
-    public GameObject RegisterForm;
-    public GameObject CharacterCreateForm;
-    public GameObject LoginForm;
-    public GameObject CharacterSelectForm;
-    public GameObject SwitchFormsButton;
 
-    public Button CharacterButton;
     private int characterNumber = 0;
 
     public GameObject selectedCharacter = null;
     private List<Button> characterButtons = new List<Button>();
 
-    public TMP_InputField username;
-    public TMP_InputField password;
 
-    public TMP_InputField characterName;
-    public TMP_Dropdown characterType;
+    public LoginSceneInputs input;
+    public LoginDataContainer loginDataContainer;
 
-    public TMP_InputField usernameReg;
-    public TMP_InputField emailReg;
-    public TMP_InputField passwordReg;
-    public TMP_InputField passwordRegConfirm;
-    public TMP_Text SwitchFormsText;
-    public TMP_Text DText;
-
+    private byte[] authToken;
 
     private void Start()
     {
+        input = FindObjectOfType<LoginSceneInputs>();
+        loginDataContainer = FindObjectOfType<LoginDataContainer>();
         InitializeLoginSocket(SERVER_IP, SERVER_PORT);
         if (netClient.Status == NetPeerStatus.NotRunning)
             netClient.Start();
@@ -65,7 +53,7 @@ public class LoginMaster : MonoBehaviour
     {
         NetOutgoingMessage msgLogin = netClient.CreateMessage();
 
-        msgLogin.Write((byte)MessageType.Client);
+        msgLogin.Write((byte)ConnectionType.Client);
         msgLogin.Write(DataEncryption.publicKey);
         netClient.Connect(SERVER_IP, SERVER_PORT, msgLogin);
         NetIncomingMessage msgIn = null;
@@ -79,15 +67,15 @@ public class LoginMaster : MonoBehaviour
                     {
                         case NetConnectionStatus.Connected:
                             DataEncryption.publicKey = netClient.ServerConnection.RemoteHailMessage.ReadString();
-                            Debug.Log(DataEncryption.publicKey);
+                            //Debug.Log(DataEncryption.publicKey);
                             break;
                         case NetConnectionStatus.Disconnected:
                             {
                                 string reason = msgIn.ReadString();
                                 if (string.IsNullOrEmpty(reason))
-                                    DText.text += ("Disconnected\n");
+                                    input.DText.text += ("Disconnected\n");
                                 else
-                                    DText.text += ("Disconnected, Reason: " + reason + "\n");
+                                    input.DText.text += ("Disconnected, Reason: " + reason + "\n");
                             }
                             break;
                     }
@@ -104,20 +92,16 @@ public class LoginMaster : MonoBehaviour
             if (msgIn.MessageType == NetIncomingMessageType.Data)
             {
                 msgType = (MessageType)msgIn.ReadByte();
-                if (msgType == MessageType.Encrypted)
-                {
-                    msgType = (MessageType)msgIn.ReadByte();
-                }
                 switch (msgType)
                 {
                     case MessageType.CharacterData:
                         HandleCharacterData(msgIn);
                         break;
                     case MessageType.ServerLoginAnswerOk:
-                        LoginForm.SetActive(false);
-                        RegisterForm.SetActive(false);
-                        SwitchFormsButton.SetActive(false);
-                        CharacterSelectForm.SetActive(true);
+                        input.LoginForm.SetActive(false);
+                        input.RegisterForm.SetActive(false);
+                        input.SwitchFormsButton.SetActive(false);
+                        input.CharacterSelectForm.SetActive(true);
                         PrintFeedBack(msgIn);
                         break;
                     case MessageType.RegisterAnswerOk:
@@ -126,11 +110,41 @@ public class LoginMaster : MonoBehaviour
                     case MessageType.ServerLoginError:
                         PrintFeedBack(msgIn);
                         break;
+                    case MessageType.AuthToken:
+                        HandleAuthenticationToken(msgIn);
+                        break;
+                    case MessageType.GameServersData:
+                        HandleGameServerData(msgIn);
+                        break;
+                    case MessageType.NewLoginToken:
+                        input.DText.text = BitConverter.ToString(PacketHandler.ReadEncryptedByteArray(msgIn));
+                        input.DText.text += "\n" + Encoding.UTF8.GetString(PacketHandler.ReadEncryptedByteArray(msgIn));
+                        input.DText.text += "\n" + Encoding.UTF8.GetString(PacketHandler.ReadEncryptedByteArray(msgIn));
+                        break;
                 }
             }
         }
     }
+    private void HandleGameServerData(NetIncomingMessage msgIn)
+    {
+        GameServerData gameServerData;
 
+        int count = msgIn.ReadInt16();
+        for (int i = 0; i < count; i++)
+        {
+            gameServerData = new GameServerData();
+            gameServerData.name = msgIn.ReadString();
+            gameServerData.ip = msgIn.ReadString();
+            gameServerData.port = msgIn.ReadInt16();
+            loginDataContainer.gameServerDatas.Add(gameServerData);
+        }
+    }
+    private void HandleAuthenticationToken(NetIncomingMessage msgIn)
+    {
+        loginDataContainer.authToken = PacketHandler.ReadEncryptedByteArray(msgIn);
+        input.DText.text += loginDataContainer.authToken.Length + "\n";
+        input.DText.text += BitConverter.ToString(loginDataContainer.authToken);
+    }
     private void HandleCharacterData(string dataEncrypted)
     {
         Debug.Log(dataEncrypted);
@@ -139,21 +153,19 @@ public class LoginMaster : MonoBehaviour
     {
         NetOutgoingMessage msgCreate = netClient.CreateMessage();
 
-        msgCreate.Write((byte)MessageType.Encrypted);
         msgCreate.Write((byte)MessageType.CreateCharacter);
 
-        PacketHandler.WriteEncryptedByteArray(msgCreate, characterName.text);
-        PacketHandler.WriteEncryptedByteArray(msgCreate, characterType.itemText.text);
-        Debug.Log(characterName.text);
-        Debug.Log(characterType.itemText.text);
+        PacketHandler.WriteEncryptedByteArray(msgCreate, input.CharacterName);
+        PacketHandler.WriteEncryptedByteArray(msgCreate, "male");
+        Debug.Log(input.CharacterName);
+        Debug.Log(input.CharacterType);
         netClient.SendMessage(msgCreate, NetDeliveryMethod.ReliableOrdered);
-        CharacterCreateForm.SetActive(false);
+        input.CharacterCreateForm.SetActive(false);
     }
     public void DeleteCharacter()
     {
         NetOutgoingMessage msgDelete = netClient.CreateMessage();
 
-        msgDelete.Write((byte)MessageType.Encrypted);
         msgDelete.Write((byte)MessageType.DeleteCharacter);
 
         PacketHandler.WriteEncryptedByteArray(msgDelete, selectedCharacter.GetComponent<CharacterButtonContainer>().Name.text);
@@ -164,29 +176,27 @@ public class LoginMaster : MonoBehaviour
     {
         NetOutgoingMessage msgLogin = netClient.CreateMessage();
 
-        byte[] hashPassword = DataEncryption.HashString(password.text);
+        byte[] hashPassword = DataEncryption.HashString(input.Password);
 
-        msgLogin.Write((byte)MessageType.Encrypted);
-        msgLogin.Write((byte)MessageType.ServerLoginRequest);
+        msgLogin.Write((byte)MessageType.ClientAuthentication);
 
-        PacketHandler.WriteEncryptedByteArray(msgLogin, username.text);
+        PacketHandler.WriteEncryptedByteArray(msgLogin, input.Username);
         PacketHandler.WriteEncryptedByteArray(msgLogin, hashPassword);
 
         netClient.SendMessage(msgLogin, NetDeliveryMethod.ReliableOrdered);
     }
     public void Register()
     {
-        if (passwordReg.text == passwordRegConfirm.text)
+        if (input.PasswordReg == input.PasswordRegConfirm)
         {
             NetOutgoingMessage msgRegister = netClient.CreateMessage();
-            byte[] hashPassword = DataEncryption.HashString(passwordReg.text);
+            byte[] hashPassword = DataEncryption.HashString(input.PasswordReg);
 
-            msgRegister.Write((byte)MessageType.Encrypted);
             msgRegister.Write((byte)MessageType.RegisterRequest);
 
-            PacketHandler.WriteEncryptedByteArray(msgRegister, usernameReg.text);
+            PacketHandler.WriteEncryptedByteArray(msgRegister, input.UsernameReg);
             PacketHandler.WriteEncryptedByteArray(msgRegister, hashPassword);
-            PacketHandler.WriteEncryptedByteArray(msgRegister, emailReg.text);
+            PacketHandler.WriteEncryptedByteArray(msgRegister, input.EmailReg);
 
             netClient.SendMessage(msgRegister, NetDeliveryMethod.ReliableOrdered);
             Debug.Log("Registration sent");
@@ -194,28 +204,27 @@ public class LoginMaster : MonoBehaviour
     }
     private void PrintFeedBack(NetIncomingMessage msgIn)
     {
-        DText.text += msgIn.ReadString() + "\n";
+        input.DText.text += msgIn.ReadString() + "\n";
     }
     private void HandleCharacterData(NetIncomingMessage msgIn)
     {
         byte[] characterData = PacketHandler.ReadEncryptedByteArray(msgIn);
-        DText.text += Encoding.UTF8.GetString(characterData) + "\n";
+        input.DText.text += Encoding.UTF8.GetString(characterData) + "\n";
 
-        Button characterButton = Instantiate(CharacterButton);
-        characterButton.transform.SetParent(CharacterSelectForm.transform);
-        characterButton.transform.localPosition = new Vector3(0, -60 - (110 * characterNumber), 0);
+        Button characterButton = Instantiate(input.CharacterButton);
+        characterButton.transform.SetParent(input.CharacterSelectForm.transform);
         RectTransform rt = characterButton.GetComponent<RectTransform>();
         rt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 10, 300);
         rt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 10 + characterNumber * 110, 100);
-
+        characterNumber++;
         characterButton.GetComponent<CharacterButtonContainer>().Load(Encoding.UTF8.GetString(characterData));
         characterButtons.Add(characterButton);
-        Debug.Log(characterNumber++);
+
     }
     public void ShowCharacterCreation()
     {
         ClearCharacterSelection();
-        CharacterCreateForm.SetActive(true);
+        input.CharacterCreateForm.SetActive(true);
     }
     private void ClearCharacterSelection()
     {
@@ -229,12 +238,20 @@ public class LoginMaster : MonoBehaviour
     }
     public void SwitchForms()
     {
-        LoginForm.SetActive(!LoginForm.activeSelf);
-        RegisterForm.SetActive(!RegisterForm.activeSelf);
+        input.LoginForm.SetActive(!input.LoginForm.activeSelf);
+        input.RegisterForm.SetActive(!input.RegisterForm.activeSelf);
 
-        if (!LoginForm.activeSelf)
-            SwitchFormsText.text = "Login";
+        if (!input.LoginForm.activeSelf)
+            input.SwitchFormsText.text = "Login";
         else
-            SwitchFormsText.text = "Register";
+            input.SwitchFormsText.text = "Registration";
+    }
+    public void PlayCharacter()
+    {
+        NetOutgoingMessage msgOut = netClient.CreateMessage();
+        msgOut.Write((byte)MessageType.CharacterLogin);
+        msgOut.Write("Europe");
+        msgOut.Write(selectedCharacter.GetComponent<CharacterButtonContainer>().Name.text);
+        netClient.Connections[0].SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
     }
 }
