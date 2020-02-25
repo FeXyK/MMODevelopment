@@ -132,8 +132,9 @@ namespace MMOLoginServer.LoginServerLogic
                 foreach (var server in gameServers)
                 {
                     msgOut.Write(server.name);
-                    msgOut.Write(server.ip);
-                    msgOut.Write(server.port, 16);
+                    msgOut.Write(server.connection.RemoteEndPoint.Address.ToString());
+                    msgOut.Write(server.connection.RemoteEndPoint.Port, 32);
+                    msgOut.Write(server.publicKey);
                 }
                 msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
 

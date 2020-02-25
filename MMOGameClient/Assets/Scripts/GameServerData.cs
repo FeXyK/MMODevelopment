@@ -8,4 +8,5 @@ public class GameServerData : MonoBehaviour
     public string name;
     public int port;
     public byte[] authToken;
+    public string publicKey;
 }

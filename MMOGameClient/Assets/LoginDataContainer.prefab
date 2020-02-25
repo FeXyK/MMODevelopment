@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1852290995431421840}
   - component: {fileID: 1852290995431421839}
-  - component: {fileID: 1852290995431421841}
   m_Layer: 0
   m_Name: LoginDataContainer
   m_TagString: Untagged
@@ -47,31 +46,3 @@ MonoBehaviour:
   authToken: 
   character: {fileID: 0}
   gameServerDatas: []
---- !u!114 &1852290995431421841
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1852290995431421838}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46f9fd4f38fd5c44594cc268300c8ce2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SwitchFormsButton: {fileID: 0}
-  SwitchFormsText: {fileID: 0}
-  LoginForm: {fileID: 0}
-  RegisterForm: {fileID: 0}
-  CharacterCreateForm: {fileID: 0}
-  CharacterSelectForm: {fileID: 0}
-  username: {fileID: 0}
-  password: {fileID: 0}
-  usernameReg: {fileID: 0}
-  emailReg: {fileID: 0}
-  passwordReg: {fileID: 0}
-  passwordRegConfirm: {fileID: 0}
-  DText: {fileID: 0}
-  characterName: {fileID: 0}
-  characterType: {fileID: 0}
-  CharacterButton: {fileID: 0}

@@ -34,6 +34,7 @@ namespace MMOGameServer
                     Console.WriteLine("New Connection: {0}, {1}, {2}", msgIn.ReceiveTime, msgIn.SenderEndPoint.Address, msgIn.SenderEndPoint.Port);
 
                     msgType = (MessageType)msgIn.ReadByte();
+                    Console.WriteLine(msgType);
 
                     if (msgType == MessageType.KeyExchange)
                     {
@@ -47,9 +48,24 @@ namespace MMOGameServer
                         NetOutgoingMessage msgOut = messageHandler.CreateRSAKeyMessage(netPeer, ConnectionType.GameServer, serverName);
                         msgIn.SenderConnection.Approve(msgOut);
                     }
-                    else
+                    if (msgType == MessageType.ClientAuthentication)
                     {
-                        msgIn.SenderConnection.Deny("KeyExchange Needed!");
+                        Console.WriteLine(msgType);
+                        byte[] clientLoginToken = PacketHandler.ReadEncryptedByteArray(msgIn);
+                        string username = Encoding.UTF8.GetString(PacketHandler.ReadEncryptedByteArray(msgIn));
+                        Console.WriteLine(clientLoginToken);
+                        Console.WriteLine(username);
+
+                        if (CheckLoginToken(clientLoginToken, username))
+                        {
+                            CharacterData characterData = new CharacterData();
+                            Console.WriteLine("Authenticated!");
+                        }
+                        else
+                        {
+                            connections.Remove(FindConnection(msgIn.SenderConnection));
+                            msgIn.SenderConnection.Disconnect("Bad AuthenticationKey");
+                        }
                     }
                 }
                 else if (msgIn.MessageType == NetIncomingMessageType.Data)
@@ -81,20 +97,6 @@ namespace MMOGameServer
                             }
                             else
                             {
-                                msgIn.SenderConnection.Disconnect("Bad AuthenticationKey");
-                            }
-                            break;
-                        case MessageType.ClientAuthentication:
-                            byte[] clientLoginToken = PacketHandler.ReadEncryptedByteArray(msgIn);
-                            string username = Encoding.UTF8.GetString(PacketHandler.ReadEncryptedByteArray(msgIn));
-                            if (CheckLoginToken(clientLoginToken, username))
-                            {
-                                CharacterData characterData = new CharacterData();
-                                
-                            }
-                            else
-                            {
-                                connections.Remove(FindConnection(msgIn.SenderConnection));
                                 msgIn.SenderConnection.Disconnect("Bad AuthenticationKey");
                             }
                             break;

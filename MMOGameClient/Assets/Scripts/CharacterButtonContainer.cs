@@ -26,12 +26,12 @@ public class CharacterButtonContainer : MonoBehaviour
 
     public void SetSelection()
     {
-        LoginMaster LM = FindObjectOfType<LoginMaster>();
-        if (LM.selectedCharacter != null)
+        LoginSceneInputs loginSceneInputs = FindObjectOfType<LoginSceneInputs>();
+        if (loginSceneInputs.selectedCharacter != null)
         {
-            LM.selectedCharacter.GetComponent<CharacterButtonContainer>().Selected.text = "";
+            loginSceneInputs.selectedCharacter.GetComponent<CharacterButtonContainer>().Selected.text = "";
         }
-        LM.selectedCharacter = this.gameObject;
+        loginSceneInputs.selectedCharacter = this.gameObject;
 
         Selected.text = "SELECTED";
     }
