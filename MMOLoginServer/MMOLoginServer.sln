@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MMOLoginServer", "MMOGameServer\MMOLoginServer.csproj", "{FAF0B4B1-EC16-4BE9-879A-2E63639EA8C7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8} = {49BA1C69-6104-41AC-A5D8-B54FA9F696E8}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lidgren.Network", "lidgren-network-gen3-master\Lidgren.Network\Lidgren.Network.csproj", "{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MMOGameServer", "..\MMOGameServer\MMOGameServer\MMOGameServer.csproj", "{D5325327-1847-4FC9-B39D-4A8DCEBE122D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8} = {49BA1C69-6104-41AC-A5D8-B54FA9F696E8}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FAF0B4B1-EC16-4BE9-879A-2E63639EA8C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAF0B4B1-EC16-4BE9-879A-2E63639EA8C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAF0B4B1-EC16-4BE9-879A-2E63639EA8C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAF0B4B1-EC16-4BE9-879A-2E63639EA8C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5325327-1847-4FC9-B39D-4A8DCEBE122D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5325327-1847-4FC9-B39D-4A8DCEBE122D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5325327-1847-4FC9-B39D-4A8DCEBE122D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5325327-1847-4FC9-B39D-4A8DCEBE122D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {51EABF00-B092-4E34-AF73-A0751BF13CF3}
+	EndGlobalSection
+EndGlobal
