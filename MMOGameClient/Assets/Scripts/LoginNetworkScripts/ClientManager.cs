@@ -1,47 +1,82 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
-using System.Threading;
-using System.Security.Cryptography;
-using UnityEngine.UI;
 using System;
 using System.Text;
-using Lidgren.Network.Wrapper;
-using UnityEditor.VersionControl;
+using System.Threading;
 
 public class ClientManager : MonoBehaviour
 {
-    string SERVER_IP = "127.0.0.1";
-    int SERVER_PORT = 52222;
+    public string chname;
+    public int chid;
 
+    string SERVER_IP = "79.121.125.23";
+    int SERVER_PORT = 52221;
+    SceneLoader sceneLoader;
     private static NetClient netClient;
     NetPeerConfiguration netPeerConfiguration;
-
-
+    public Transform myCharacter;
+    public GameObject type1Character;
+    public GameObject type2Character;
     public LoginSceneInputs input;
-    public LoginDataContainer loginDataContainer;
-
     public byte[] authToken;
     public Character character;
+    public Dictionary<int, Character> otherCharacters = new Dictionary<int, Character>();
+
     public List<GameServerData> gameServerDatas = new List<GameServerData>();
     private void Start()
     {
         if (input == null)
             input = FindObjectOfType<LoginSceneInputs>();
-        if (loginDataContainer == null)
-            loginDataContainer = FindObjectOfType<LoginDataContainer>();
         InitializeLoginSocket(SERVER_IP, SERVER_PORT);
         if (netClient.Status == NetPeerStatus.NotRunning)
             netClient.Start();
+        if (sceneLoader == null)
+            sceneLoader = FindObjectOfType<SceneLoader>();
         SetupConnection();
         input.netClient = netClient;
     }
+    float stopFlagDelay = 2f;
+    float stopFlagTimer = 0;
+    bool stopFlag = true;
     private void Update()
     {
         ReceiveMessages();
+        stopFlagTimer -= Time.deltaTime;
+        if (stopFlagTimer < 0)
+        {
+            stopFlag = true;
+        }
+        if (sceneLoader.gameSceneLoaded && (Input.anyKey || !stopFlag))
+        {
+            stopFlag = false;
+            stopFlagTimer = stopFlagDelay;
+            SendPositionUpdate();
+        }
+
+    }
+    public void SceneLoaded()
+    {
+
+        myCharacter = GameObject.FindGameObjectWithTag("PlayerCharacter").transform;
+        myCharacter.gameObject.GetComponent<Character>().characterName = chname;
+        myCharacter.gameObject.GetComponent<Character>().id = chid;
+
+        Thread.Sleep(500);
+        NetOutgoingMessage msgReady = netClient.CreateMessage();
+        msgReady.Write((byte)MessageType.ClientReady);
+        netClient.SendMessage(msgReady, NetDeliveryMethod.ReliableOrdered);
+    }
+    public void SendPositionUpdate()
+    {
+        NetOutgoingMessage msgOut = netClient.CreateMessage();
+        msgOut.Write((byte)MessageType.CharacterMovement);
+        msgOut.Write(myCharacter.GetComponent<Character>().id, 16);
+        msgOut.Write(myCharacter.position.x);
+        msgOut.Write(myCharacter.position.z);
+        msgOut.Write(myCharacter.rotation.eulerAngles.y);
+        netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
     }
     public void InitializeLoginSocket(string IP, int port)
     {
@@ -98,11 +133,14 @@ public class ClientManager : MonoBehaviour
                         input.HandleCharacterData(msgIn);
                         break;
                     case MessageType.ServerLoginAnswerOk:
-                        input.LoginForm.SetActive(false);
-                        input.RegisterForm.SetActive(false);
-                        input.SwitchFormsButton.SetActive(false);
-                        input.CharacterSelectForm.SetActive(true);
-                        input.ServerSelectForm.SetActive(true);
+                        if (!sceneLoader.gameSceneLoaded)
+                        {
+                            input.LoginForm.SetActive(false);
+                            input.RegisterForm.SetActive(false);
+                            input.SwitchFormsButton.SetActive(false);
+                            input.CharacterSelectForm.SetActive(true);
+                            input.ServerSelectForm.SetActive(true);
+                        }
                         PrintFeedBack(msgIn);
                         break;
                     case MessageType.RegisterAnswerOk:
@@ -112,27 +150,111 @@ public class ClientManager : MonoBehaviour
                         PrintFeedBack(msgIn);
                         break;
                     case MessageType.AuthToken:
-                        input.HandleAuthenticationToken(msgIn, authToken);
+                        input.HandleAuthenticationToken(msgIn, ref authToken);
                         break;
                     case MessageType.GameServersData:
                         input.HandleGameServerData(msgIn, gameServerDatas);
                         break;
                     case MessageType.NewLoginToken:
-                        input.DText.text = BitConverter.ToString(PacketHandler.ReadEncryptedByteArray(msgIn));
+                        authToken = PacketHandler.ReadEncryptedByteArray(msgIn);
                         input.DText.text += "\n" + Encoding.UTF8.GetString(PacketHandler.ReadEncryptedByteArray(msgIn));
                         input.DText.text += "\n" + Encoding.UTF8.GetString(PacketHandler.ReadEncryptedByteArray(msgIn));
-                        NetOutgoingMessage msgOut = netClient.CreateMessage();
-                        msgOut.Write((byte)MessageType.ClientAuthentication);
-                        GameServerData serverData = input.selectedServer.GetComponent<ServerSelectData>().serverData;
-                        PacketHandler.WriteEncryptedByteArray(msgOut, authToken, serverData.publicKey);
-                        PacketHandler.WriteEncryptedByteArray(msgOut, input.selectedCharacter.GetComponent<CharacterButtonContainer>().Name.text, serverData.publicKey);
-                        Debug.LogError(netClient.Connect(serverData.ip, serverData.port, msgOut));
-                        Debug.LogError(serverData.ip);
-                        Debug.LogError(serverData.port);
+                        Debug.Log(BitConverter.ToString(authToken));
+
+                        netClient.Disconnect("connectingtogameserver");
+                        netClient.ServerConnection.Disconnect("");
+
+                        break;
+                    ///GameNetCode
+                    ///
+                    case MessageType.NewCharacter:
+                        if (!sceneLoader.gameSceneLoaded) break;
+
+                        Debug.Log(msgType);
+                        Debug.Log("1--------------------");
+                        int characterID = msgIn.ReadInt16();
+                        if (characterID == myCharacter.GetComponent<Character>().id)
+                        {
+                            Debug.Log("1--------------------" + characterID);
+                            Debug.Log("1--------------------" + myCharacter.GetComponent<Character>().id);
+                            break;
+                        }
+                        Debug.Log("2--------------------");
+
+                        int characterLevel = msgIn.ReadInt16();
+                        int characterHealth = msgIn.ReadInt16();
+                        int characterType = msgIn.ReadInt16();
+                        string characterName = msgIn.ReadString();
+                        Debug.Log("3--------------------");
+                        GameObject newCharacterObj = null;
+                        switch (characterType)
+                        {
+                            case 1:
+                                newCharacterObj = Instantiate(type1Character);
+                                break;
+                            case 2:
+                                newCharacterObj = Instantiate(type2Character);
+                                break;
+                            default:
+                                newCharacterObj = Instantiate(type1Character);
+                                break;
+                        }
+                        Character newCharacter = newCharacterObj.GetComponent<Character>();
+                        newCharacter.Set(characterID, characterLevel, characterHealth, characterType, characterName);
+                        Debug.Log("4--------------------");
+
+                        otherCharacters.Add(newCharacter.id, newCharacter);
+                        break;
+                    case MessageType.CharacterMovement:
+                        if (!sceneLoader.gameSceneLoaded) break;
+                        int cId = msgIn.ReadInt16();
+                        if (cId == myCharacter.GetComponent<Character>().id) { break; }
+                        if (otherCharacters.ContainsKey(cId))
+                        {
+                            float posX = msgIn.ReadFloat();
+                            float posZ = msgIn.ReadFloat();
+                            float rot = msgIn.ReadFloat();
+                            otherCharacters[cId].posX = posX;
+                            otherCharacters[cId].posZ = posZ;
+                            otherCharacters[cId].rot = rot;
+
+                        }
+                        break;
+                    case MessageType.OtherCharacterRemove:
+                        if (!sceneLoader.gameSceneLoaded) break;
+                        int cRemoveId = msgIn.ReadInt16();
+                        Destroy(otherCharacters[cRemoveId].gameObject);
+                        otherCharacters.Remove(cRemoveId);
+                        break;
+
+                }
+            }
+            if (msgIn.MessageType == NetIncomingMessageType.StatusChanged)
+            {
+                NetConnectionStatus msgStat = (NetConnectionStatus)msgIn.ReadByte();
+                switch (msgStat)
+                {
+                    case NetConnectionStatus.Connected:
+                        Debug.Log("Connected to GameServer");
+                        sceneLoader.LoadGameScene();
+                        break;
+                    case NetConnectionStatus.Disconnected:
+                        ConnectToGameServer();
+                        Debug.Log("Disconnecting from LoginServer");
                         break;
                 }
             }
         }
+    }
+    private void ConnectToGameServer()
+    {
+        NetOutgoingMessage msgOut = netClient.CreateMessage();
+        msgOut.Write((byte)MessageType.ClientAuthentication);
+        GameServerData serverData = input.selectedServer.GetComponent<ServerSelectData>().serverData;
+        PacketHandler.WriteEncryptedByteArray(msgOut, authToken, serverData.publicKey);
+        Debug.Log(authToken.Length);
+        PacketHandler.WriteEncryptedByteArray(msgOut, input.selectedCharacter.GetComponent<CharacterButtonContainer>().Name.text, serverData.publicKey);
+        netClient.Connect(serverData.ip, serverData.port, msgOut);
     }
     private void PrintFeedBack(NetIncomingMessage msgIn)
     {

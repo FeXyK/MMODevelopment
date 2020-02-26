@@ -25,6 +25,11 @@ namespace Lidgren.Network.ServerFiles
 
         NewLoginToken,
         GameServersData,
-        KeyExchange
+        KeyExchange,
+
+        ClientReady,
+        NewCharacter,
+        OtherCharacterRemove,
+        CharacterMovement  
     }
 }

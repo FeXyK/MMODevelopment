@@ -1,14 +1,40 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SceneLoader : MonoBehaviour
 {
-    Scene gameScene;
-    Scene loginScene;
-    public void LoadGameScene()
+    public GameObject LoadingScreenCanvas;
+    public Slider loadingBar;
+    public bool gameSceneLoaded = false;
+    private void Update()
     {
-        //SceneManager.LoadScene(gameScene);
+        if (Input.GetKeyDown(KeyCode.Space))
+            LoadGameScene(1);
+    }
+    public void LoadGameScene(int sceneIndex = 1)
+    {
+        StartCoroutine(LoadSceneAsync(sceneIndex));
+    }
+
+    IEnumerator LoadSceneAsync(int sceneIndex = 1)
+    {
+        gameSceneLoaded = false;
+        LoadingScreenCanvas.SetActive(true);
+        AsyncOperation op = SceneManager.LoadSceneAsync(sceneIndex);
+        while (!op.isDone)
+        {
+            loadingBar.value = Mathf.Clamp01( op.progress/0.9f);
+            yield return null;
+        }
+        LoadingScreenCanvas.SetActive(false);
+        gameSceneLoaded = true;
+
+    }
+    private void OnLevelWasLoaded(int level)
+    {
+        FindObjectOfType<ClientManager>().SceneLoaded();
     }
 }

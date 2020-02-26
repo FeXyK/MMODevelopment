@@ -13,7 +13,7 @@ namespace MMOLoginServer
         static LoginServerCore loginMaster;
 
         const string LOGIN_SERVER_NAME = "NetLidgrenLogin";
-        const int LOGIN_SERVER_PORT = 52222;
+        const int LOGIN_SERVER_PORT = 52221;
         const int LOGIN_SERVER_FRAMERATE = 5;
         const bool DEBUG_ENABLED = true;
         static List<ConnectionData> gameServers;
@@ -22,8 +22,8 @@ namespace MMOLoginServer
             Debug.enable = DEBUG_ENABLED;
             gameServers = new List<ConnectionData>();
             ConnectionData gameServerData = new ConnectionData();
-            gameServerData.ip = "127.0.0.1";
-            gameServerData.port = 52221;
+            gameServerData.ip = "79.121.125.23";
+            gameServerData.port = 52242;
             gameServers.Add(gameServerData);
             loginMaster = new LoginServerCore(); 
 

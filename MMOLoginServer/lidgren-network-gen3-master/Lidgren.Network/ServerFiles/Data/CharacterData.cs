@@ -22,7 +22,10 @@ namespace MMOLoginServer.ServerData
         //  public CharacterSkillTree skillTree;
         public int characterType;
         public int gold;
+        public CharacterData()
+        {
 
+        }
         public CharacterData(params string[] param)
         {
             id = int.Parse(param[0]);

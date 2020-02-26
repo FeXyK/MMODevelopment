@@ -13,7 +13,7 @@ namespace MMOLoginServer.LoginServerLogic
         private NetServer netServer;
         private DatabaseSelection dbSelection;
         private BasicFunctions basicFunction;
-        const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMODevelopment\MMOLoginServer\MMOGameServer\MMODatabase.mdf;Integrated Security=True";
+        const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMODevelopment\MMOLoginServer\MMOGameServer\MMODB.mdf;Integrated Security=True";
 
         public ClientMessageHandler(NetServer server)
         {
@@ -115,15 +115,7 @@ namespace MMOLoginServer.LoginServerLogic
                 msgOut.Write("Authenticated");
                 msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
 
-                account.authToken = basicFunction.GenerateRandomSequence(40);
-
                 SendCharacterData(account);
-
-                msgOut = netServer.CreateMessage();
-                msgOut.Write((byte)MessageType.AuthToken);
-                PacketHandler.WriteEncryptedByteArray(msgOut, account.authToken, account.publicKey);
-                msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
-
 
                 msgOut = netServer.CreateMessage();
                 msgOut.Write((byte)MessageType.GameServersData);
@@ -137,9 +129,6 @@ namespace MMOLoginServer.LoginServerLogic
                     msgOut.Write(server.publicKey);
                 }
                 msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
-
-                Console.WriteLine(account.authToken.Length);
-                Console.WriteLine(BitConverter.ToString(account.authToken));
 
                 Debug.Log(usernameDecoded + ": Authenticated");
             }

@@ -57,7 +57,7 @@ public class LoginSceneInputs : MonoBehaviour
         msgOut.Write((byte)MessageType.CharacterLogin);
         msgOut.Write("Europe");
         msgOut.Write(selectedCharacter.GetComponent<CharacterButtonContainer>().Name.text);
-        netClient.Connections[0].SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+        netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
     }
     public void SwitchForms()
     {
@@ -131,7 +131,7 @@ public class LoginSceneInputs : MonoBehaviour
             LoadServerData(gameServerData);
         }
     }
-    public void HandleAuthenticationToken(NetIncomingMessage msgIn, byte[] authToken)
+    public void HandleAuthenticationToken(NetIncomingMessage msgIn, ref byte[] authToken)
     {
         authToken = PacketHandler.ReadEncryptedByteArray(msgIn);
         DText.text += authToken.Length + "\n";
@@ -182,10 +182,10 @@ public class LoginSceneInputs : MonoBehaviour
         Button serverButton = Instantiate(ServerButton);
         serverButton.transform.SetParent(ServerSelectForm.transform);
         RectTransform rt = serverButton.GetComponent<RectTransform>();
-        rt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 10, 300);
-        rt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 10 + characterNumber * 110, 100);
+        rt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 10, 300);
+        rt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 10 + serverNumber * 110, 100);
         serverNumber++;
         serverButton.GetComponent<ServerSelectData>().Load(data);
-        characterButtons.Add(serverButton);
+        serverButtons.Add(serverButton);
     }
 }

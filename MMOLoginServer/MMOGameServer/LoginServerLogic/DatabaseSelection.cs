@@ -11,9 +11,11 @@ namespace MMOLoginServer.LoginServerLogic
     public class DatabaseSelection
     {
         private string connectionString;
+        public static DatabaseSelection instance;
         public DatabaseSelection(string connString)
         {
             connectionString = connString;
+            instance = this;
         }
         public int DeleteCharacter(int accountId, string characterName)
         {

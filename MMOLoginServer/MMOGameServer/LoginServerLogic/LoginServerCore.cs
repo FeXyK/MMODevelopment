@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Lidgren.Network.ServerFiles;
 using Lidgren.Network;
+using MMOLoginServer.ServerData;
 
 namespace MMOLoginServer.LoginServerLogic
 {
@@ -62,18 +63,35 @@ namespace MMOLoginServer.LoginServerLogic
                             {
                                 if (gameServer.name == msgIn.ReadString())
                                 {
-                                    byte[] loginToken = basicFunctions.GenerateRandomSequence(40);
+                                    ClientData connection = GetAccount(msgIn.SenderConnection);
+                                    string cname = msgIn.ReadString();
+                                    Console.WriteLine("CHARACTERS: -------------------");
+                                    Console.WriteLine(cname);
+                                    foreach (var item in connection.characters)
+                                    {
+                                        Console.WriteLine(item.name);
+                                    }
+                                    Console.WriteLine("CLOSE");
+                                    connection.characters.Clear();
+                                    connection.characters = DatabaseSelection.instance.GetCharactersData(connection.id);
+                                    CharacterData characterData = connection.characters.Find(x => x.name == cname);
+                                    connection.authToken = basicFunctions.GenerateRandomSequence(40);
+
                                     NetOutgoingMessage msgOut = netPeer.CreateMessage();
                                     msgOut.Write((byte)MessageType.NewLoginToken);
-                                    PacketHandler.WriteEncryptedByteArray(msgOut, loginToken, gameServer.publicKey);
-                                    PacketHandler.WriteEncryptedByteArray(msgOut, DateTime.Now.AddSeconds(120).ToShortTimeString(), gameServer.publicKey);
-                                    PacketHandler.WriteEncryptedByteArray(msgOut, msgIn.ReadString(), gameServer.publicKey);
+                                    PacketHandler.WriteEncryptedByteArray(msgOut, connection.authToken, gameServer.publicKey);
+                                    msgOut.Write(DateTime.Now.AddSeconds(120).ToShortTimeString());
+                                    msgOut.Write(characterData.id, 16);
+                                    msgOut.Write(characterData.level, 16);
+                                    msgOut.Write(characterData.currentHealth, 16);
+                                    msgOut.Write(characterData.characterType, 16);
+                                    msgOut.Write(characterData.name);
                                     gameServer.connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
-                                    ConnectionData connection = GetAccount(msgIn.SenderConnection);
+
 
                                     msgOut = netPeer.CreateMessage();
                                     msgOut.Write((byte)MessageType.NewLoginToken);
-                                    PacketHandler.WriteEncryptedByteArray(msgOut, loginToken, connection.publicKey);
+                                    PacketHandler.WriteEncryptedByteArray(msgOut, connection.authToken, connection.publicKey);
                                     PacketHandler.WriteEncryptedByteArray(msgOut, DateTime.Now.AddSeconds(120).ToShortTimeString(), connection.publicKey);
                                     PacketHandler.WriteEncryptedByteArray(msgOut, msgIn.ReadString(), connection.publicKey);
                                     msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
@@ -142,6 +160,9 @@ namespace MMOLoginServer.LoginServerLogic
                         break;
                 }
             }
+        }
+        public override void Update()
+        {
         }
         private ClientData GetAccount(NetConnection connection)
         {

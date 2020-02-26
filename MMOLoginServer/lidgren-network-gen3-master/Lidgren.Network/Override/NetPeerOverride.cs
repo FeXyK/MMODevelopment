@@ -41,11 +41,13 @@ namespace Lidgren.Network.Wrapper
             while (true)
             {
                 ReceiveMessages();
+                Update();
                 Thread.Sleep(1000 / desiredFPS);
             }
         }
-        
+
         public virtual void ReceiveMessages() { Console.WriteLine("Override me!"); }
+        public virtual void Update() { Console.WriteLine("Override me!"); }
 
     }
 }
