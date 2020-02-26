@@ -15,11 +15,9 @@ public class Movement : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
     }
-
     void Update()
     {
         transform.position += transform.right * Input.GetAxis("Vertical")*Time.deltaTime*speed;//, 0.0f, Input.GetAxis("Vertical"));
         transform.eulerAngles += new Vector3(0, Input.GetAxis("Horizontal") * Time.deltaTime * rotSpeed, 0);
-
     }
 }

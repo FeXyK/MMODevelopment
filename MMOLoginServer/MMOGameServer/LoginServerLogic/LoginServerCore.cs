@@ -13,8 +13,7 @@ namespace MMOLoginServer.LoginServerLogic
         private List<ClientData> accounts = new List<ClientData>();
         private List<GameServerData> gameServers = new List<GameServerData>();
         ClientData currentAccount = null;
-        ClientMessageHandler clientMessageHandler;
-        GameServerMessageHandler gameServerMessageHandler = null;
+        MessageHandler messageHandler;
         BasicFunctions basicFunctions;
 
         string gameServerKey = "HARDCODEDKEY";
@@ -23,8 +22,7 @@ namespace MMOLoginServer.LoginServerLogic
         {
             base.Initialize(SERVER_NAME, LOGIN_SERVER_PORT);
             basicFunctions = new BasicFunctions();
-            gameServerMessageHandler = new GameServerMessageHandler((NetServer)netPeer);
-            clientMessageHandler = new ClientMessageHandler((NetServer)netPeer);
+            messageHandler = new MessageHandler((NetServer)netPeer);
         }
         public override void ReceiveMessages()
         {
@@ -35,7 +33,7 @@ namespace MMOLoginServer.LoginServerLogic
                 Console.WriteLine(msgIn);
                 if (msgIn.MessageType == NetIncomingMessageType.ConnectionApproval)
                 {
-                    clientMessageHandler.HandleConnectionApproval(msgIn, accounts);
+                    messageHandler.HandleConnectionApproval(msgIn, accounts);
                 }
                 else if (msgIn.MessageType == NetIncomingMessageType.Data)
                 {
@@ -47,20 +45,21 @@ namespace MMOLoginServer.LoginServerLogic
                     switch (msgType)
                     {
                         case MessageType.ClientAuthentication:
-                            clientMessageHandler.HandleLoginMessage(msgIn, currentAccount, gameServers);
+                            messageHandler.HandleLoginMessage(msgIn, currentAccount, gameServers);
                             break;
                         case MessageType.RegisterRequest:
-                            clientMessageHandler.HandleRegisterMessage(msgIn, currentAccount);
+                            messageHandler.HandleRegisterMessage(msgIn, currentAccount);
                             break;
                         case MessageType.CreateCharacter:
-                            clientMessageHandler.HandleCreateMessage(msgIn, currentAccount);
+                            messageHandler.HandleCreateMessage(msgIn, currentAccount);
                             break;
                         case MessageType.DeleteCharacter:
-                            clientMessageHandler.HandleDeleteMessage(msgIn, currentAccount);
+                            messageHandler.HandleDeleteMessage(msgIn, currentAccount);
                             break;
                         case MessageType.CharacterLogin:
                             foreach (var gameServer in gameServers)
                             {
+                                Console.WriteLine(gameServer.name);
                                 if (gameServer.name == msgIn.ReadString())
                                 {
                                     ClientData connection = GetAccount(msgIn.SenderConnection);
@@ -86,6 +85,8 @@ namespace MMOLoginServer.LoginServerLogic
                                     msgOut.Write(characterData.currentHealth, 16);
                                     msgOut.Write(characterData.characterType, 16);
                                     msgOut.Write(characterData.name);
+                                    Console.WriteLine("STATUS:");
+                                    Console.WriteLine((NetConnectionStatus)gameServer.connection.Status);
                                     gameServer.connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
 
 
@@ -118,7 +119,7 @@ namespace MMOLoginServer.LoginServerLogic
             NetIncomingMessage msgIn = null;
             GameServerData gameServerData = new GameServerData();
 
-            NetOutgoingMessage msgConnect = messageHandler.CreateRSAKeyMessage(netPeer, ConnectionType.LoginServer);
+            NetOutgoingMessage msgConnect = base.messageHandler.CreateRSAKeyMessage(netPeer, ConnectionType.LoginServer);
             netPeer.Connect(connData.ip, connData.port, msgConnect);
 
             netPeer.MessageReceivedEvent.WaitOne();

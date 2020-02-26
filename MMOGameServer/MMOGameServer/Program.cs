@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MMOGameServer
+﻿namespace MMOGameServer
 {
     class Program
     {

@@ -55,7 +55,7 @@ public class LoginSceneInputs : MonoBehaviour
     {
         NetOutgoingMessage msgOut = netClient.CreateMessage();
         msgOut.Write((byte)MessageType.CharacterLogin);
-        msgOut.Write("Europe");
+        msgOut.Write(selectedServer.GetComponent<ServerSelectData>().serverData.name);
         msgOut.Write(selectedCharacter.GetComponent<CharacterButtonContainer>().Name.text);
         netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
     }

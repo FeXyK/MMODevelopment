@@ -171,21 +171,15 @@ public class ClientManager : MonoBehaviour
                         if (!sceneLoader.gameSceneLoaded) break;
 
                         Debug.Log(msgType);
-                        Debug.Log("1--------------------");
                         int characterID = msgIn.ReadInt16();
                         if (characterID == myCharacter.GetComponent<Character>().id)
                         {
-                            Debug.Log("1--------------------" + characterID);
-                            Debug.Log("1--------------------" + myCharacter.GetComponent<Character>().id);
                             break;
                         }
-                        Debug.Log("2--------------------");
-
                         int characterLevel = msgIn.ReadInt16();
                         int characterHealth = msgIn.ReadInt16();
                         int characterType = msgIn.ReadInt16();
                         string characterName = msgIn.ReadString();
-                        Debug.Log("3--------------------");
                         GameObject newCharacterObj = null;
                         switch (characterType)
                         {
@@ -201,7 +195,6 @@ public class ClientManager : MonoBehaviour
                         }
                         Character newCharacter = newCharacterObj.GetComponent<Character>();
                         newCharacter.Set(characterID, characterLevel, characterHealth, characterType, characterName);
-                        Debug.Log("4--------------------");
 
                         otherCharacters.Add(newCharacter.id, newCharacter);
                         break;
