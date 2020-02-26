@@ -54,7 +54,6 @@ public class ClientManager : MonoBehaviour
             stopFlagTimer = stopFlagDelay;
             SendPositionUpdate();
         }
-
     }
     public void SceneLoaded()
     {
@@ -62,6 +61,7 @@ public class ClientManager : MonoBehaviour
         myCharacter = GameObject.FindGameObjectWithTag("PlayerCharacter").transform;
         myCharacter.gameObject.GetComponent<Character>().characterName = chname;
         myCharacter.gameObject.GetComponent<Character>().id = chid;
+        myCharacter.GetComponentInChildren<Character>().NameText.text = chid + ": " + chname;
 
         Thread.Sleep(500);
         NetOutgoingMessage msgReady = netClient.CreateMessage();
@@ -74,6 +74,7 @@ public class ClientManager : MonoBehaviour
         msgOut.Write((byte)MessageType.CharacterMovement);
         msgOut.Write(myCharacter.GetComponent<Character>().id, 16);
         msgOut.Write(myCharacter.position.x);
+        msgOut.Write(myCharacter.position.y);
         msgOut.Write(myCharacter.position.z);
         msgOut.Write(myCharacter.rotation.eulerAngles.y);
         netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
@@ -205,9 +206,11 @@ public class ClientManager : MonoBehaviour
                         if (otherCharacters.ContainsKey(cId))
                         {
                             float posX = msgIn.ReadFloat();
+                            float posY = msgIn.ReadFloat();
                             float posZ = msgIn.ReadFloat();
                             float rot = msgIn.ReadFloat();
                             otherCharacters[cId].posX = posX;
+                            otherCharacters[cId].posY = posY;
                             otherCharacters[cId].posZ = posZ;
                             otherCharacters[cId].rot = rot;
 

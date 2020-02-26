@@ -104,9 +104,10 @@ namespace MMOGameServer
         {
             int id = msgIn.ReadInt16();
             float x = msgIn.ReadFloat();
+            float y = msgIn.ReadFloat();
             float z = msgIn.ReadFloat();
             float r = msgIn.ReadFloat();
-            dataHandler.characters[id].position = new System.Numerics.Vector3(x, 0, z);
+            dataHandler.characters[id].position = new System.Numerics.Vector3(x, y, z);
             dataHandler.characters[id].rotation = r;
         }
         public void SendMessages()

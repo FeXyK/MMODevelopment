@@ -9,11 +9,6 @@ public class SceneLoader : MonoBehaviour
     public GameObject LoadingScreenCanvas;
     public Slider loadingBar;
     public bool gameSceneLoaded = false;
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-            LoadGameScene(1);
-    }
     public void LoadGameScene(int sceneIndex = 1)
     {
         StartCoroutine(LoadSceneAsync(sceneIndex));

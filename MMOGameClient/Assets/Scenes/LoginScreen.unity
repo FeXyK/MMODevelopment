@@ -347,6 +347,18 @@ MonoBehaviour:
   LoadingScreenCanvas: {fileID: 666362853}
   loadingBar: {fileID: 1249738164}
   gameSceneLoaded: 0
+--- !u!114 &1000834950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000834948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf1c26856adcc0d43be06267517d95f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1210094394 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5220304408969549039, guid: 51b748f68deb42040aa8784434107893,

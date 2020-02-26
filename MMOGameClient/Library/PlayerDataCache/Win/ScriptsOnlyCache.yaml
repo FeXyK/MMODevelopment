@@ -6,6 +6,7 @@ ScriptsOnlyBuild:
     - CharacterOverHead
     - ClientManager
     - DontDestroy
+    - GameOptions
     - LoginSceneInputs
     - Movement
     - SceneLoader
@@ -59,6 +60,8 @@ ScriptsOnlyBuild:
     - Class: 43
       Script: {instanceID: 0}
     - Class: 48
+      Script: {instanceID: 0}
+    - Class: 54
       Script: {instanceID: 0}
     - Class: 65
       Script: {instanceID: 0}
@@ -203,6 +206,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 13136}
     - Class: 114
       Script: {instanceID: 13494}
+    - Class: 114
+      Script: {instanceID: 33992}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -330,7 +335,7 @@ ScriptsOnlyBuild:
     className: GridLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: bdc5c6eeed6655bd100ed029ebc4638c
+      Hash: 26f1ddc1be39649e51f9c41981ff8a7d
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Movement
@@ -444,7 +449,7 @@ ScriptsOnlyBuild:
     className: CharacterButtonContainer
   - hash:
       serializedVersion: 2
-      Hash: bcac8c3022df626bbf9ec9ace0e33721
+      Hash: 66ac62af12b6b1d5cb4282862a735415
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Character
@@ -724,6 +729,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: GameOptions
   platform: 5
   scenePathNames:
   - Assets/Scenes/LoginScreen.unity

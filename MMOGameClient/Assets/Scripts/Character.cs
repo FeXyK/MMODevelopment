@@ -14,6 +14,7 @@ public class Character : MonoBehaviour
     public int type;
     public int gold;
     public float posX;
+    public float posY;
     public float posZ;
     public float rot;
     public Transform character;
@@ -57,10 +58,12 @@ public class Character : MonoBehaviour
         tickRate = (1000f / 20f) * Time.deltaTime;
         if (this.gameObject.tag != "PlayerCharacter")
         {
-            character.position = Vector3.Lerp(character.position, new Vector3(posX, 0, posZ), tickRate);
+            character.position = Vector3.Lerp(character.position, new Vector3(posX, posY, posZ), tickRate);
+
+
             //Quaternion toRotation = Quaternion.LookRotation((new Vector3(posX, 0, posZ) - character.position).normalizedsZ));
             //transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, speed * Time.time);
-            character.LookAt(new Vector3(posX, 0, posZ));// new Vector3(0, rot, 0);
+            character.LookAt(new Vector3(posX, character.position.y, posZ));// new Vector3(0, rot, 0);
         }
     }
 }

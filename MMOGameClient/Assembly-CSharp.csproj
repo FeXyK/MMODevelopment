@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Assets\CharacterOverHead.cs" />
     <Compile Include="Assets\DontDestroy.cs" />
+    <Compile Include="Assets\GameOptions.cs" />
     <Compile Include="Assets\LoginSceneInputs.cs" />
     <Compile Include="Assets\Movement.cs" />
     <Compile Include="Assets\SceneLoader.cs" />

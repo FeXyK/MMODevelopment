@@ -22,6 +22,7 @@ namespace MMOGameServer
             msgOut.Write((byte)MessageType.CharacterMovement);
             msgOut.Write(character.id, 16);
             msgOut.Write(character.position.X);
+            msgOut.Write(character.position.Y);
             msgOut.Write(character.position.Z);
             msgOut.Write(character.rotation);
             return msgOut;
