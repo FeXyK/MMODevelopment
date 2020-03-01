@@ -17,6 +17,7 @@ namespace MMOGameServer
         MessageReader messageReader;
         MessageCreater messageCreate;
         ConnectionData loginServer;
+        public bool hideNames = false;
         public MessageHandler(NetServer server)
         {
             netServer = server;
@@ -41,6 +42,8 @@ namespace MMOGameServer
                     msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
                 }
             }
+            msgOut = CreateHideNamesMessage();
+            msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
         }
         public void NewLoginToken(NetIncomingMessage msgIn)
         {
@@ -62,15 +65,81 @@ namespace MMOGameServer
                 msgIn.SenderConnection.Disconnect("Bad AuthenticationKey");
             }
         }
+        public NetOutgoingMessage CreateHideNamesMessage()
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            if (hideNames)
+                msgOut.Write((byte)MessageType.HideNames);
+            else
+                msgOut.Write((byte)MessageType.ShowNames);
+            return msgOut;
+        }
         public void KeyExchange(NetIncomingMessage msgIn)
         {
             ConnectionData connection = messageReader.ReadKeyExchangeMessage(msgIn);
             dataHandler.connections.Add(connection);
-            loginServer = connection ;
+            loginServer = connection;
 
             NetOutgoingMessage msgOut = messageCreate.CreateRSAKeyMessage(netServer, ConnectionType.GameServer, dataHandler.serverName);
             msgIn.SenderConnection.Approve(msgOut);
         }
+
+        internal void SendPrivateChatMessage(NetIncomingMessage msgIn)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            string from = msgIn.ReadString();
+            string to = msgIn.ReadString();
+            string msg = msgIn.ReadString();
+
+            msgOut.Write((byte)MessageType.PrivateChatMessage);
+            msgOut.Write(from);
+            msgOut.Write(msg);
+            foreach (var character in dataHandler.characters.Values)
+            {
+                if (character.name.ToLower() == to.ToLower())
+                {
+                    character.connection.SendMessage(msgOut, NetDeliveryMethod.ReliableUnordered, 0);
+                }
+            }
+        }
+
+        internal void SendPublicChatMessage(NetIncomingMessage msgIn)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            string from = msgIn.ReadString();
+            string msg = msgIn.ReadString();
+            msgOut.Write((byte)MessageType.PublicChatMessage);
+            msgOut.Write(from);
+            msgOut.Write(msg);
+            netServer.SendToAll(msgOut, NetDeliveryMethod.Unreliable);
+        }
+
+        internal void HandleAdminMessage(NetIncomingMessage msgIn)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            string msg = msgIn.ReadString();
+            switch (msg.ToLower())
+            {
+                case "hidenames":
+                    hideNames = true;
+                    msgOut.Write((byte)MessageType.AdminChatMessage);
+                    msgOut.Write((byte)MessageType.HideNames);
+                    break;
+                case "shownames":
+                    hideNames = false;
+                    msgOut.Write((byte)MessageType.AdminChatMessage);
+                    msgOut.Write((byte)MessageType.ShowNames);
+                    break;
+                default:
+                    msgOut.Write((byte)MessageType.AdminChatMessage);
+                    msgOut.Write((byte)MessageType.AdminChatMessage);
+                    msgOut.Write("Admin");
+                    msgOut.Write(msg);
+                    break;
+            }
+            netServer.SendToAll(msgOut, NetDeliveryMethod.ReliableOrdered);
+        }
+
         public void ClientAuthentication(NetIncomingMessage msgIn)
         {
             byte[] clientLoginToken = PacketHandler.ReadEncryptedByteArray(msgIn);
@@ -90,7 +159,8 @@ namespace MMOGameServer
                 characterData.currentHealth = 100;
                 characterData.position = new System.Numerics.Vector3(0, 0, 0);
                 characterData.rotation = 0;
-
+                if (dataHandler.characters.ContainsKey(characterData.id))
+                    dataHandler.characters.Remove(characterData.id);
                 dataHandler.characters.Add(characterData.id, characterData);
                 dataHandler.netConnections.Add(msgIn.SenderConnection);
                 Console.WriteLine("Authenticated!");
@@ -110,14 +180,58 @@ namespace MMOGameServer
             dataHandler.characters[id].position = new System.Numerics.Vector3(x, y, z);
             dataHandler.characters[id].rotation = r;
         }
-        public void SendMessages()
+        public void SendMovementMessages()
         {
             NetOutgoingMessage msgOut;
             foreach (var character in dataHandler.characters)
             {
                 msgOut = messageCreate.MovementMessage(character.Value);
-                netServer.SendMessage(msgOut, dataHandler.netConnections, NetDeliveryMethod.UnreliableSequenced, 1);
+                if (dataHandler.netConnections.Count > 0)
+                    netServer.SendMessage(msgOut, dataHandler.netConnections, NetDeliveryMethod.UnreliableSequenced, 1);
             }
+        }
+        public void SendLogoutMessages(int id)
+        {
+            NetOutgoingMessage msgOut;
+            msgOut = messageCreate.LogoutMessage(id);
+            netServer.SendMessage(msgOut, dataHandler.netConnections, NetDeliveryMethod.UnreliableSequenced, 1);
+        }
+        public void ClearConnections()
+        {
+            List<int> removeKeys = new List<int>();
+            foreach (var character in dataHandler.characters)
+            {
+                if (character.Value.connection.Status == NetConnectionStatus.Disconnected)
+                {
+                    removeKeys.Add(character.Key);
+                }
+            }
+            for (int i = dataHandler.connections.Count - 1; i >= 0; i--)
+            {
+                if (dataHandler.connections[i].connection.Status == NetConnectionStatus.Disconnected)
+                {
+                    dataHandler.connections.RemoveAt(i);
+                }
+            }
+            for (int i = dataHandler.netConnections.Count - 1; i >= 0; i--)
+            {
+                if (dataHandler.netConnections[i].Status == NetConnectionStatus.Disconnected)
+                {
+                    dataHandler.netConnections.RemoveAt(i);
+                }
+            }
+            foreach (var key in removeKeys)
+            {
+                SendLogoutMessages(key);
+                dataHandler.characters.Remove(key);
+            }
+            //for (int i = dataHandler.loginTokens.Count; i >= 0; i++)
+            //{
+            //    if (dataHandler.loginTokens[i].expireDate < DateTime.Now)//== NetConnectionStatus.Disconnected)
+            //    {
+            //        dataHandler.loginTokens.RemoveAt(i);
+            //    }
+            //}
         }
     }
 }

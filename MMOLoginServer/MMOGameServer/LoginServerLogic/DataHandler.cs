@@ -29,6 +29,19 @@ namespace MMOLoginServer
             }
             return null;
         }
+        public void ClearConnections()
+        {
+            ClientData acc = null;
+            foreach (var account in accounts)
+            {
+                if (account.connection.Status == NetConnectionStatus.Disconnected)
+                {
+                    acc = account;
+                }
+            }
+            if (acc != null)
+                accounts.Remove(acc);
+        }
     }
 
 }

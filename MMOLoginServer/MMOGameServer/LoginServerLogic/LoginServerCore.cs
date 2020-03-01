@@ -10,8 +10,8 @@ namespace MMOLoginServer.LoginServerLogic
     {
         ClientData currentAccount = null;
         new MessageHandler messageHandler;
-
-        public override void Initialize(string SERVER_NAME, int LOGIN_SERVER_PORT)
+        int serverTick = 0;
+        public override void Initialize(string SERVER_NAME, int LOGIN_SERVER_PORT, bool IS_SERVER = true)
         {
             base.Initialize(SERVER_NAME, LOGIN_SERVER_PORT);
             messageHandler = new MessageHandler((NetServer)netPeer);
@@ -58,6 +58,12 @@ namespace MMOLoginServer.LoginServerLogic
         }
         public override void Update()
         {
+            if (serverTick > 500)
+            {
+                DataHandler.Instance.ClearConnections();
+                serverTick = 0;
+            }
+            serverTick++;
         }
         public void ConnectToGameServerList(List<ConnectionData> netConnections)
         {

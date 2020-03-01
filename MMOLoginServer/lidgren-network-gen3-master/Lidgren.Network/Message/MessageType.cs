@@ -4,12 +4,9 @@ namespace Lidgren.Network.ServerFiles
     public enum MessageType
     {
         ServerLoginRequest,
-        ServerLoginAnswerOk,
-        ServerLoginError,
-        
+        ServerLoginSuccess,
+
         RegisterRequest,
-        RegisterAnswerOk,
-        RegisterAnswerError,
 
         CharacterData,
         CreateCharacter,
@@ -30,6 +27,14 @@ namespace Lidgren.Network.ServerFiles
         ClientReady,
         NewCharacter,
         OtherCharacterRemove,
-        CharacterMovement  
+        CharacterMovement ,
+        Notification,
+
+        HideNames,
+        ShowNames,
+
+        AdminChatMessage,
+        PublicChatMessage,
+        PrivateChatMessage
     }
 }

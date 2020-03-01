@@ -15,18 +15,22 @@ namespace Lidgren.Network.Wrapper
         public NetPeerConfiguration netPeerConfiguration;
         public List<ConnectionData> connections = new List<ConnectionData>();
         public MessageHandler messageHandler;
-        public virtual void Initialize(string PEER_NAME, int PEER_PORT = 0)
+        public virtual void Initialize(string PEER_NAME, int PEER_PORT = 0, bool IS_SERVER = true)
         {
             messageHandler = new MessageHandler();
 
             netPeerConfiguration = new NetPeerConfiguration(PEER_NAME);
             netPeerConfiguration.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
-            if (PEER_PORT != 0)
-                netPeerConfiguration.Port = PEER_PORT;
 
-            netPeer = new NetServer(netPeerConfiguration);
+            if (IS_SERVER)
+            {
+                netPeerConfiguration.Port = PEER_PORT;
+                netPeer = new NetServer(netPeerConfiguration);
+            }
+            else
+                netPeer = new NetClient(netPeerConfiguration);
             netPeer.Start();
-            Console.WriteLine("Server started!");
+            //Console.WriteLine("Server started!");
         }
 
         public void StartServer(int LOOP_FRAMERATE)

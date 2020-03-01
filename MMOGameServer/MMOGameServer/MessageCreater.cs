@@ -38,5 +38,13 @@ namespace MMOGameServer
             msgOut.Write(character.name);
             return msgOut;
         }
+
+        public NetOutgoingMessage LogoutMessage(int id)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.OtherCharacterRemove);
+            msgOut.Write(id, 16);
+            return msgOut;
+        }
     }
 }

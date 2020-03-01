@@ -10,7 +10,7 @@ namespace MMOGameServer
 {
     public class DataHandler
     {
-        public string serverName = "Eusrope";
+        public string serverName = "Europe";
         public Dictionary<int, CharacterData> characters = new Dictionary<int, CharacterData>();
         public List<NetConnection> netConnections = new List<NetConnection>();
         public List<ConnectionData> connections = new List<ConnectionData>();

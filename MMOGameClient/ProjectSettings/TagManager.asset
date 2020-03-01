@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - PlayerCharacter
+  - Notification
+  - NameTag
   layers:
   - Default
   - TransparentFX

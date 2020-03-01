@@ -24,30 +24,47 @@ namespace MMOLoginServer.LoginServerLogic
             basicFunction = new BasicFunctions();
 
             dbSelection = new DatabaseSelection(connectionString);
-
         }
         public void SendCharacterData(ClientData account)
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
-
             List<CharacterData> characters = dbSelection.GetCharactersData(account.id);
+            msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.CharacterData);
+            msgOut.Write(characters.Count, 16);
 
             foreach (var character in characters)
             {
                 Console.WriteLine(character.ToString());
-                msgOut = netServer.CreateMessage();
-                msgOut.Write((byte)MessageType.CharacterData);
-                PacketHandler.WriteEncryptedByteArray(msgOut, character.ToString(), account.publicKey);
-                account.connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 2);
+                msgOut.Write(character.name);
+                msgOut.Write(character.id, 32);
+                msgOut.Write(character.accountID, 32);
+                msgOut.Write(character.level, 32);
+                msgOut.Write(character.gold, 32);
+                msgOut.Write(character.characterType, 32);
             }
+            account.connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 2);
+
         }
         public void HandleCreateMessage(NetIncomingMessage msgIn, ClientData account)
         {
             byte[] characterNameEncrypted = PacketHandler.ReadEncryptedByteArray(msgIn);
             string characterName = Encoding.UTF8.GetString(characterNameEncrypted);
-
-            dbSelection.CreateCharacter(characterName, account);
+            if (0 == dbSelection.CountSqlData("SELECT COUNT(*) FROM Character WHERE LOWER(Name) = LOWER(@characterName)", new SqlParameter("characterName", characterName)))
+            {
+                dbSelection.CreateCharacter(characterName, account);
+                SendNotificationMessage("Character created!", msgIn.SenderConnection);
+            }
+            else
+                SendNotificationMessage("Invalid Name: Character already exists", msgIn.SenderConnection);
             SendCharacterData(account);
+        }
+        public void SendNotificationMessage(string msg, NetConnection connection)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.Notification);
+            msgOut.Write(msg);
+            connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
         }
         public void HandleDeleteMessage(NetIncomingMessage msgIn, ClientData account)
         {
@@ -57,7 +74,6 @@ namespace MMOLoginServer.LoginServerLogic
 
             dbSelection.DeleteCharacter(accountId, characterName);
             SendCharacterData(account);
-
         }
 
         public void CharacterLogin(NetIncomingMessage msgIn, ClientData currentAccount)
@@ -103,6 +119,10 @@ namespace MMOLoginServer.LoginServerLogic
 
                     Console.WriteLine(DateTime.Now.AddSeconds(120).ToShortTimeString());
                 }
+                else
+                {
+                    SendNotificationMessage("Invalid ServerName: Server not found", msgIn.SenderConnection);
+                }
                 break;
             }
         }
@@ -135,16 +155,16 @@ namespace MMOLoginServer.LoginServerLogic
                         new SqlParameter("email", email),
                         new SqlParameter("salt", saltBytes));
                     if (result >= 0)
-                        RegisterSuccessfullMessage("Successfull registration!", msgIn.SenderConnection);
+                        SendNotificationMessage("Successfull registration!", msgIn.SenderConnection);
                 }
                 else
                 {
-                    RegisterErrorMessage("Error, existing user", msgIn.SenderConnection);
+                    SendNotificationMessage("Invalid Username or Email: Already exists", msgIn.SenderConnection);
                 }
             }
             else
             {
-                RegisterErrorMessage("Error, not existing connection", msgIn.SenderConnection);
+                SendNotificationMessage("Error, not existing connection", msgIn.SenderConnection);
             }
         }
         public void HandleLoginMessage(NetIncomingMessage msgIn, ClientData account)
@@ -163,7 +183,7 @@ namespace MMOLoginServer.LoginServerLogic
                 account.characters = dbSelection.GetCharactersData(account.id);
 
                 NetOutgoingMessage msgOut = netServer.CreateMessage();
-                msgOut.Write((byte)MessageType.ServerLoginAnswerOk);
+                msgOut.Write((byte)MessageType.ServerLoginSuccess);
                 msgOut.Write("Authenticated");
                 msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
 
@@ -187,10 +207,7 @@ namespace MMOLoginServer.LoginServerLogic
             else
             {
                 Debug.Log(usernameDecoded + ": Bad Username or Password");
-                NetOutgoingMessage msgError = netServer.CreateMessage();
-                msgError.Write((byte)MessageType.ServerLoginError);
-                msgError.Write("Bad Username or Password");
-                msgIn.SenderConnection.SendMessage(msgError, NetDeliveryMethod.ReliableOrdered, 1);
+                SendNotificationMessage("Bad Username or Password", msgIn.SenderConnection);
             }
         }
 
@@ -209,22 +226,6 @@ namespace MMOLoginServer.LoginServerLogic
             NetOutgoingMessage msgOut = netServer.CreateMessage();
             msgOut.Write(DataEncryption.publicKey);
             msgIn.SenderConnection.Approve(msgOut);
-        }
-        private void RegisterSuccessfullMessage(string msgSucc, NetConnection senderConnection)
-        {
-            NetOutgoingMessage msgOut = netServer.CreateMessage();
-            msgOut.Write((byte)MessageType.RegisterAnswerOk);
-            msgOut.Write(msgSucc);
-
-            senderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
-        }
-        private void RegisterErrorMessage(string msgErr, NetConnection senderConnection)
-        {
-            NetOutgoingMessage msgRegError = netServer.CreateMessage();
-            msgRegError.Write((byte)MessageType.RegisterAnswerError);
-            msgRegError.Write(msgErr);
-
-            senderConnection.SendMessage(msgRegError, NetDeliveryMethod.ReliableOrdered, 1);
         }
         public void ConnectToGameServer(ConnectionData connData)
         {

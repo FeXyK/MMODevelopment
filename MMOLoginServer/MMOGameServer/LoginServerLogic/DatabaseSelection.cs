@@ -159,5 +159,23 @@ namespace MMOLoginServer.LoginServerLogic
             }
             return data;
         }
+        public int CountSqlData(string selection, params SqlParameter[] sqlParam)
+        {
+            int count = 0;
+            using (SqlConnection conn = new SqlConnection())
+            {
+                conn.ConnectionString = connectionString;
+                SqlCommand command = new SqlCommand(selection, conn);
+
+                foreach (var param in sqlParam)
+                {
+                    command.Parameters.Add(param);
+                }
+                conn.Open();
+                count = (int)command.ExecuteScalar();
+            }
+            return count;
+        }
     }
 }
+
