@@ -353,7 +353,7 @@ ScriptsOnlyBuild:
     className: CanvasScaler
   - hash:
       serializedVersion: 2
-      Hash: 5a54eddee3f094b35c89928a4be787cf
+      Hash: ecc05eb4ea959754e2eb188ca13e232c
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MenuController
@@ -1249,4 +1249,4 @@ ScriptsOnlyBuild:
   scenePathNames:
   - Assets/Scenes/LoginScreen.unity
   - Assets/Scenes/InGame.unity
-  playerPath: D:/Github/MMO_Build_Shared/MMOGameClient.exe
+  playerPath: D:/Github/Build/MMOGameClient.exe

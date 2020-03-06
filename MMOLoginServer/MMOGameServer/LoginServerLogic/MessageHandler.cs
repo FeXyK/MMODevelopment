@@ -15,7 +15,7 @@ namespace MMOLoginServer.LoginServerLogic
         private BasicFunctions basicFunction;
         DataHandler dataHandler;
         MessageCreater messageCreate;
-        const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMODevelopment\MMOLoginServer\MMOGameServer\MMODB.mdf;Integrated Security=True";
+        const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMODevelopment\MMOLoginServer\MMOGameServer\MMODatabase.mdf;Integrated Security=True";
         public MessageHandler(NetServer server)
         {
             netServer = server;
@@ -214,7 +214,7 @@ namespace MMOLoginServer.LoginServerLogic
         public void HandleConnectionApproval(NetIncomingMessage msgIn)
         {
             MessageType msgType;
-            Debug.Log("New Connection: {0}, {1}, {2}", msgIn.ReceiveTime, msgIn.SenderEndPoint.Address, msgIn.SenderEndPoint.Port);
+            Console.WriteLine("New Connection: {0}, {1}, {2}", msgIn.ReceiveTime, msgIn.SenderEndPoint.Address, msgIn.SenderEndPoint.Port);
 
             msgType = (MessageType)msgIn.ReadByte();
             {

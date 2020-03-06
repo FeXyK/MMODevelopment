@@ -15,13 +15,19 @@ namespace Lidgren.Network.Wrapper
         public NetPeerConfiguration netPeerConfiguration;
         public List<ConnectionData> connections = new List<ConnectionData>();
         public MessageHandler messageHandler;
-        public virtual void Initialize(string PEER_NAME, int PEER_PORT = 0, bool IS_SERVER = true)
+        public virtual void Initialize(string PEER_NAME, int PEER_PORT = 0, bool IS_SERVER = true, bool simulateLatency = true)
         {
             messageHandler = new MessageHandler();
 
             netPeerConfiguration = new NetPeerConfiguration(PEER_NAME);
             netPeerConfiguration.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
-
+            if (simulateLatency)
+            {
+                netPeerConfiguration.SimulatedMinimumLatency = 0.250f;
+                netPeerConfiguration.SimulatedRandomLatency = 0.010f;
+                netPeerConfiguration.SimulatedDuplicatesChance = 0.01f;
+                netPeerConfiguration.SimulatedLoss = 0.01f;
+            }
             if (IS_SERVER)
             {
                 netPeerConfiguration.Port = PEER_PORT;

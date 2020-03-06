@@ -194,13 +194,16 @@ namespace MMOGameServer
         {
             NetOutgoingMessage msgOut;
             msgOut = messageCreate.LogoutMessage(id);
-            netServer.SendMessage(msgOut, dataHandler.netConnections, NetDeliveryMethod.UnreliableSequenced, 1);
+            if (dataHandler.netConnections.Count > 0)
+                netServer.SendMessage(msgOut, dataHandler.netConnections, NetDeliveryMethod.UnreliableSequenced, 1);
         }
         public void ClearConnections()
         {
-            List<int> removeKeys = new List<int>();
+            List<int> removeKeys = new List<int>(); 
+            Console.WriteLine("Online: " + dataHandler.characters.Count);
             foreach (var character in dataHandler.characters)
             {
+                Console.WriteLine(character.Value.name + ": " + character.Value.connection.Status);
                 if (character.Value.connection.Status == NetConnectionStatus.Disconnected)
                 {
                     removeKeys.Add(character.Key);

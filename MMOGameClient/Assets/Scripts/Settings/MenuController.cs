@@ -11,6 +11,7 @@ public class MenuController : MonoBehaviour
     public GameObject OptionsMenu;
     public TMP_InputField ChatInput;
     public TMP_InputField ChatWindow;
+    public TMP_Text PingText;
     public GameMessageHandler messageHandler;
 
     private Image chatBg;

@@ -11,7 +11,7 @@ namespace MMOLoginServer.LoginServerLogic
         ClientData currentAccount = null;
         new MessageHandler messageHandler;
         int serverTick = 0;
-        public override void Initialize(string SERVER_NAME, int LOGIN_SERVER_PORT, bool IS_SERVER = true)
+        public override void Initialize(string SERVER_NAME, int LOGIN_SERVER_PORT, bool IS_SERVER = true, bool simulateLatency = true)
         {
             base.Initialize(SERVER_NAME, LOGIN_SERVER_PORT);
             messageHandler = new MessageHandler((NetServer)netPeer);

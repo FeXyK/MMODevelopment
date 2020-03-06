@@ -16,16 +16,20 @@ namespace Assets.Scripts.GameNetworkScripts
     {
         GameObject[] gameObjects;
         public new GameMessageHandler messageHandler;
-        public override void Initialize(string PEER_NAME, int PEER_PORT = 0, bool IS_SERVER = false)
+        private MenuController menu;
+        public override void Initialize(string PEER_NAME, int PEER_PORT = 0, bool IS_SERVER = false, bool simulateLatency = true)
         {
-            base.Initialize(PEER_NAME, PEER_PORT, IS_SERVER);
+            base.Initialize(PEER_NAME, PEER_PORT, IS_SERVER, simulateLatency);
 
             messageHandler = new GameMessageHandler(netPeer as NetClient);
-
+            menu = GameObject.FindObjectOfType<MenuController>();
             ConnectToGameServer();
         }
         public override void ReceiveMessages()
         {
+            if ((netPeer as NetClient).ServerConnection != null)
+                menu.PingText.text = Mathf.RoundToInt((netPeer as NetClient).ServerConnection.AverageRoundtripTime * 1000) + " ms";
+            else menu.PingText.text = "Disconnected";
             NetIncomingMessage msgIn;
             MessageType msgType;
             while ((msgIn = netPeer.ReadMessage()) != null)
@@ -70,7 +74,7 @@ namespace Assets.Scripts.GameNetworkScripts
                             Debug.Log("Connected to GameServer");
                             break;
                         case NetConnectionStatus.Disconnected:
-                            Debug.Log("Disconnecting from LoginServer");
+                            Debug.Log("Disconnected from GameServer");
                             break;
                     }
                 }

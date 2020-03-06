@@ -4,6 +4,7 @@ using Lidgren.Network.ServerFiles;
 using Lidgren.Network.Wrapper;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,15 +18,14 @@ namespace Assets.Scripts.LoginNetworkScripts
         public SceneLoader sceneLoader;
         new LoginMessageHandler messageHandler;
 
-
-
         public LoginClientManager()
         {
             Initialize("NetLidgren");
         }
-        public override void Initialize(string PEER_NAME, int PEER_PORT = 0, bool IS_SERVER = false)
+        public override void Initialize(string PEER_NAME, int PEER_PORT = 0, bool IS_SERVER = false, bool simulateLatency = true)
         {
-                base.Initialize(PEER_NAME, PEER_PORT, IS_SERVER);
+ 
+            base.Initialize(PEER_NAME, PEER_PORT, IS_SERVER);
 
             //if (input == null)
             //    input = GameObject.FindObjectOfType<LoginScreenInputData>();
@@ -71,8 +71,5 @@ namespace Assets.Scripts.LoginNetworkScripts
                 }
             }
         }
-
-        
     }
-
 }

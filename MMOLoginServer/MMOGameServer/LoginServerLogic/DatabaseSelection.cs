@@ -42,7 +42,7 @@ namespace MMOLoginServer.LoginServerLogic
 
             passwordSalted = new System.Security.Cryptography.SHA256Managed().ComputeHash(passwordSalted);
 
-            Debug.Log("Got: {0}\nStoredPassword: {1}\nMessagedPassword: {2}", username, BitConverter.ToString(passwordSalted), BitConverter.ToString(accounts[0].password));
+            Console.WriteLine("Got: {0}\nStoredPassword: {1}\nMessagedPassword: {2}", username, BitConverter.ToString(passwordSalted), BitConverter.ToString(accounts[0].password));
 
             Console.WriteLine(BitConverter.ToString(passwordSalted));
             Console.WriteLine(BitConverter.ToString(accounts[0].password));

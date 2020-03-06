@@ -3,6 +3,7 @@ using Lidgren.Network.ServerFiles;
 using MMOLoginServer.ServerData;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -72,7 +73,7 @@ namespace Assets.Scripts.Handlers
 
         public void HandleNewLoginToken(NetIncomingMessage msgIn)
         {
-           dataHandler.authenticationToken = PacketHandler.ReadEncryptedByteArray(msgIn);
+            dataHandler.authenticationToken = PacketHandler.ReadEncryptedByteArray(msgIn);
             LoginDataController loginData = new LoginDataController();
             loginData.authToken = dataHandler.authenticationToken;
             loginData.characterName = dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter].name;
@@ -147,8 +148,22 @@ namespace Assets.Scripts.Handlers
             loginScreenHandler.CharacterSelectForm.SetActive(true);
             loginScreenHandler.ServerSelectForm.SetActive(true);
         }
-        public void SetupConnection(string SERVER_IP, int SERVER_PORT)
+        public void SetupConnection(string SERVER_IP = "123123123", int SERVER_PORT = 2)
         {
+            string[] lines = File.ReadAllLines(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.txt");
+            string[] data;
+            foreach (var line in lines)
+            {
+                data = line.Split('=');
+                switch (data[0].Trim().ToLower())
+                {
+                    case "server":
+                        string[] conn = data[1].Split(':');
+                        SERVER_IP = conn[0];
+                        SERVER_PORT = int.Parse(conn[1]);
+                        break;
+                }
+            }
             if (netClient.ServerConnection != null)
                 return;
             NetOutgoingMessage msgLogin = netClient.CreateMessage();

@@ -17,7 +17,7 @@ public class LoginScreenHandler : MonoBehaviour
     LoginClientManager loginClient;
 
     string PEER_NAME = "NetLidgrenLogin";
-    string SERVER_IP = "79.121.125.23";
+    string SERVER_IP = "86.101.120.217";
     int SERVER_PORT = 52221;
     private void Start()
     {

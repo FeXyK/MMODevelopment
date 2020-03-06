@@ -9,9 +9,9 @@ namespace MMOGameServer
     {
         new MessageHandler messageHandler = null;
         int tickCount = 0;
-        public override void Initialize(string PEER_NAME, int PEER_PORT = 0, bool IS_SERVER = true)
+        public override void Initialize(string PEER_NAME, int PEER_PORT = 0, bool IS_SERVER = true, bool simulateLatency = true)
         {
-            base.Initialize(PEER_NAME, PEER_PORT);
+            base.Initialize(PEER_NAME, PEER_PORT, IS_SERVER, simulateLatency);
             messageHandler = new MessageHandler(netPeer as NetServer);
         }
         public override void ReceiveMessages()
@@ -50,6 +50,7 @@ namespace MMOGameServer
                         ///GameLogic
                         ///
                         case MessageType.CharacterMovement:
+                            Debug.Log((MessageType)msgType);
                             messageHandler.CharacterMovementData(msgIn);
                             break;
                         case MessageType.ClientReady:
@@ -59,18 +60,18 @@ namespace MMOGameServer
                         case MessageType.HideNames:
                             break;
                         case MessageType.PublicChatMessage:
-                            
+
                             messageHandler.SendPublicChatMessage(msgIn);
                             break;
                         case MessageType.PrivateChatMessage:
-                            
+
                             messageHandler.SendPrivateChatMessage(msgIn);
                             break;
                         case MessageType.AdminChatMessage:
-                        
+
                             messageHandler.HandleAdminMessage(msgIn);
                             break;
-                    
+
                     }
                 }
                 netPeer.Recycle(msgIn);
@@ -79,7 +80,7 @@ namespace MMOGameServer
         public override void Update()
         {
             messageHandler.SendMovementMessages();
-            if (tickCount > 500)
+            if (tickCount > 50000)
             {
                 messageHandler.ClearConnections();
                 tickCount = 0;
