@@ -2,12 +2,7 @@
 using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TMPro;
-using UnityEditor.VersionControl;
 using UnityEngine;
 
 namespace Assets.Scripts.WorldServerNetworkScripts
@@ -35,17 +30,30 @@ namespace Assets.Scripts.WorldServerNetworkScripts
             instance = this;
         }
 
-        internal void HandleNewLoginToken(NetIncomingMessage msgIn)
+        internal void AreaServerConnectionData(NetIncomingMessage msgIn)
         {
-            throw new NotImplementedException();
+            dataHandler.selectedWorldServer.areaServerAuthToken = PacketHandler.ReadEncryptedByteArray(msgIn);
+            dataHandler.selectedWorldServer.areaServerPort = PacketHandler.ReadEncryptedInt(msgIn);
+            dataHandler.selectionController.loginDataController.authToken = dataHandler.selectedWorldServer.areaServerAuthToken;
+            dataHandler.selectionController.loginDataController.publicKey = dataHandler.selectedWorldServer.publicKey;
+            dataHandler.selectionController.loginDataController.serverIP = dataHandler.selectedWorldServer.ip;
+            dataHandler.selectionController.loginDataController.serverPort = dataHandler.selectedWorldServer.areaServerPort;
+
         }
 
         internal void HandleNotification(NetIncomingMessage msgIn)
         {
             Notification.text += "\n" + msgIn.ReadString();
         }
-
-
+        internal void SendAlive()
+        {
+            if (netClient.ConnectionStatus == NetConnectionStatus.Connected)
+            {
+                NetOutgoingMessage msgOut = netClient.CreateMessage();
+                msgOut.Write((byte)MessageType.Alive);
+                netClient.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered);
+            }
+        }
         public void HandleCharacterData(NetIncomingMessage msgIn)
         {
             dataHandler.LoadCharacterData(msgIn);

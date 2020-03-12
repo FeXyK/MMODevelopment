@@ -3,6 +3,8 @@ namespace Lidgren.Network.ServerFiles
 {
     public enum MessageType
     {
+        Alive,
+
         ServerLoginRequest,
         ServerLoginSuccess,
         AuthenticationSuccess,
@@ -32,7 +34,7 @@ namespace Lidgren.Network.ServerFiles
         ClientReady,
         NewCharacter,
         OtherCharacterRemove,
-        CharacterMovement ,
+        CharacterMovement,
         Notification,
 
         HideNames,
@@ -41,7 +43,7 @@ namespace Lidgren.Network.ServerFiles
         AdminChatMessage,
         PublicChatMessage,
         PrivateChatMessage,
-        
+
         Client,
         WorldServer
     }

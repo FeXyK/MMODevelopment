@@ -13,9 +13,8 @@ namespace MMOGameServer
         public string serverName = "Europe";
         public Dictionary<int, CharacterData> characters = new Dictionary<int, CharacterData>();
         public List<NetConnection> netConnections = new List<NetConnection>();
-        public List<ConnectionData> connections = new List<ConnectionData>();
+        public List<CharacterData> connections = new List<CharacterData>();
 
-        public List<AuthenticationTokenData> loginTokens = new List<AuthenticationTokenData>();
         public AreaDataHandler()
         {
 
@@ -32,28 +31,23 @@ namespace MMOGameServer
             return null;
         }
 
-        public AuthenticationTokenData CheckLoginToken(byte[] clientLoginToken, string username)
+        public bool CheckLoginToken(byte[] clientLoginToken, int characterId)
         {
-            foreach (var token in loginTokens)
+            foreach (var character in connections)
             {
                 Console.WriteLine("AUTH TOKENS: ");
-                Console.WriteLine(BitConverter.ToString(token.token));
+                Console.WriteLine(BitConverter.ToString(character.authToken));
                 Console.WriteLine(BitConverter.ToString(clientLoginToken));
-                Console.WriteLine(username + " END");
-                //Console.WriteLine(token.characterData.name + " END");
+                Console.WriteLine(character.name+ " END");
                 Console.WriteLine("---------------------");
 
-
-                if (ByteArrayCompare(token.token, clientLoginToken)//token.expireDate > DateTime.Now &&
-                                                                   //token.token == clientLoginToken
-                    //&& token.characterData.name == username
-                    )
+                if (ByteArrayCompare(character.authToken, clientLoginToken) && characterId == character.id)
                 {
                     Console.WriteLine("ClientAuthenticated");
-                    return token;
+                    return true;
                 }
             }
-            return null;
+            return false;
         }
         public ConnectionData FindConnection(NetConnection senderConnection)
         {
@@ -66,20 +60,20 @@ namespace MMOGameServer
             }
             return null;
         }
-        public void RemoveExpiredLoginTokens()
-        {
-            AuthenticationTokenData remove = null;
-            foreach (var token in loginTokens)
-            {
-                if (DateTime.Parse(token.expireDate) < DateTime.Now)
-                {
-                    remove = token;
-                    break;
-                }
-            }
-            if (remove != null)
-                loginTokens.Remove(remove);
-        }
+        //public void RemoveExpiredLoginTokens()
+        //{
+        //    AuthenticationTokenData remove = null;
+        //    foreach (var token in loginTokens)
+        //    {
+        //        if (DateTime.Parse(token.expireDate) < DateTime.Now)
+        //        {
+        //            remove = token;
+        //            break;
+        //        }
+        //    }
+        //    if (remove != null)
+        //        loginTokens.Remove(remove);
+        //}
 
         [System.Runtime.InteropServices.DllImport("msvcrt.dll", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         static extern int memcmp(byte[] b1, byte[] b2, long count);

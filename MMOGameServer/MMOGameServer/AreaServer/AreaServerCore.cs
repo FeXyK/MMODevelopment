@@ -16,7 +16,8 @@ namespace MMOGameServer
         public override void Initialize(string source)
         {
             base.Initialize(source);
-            messageHandler = new AreaMessageHandler(netPeer as NetServer);
+            messageHandler = new AreaMessageHandler(netPeer as NetServer, newConnections);
+            Console.WriteLine("Area Server Initialized");
         }
         public override void ReceiveMessages()
         {
@@ -43,10 +44,6 @@ namespace MMOGameServer
                     MessageType msgType = (MessageType)msgIn.ReadByte();
                     switch (msgType)
                     {
-                        case MessageType.NewAuthenticationToken:
-                            Console.WriteLine((MessageType)msgType);
-                            messageHandler.NewLoginToken(msgIn);
-                            break;
                         case MessageType.LoginServerAuthentication:
                             Console.WriteLine((MessageType)msgType);
                             //messageHandler.LoginServerAuthentication(msgIn);
@@ -54,26 +51,12 @@ namespace MMOGameServer
                         ///GameLogic
                         ///
                         case MessageType.CharacterMovement:
-                            Debug.Log((MessageType)msgType);
                             messageHandler.CharacterMovementData(msgIn);
                             break;
                         case MessageType.ClientReady:
                             Console.WriteLine((MessageType)msgType);
                             messageHandler.ClientReady(msgIn);
                             break;
-                        //case MessageType.PublicChatMessage:
-
-                        //    messageHandler.SendPublicChatMessage(msgIn);
-                        //    break;
-                        //case MessageType.PrivateChatMessage:
-
-                        //    messageHandler.SendPrivateChatMessage(msgIn);
-                        //    break;
-                        //case MessageType.AdminChatMessage:
-
-                        //    messageHandler.HandleAdminMessage(msgIn);
-                        //    break;
-
                     }
                 }
                 netPeer.Recycle(msgIn);
@@ -81,12 +64,15 @@ namespace MMOGameServer
         }
         public override void Update()
         {
+            messageHandler.GetNewConnections();
             messageHandler.SendMovementMessages();
-            if (tickCount > 50000)
+            if (tickCount > 1000)
             {
+                Console.WriteLine("Remove connections");
+                Console.WriteLine("Count: "+netPeer.Connections.Count);
                 messageHandler.ClearConnections();
+                
                 tickCount = 0;
-                //RemoveExpiredLoginTokens(); //TODO
             }
             tickCount++;
         }

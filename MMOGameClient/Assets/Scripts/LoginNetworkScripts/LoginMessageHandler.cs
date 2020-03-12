@@ -1,15 +1,8 @@
 ﻿using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
-using MMOLoginServer.ServerData;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using TMPro;
-using UnityEditor.VersionControl;
 using UnityEngine;
 
 namespace Assets.Scripts.Handlers
@@ -61,6 +54,16 @@ namespace Assets.Scripts.Handlers
             }
         }
 
+        internal void SendAlive()
+        {
+            if (netClient.ConnectionStatus == NetConnectionStatus.Connected)
+            {
+                NetOutgoingMessage msgOut = netClient.CreateMessage();
+                msgOut.Write((byte)MessageType.Alive);
+                netClient.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered);
+            }
+        }
+
         internal void WorldServerAuthenticationTokenRequest()
         {
             dataHandler.selectedWorldServer = dataHandler.worldServers[dataHandler.selectionController.SelectedServerID];
@@ -79,10 +82,6 @@ namespace Assets.Scripts.Handlers
 
             dataHandler.selectionController.loginDataController = loginData;
             Debug.Log(BitConverter.ToString(dataHandler.authenticationToken));
-
-
-
-            netClient.Disconnect("connectingtogameserver");
         }
         public void Login()
         {
@@ -110,7 +109,7 @@ namespace Assets.Scripts.Handlers
         }
         public void SetupConnection(string SERVER_IP = "123123123", int SERVER_PORT = 2)
         {
-            string[] lines = File.ReadAllLines(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.txt");
+            string[] lines = File.ReadAllLines(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.cfg");
             string[] data;
             foreach (var line in lines)
             {

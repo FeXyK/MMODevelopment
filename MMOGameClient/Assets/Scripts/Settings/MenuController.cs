@@ -46,6 +46,7 @@ public class MenuController : MonoBehaviour
             if (movement != null)
                 movement.movementEnabled = false;
             Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
         }
         else
         {
@@ -53,7 +54,9 @@ public class MenuController : MonoBehaviour
                 movement = FindObjectOfType<Movement>();
             else
             {
-                movement.movementEnabled = true;
+                movement.movementEnabled = true;              
+                Cursor.lockState = CursorLockMode.Locked;
+
                 Cursor.visible = false;
             }
         }

@@ -3,6 +3,7 @@ using Lidgren.Network.ServerFiles;
 using Lidgren.Network.ServerFiles.Data;
 using MMOLoginServer.ServerData;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,10 +17,13 @@ namespace MMOGameServer
 
         AreaMessageReader messageReader;
         AreaMessageCreater messageCreate;
+        ConcurrentQueue<CharacterData> newConnectionsQue;
+
         public bool hideNames = false;
-        public AreaMessageHandler(NetServer server)
+        public AreaMessageHandler(NetServer server, ConcurrentQueue<CharacterData> newConnections)
         {
             netServer = server;
+            newConnectionsQue = newConnections;
             dataHandler = new AreaDataHandler();
             messageCreate = new AreaMessageCreater(netServer);
             messageReader = new AreaMessageReader();
@@ -44,26 +48,6 @@ namespace MMOGameServer
             msgOut = CreateHideNamesMessage();
             msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
         }
-        public void NewLoginToken(NetIncomingMessage msgIn)
-        {
-            AuthenticationTokenData newLoginToken = messageReader.ReadLoginToken(msgIn);
-            dataHandler.loginTokens.Add(newLoginToken);
-        }
-        //public void LoginServerAuthentication(NetIncomingMessage msgIn)
-        //{
-        //    byte[] encoded = PacketHandler.ReadEncryptedByteArray(msgIn);
-        //    if (Encoding.UTF8.GetString(encoded) == "HARDCODEDKEY")
-        //    {
-        //        //loginServer = dataHandler.FindConnection(msgIn.SenderConnection) as LoginServerData;
-        //        //Console.WriteLine(loginServer.connection.ToString());
-        //        Console.WriteLine("LoginServerConnectionApproved");
-        //    }
-        //    else
-        //    {
-        //        loginServer = null;
-        //        msgIn.SenderConnection.Disconnect("Bad AuthenticationKey");
-        //    }
-        //}
         public NetOutgoingMessage CreateHideNamesMessage()
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
@@ -73,16 +57,6 @@ namespace MMOGameServer
                 msgOut.Write((byte)MessageType.ShowNames);
             return msgOut;
         }
-        //public void KeyExchange(NetIncomingMessage msgIn)
-        //{
-        //    ConnectionData connection = messageReader.ReadKeyExchangeMessage(msgIn);
-        //    dataHandler.connections.Add(connection);
-        //    loginServer = connection;
-
-        //    NetOutgoingMessage msgOut = messageCreate.CreateRSAKeyMessage(netServer, ConnectionType.GameServer, dataHandler.serverName);
-        //    msgIn.SenderConnection.Approve(msgOut);
-        //}
-
         internal void SendPrivateChatMessage(NetIncomingMessage msgIn)
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
@@ -98,6 +72,20 @@ namespace MMOGameServer
                 if (character.name.ToLower() == to.ToLower())
                 {
                     character.connection.SendMessage(msgOut, NetDeliveryMethod.ReliableUnordered, 0);
+                }
+            }
+        }
+
+        internal void GetNewConnections()
+        {
+            if (newConnectionsQue.Count > 0)
+            {
+                CharacterData character = new CharacterData();
+                newConnectionsQue.TryDequeue(out character);
+                if (character != null)
+                {
+                    dataHandler.connections.Add(character);
+                    Debug.Log(character.name + " added to characters");
                 }
             }
         }
@@ -142,16 +130,16 @@ namespace MMOGameServer
         public void ClientAuthentication(NetIncomingMessage msgIn)
         {
             byte[] clientLoginToken = PacketHandler.ReadEncryptedByteArray(msgIn);
-            string username = Encoding.UTF8.GetString(PacketHandler.ReadEncryptedByteArray(msgIn));
+            int characterId = msgIn.ReadInt16();
+            CharacterData characterData = dataHandler.connections.Find(x => x.id == characterId);
+
             Console.WriteLine("Token length: " + clientLoginToken.Length);
             Console.WriteLine(BitConverter.ToString(clientLoginToken));
-            Console.WriteLine(username);
-            AuthenticationTokenData validToken = null;
-            if ((validToken = dataHandler.CheckLoginToken(clientLoginToken, username)) != null)
+            Console.WriteLine(BitConverter.ToString(characterData.authToken));
+            if (dataHandler.CheckLoginToken(clientLoginToken, characterId))
             {
                 msgIn.SenderConnection.Approve();
 
-                CharacterData characterData = new CharacterData();
                 characterData.connection = msgIn.SenderConnection;
                 //characterData.id = validToken.characterData.id;
                 //characterData.name = validToken.characterData.name;
@@ -162,6 +150,10 @@ namespace MMOGameServer
                     dataHandler.characters.Remove(characterData.id);
                 dataHandler.characters.Add(characterData.id, characterData);
                 dataHandler.netConnections.Add(msgIn.SenderConnection);
+                foreach (var item in dataHandler.characters.Values)
+                {
+                    Console.WriteLine("CHARACTER: " + item.ToString());
+                }
                 Console.WriteLine("Authenticated!");
             }
             else
@@ -198,7 +190,7 @@ namespace MMOGameServer
         }
         public void ClearConnections()
         {
-            List<int> removeKeys = new List<int>(); 
+            List<int> removeKeys = new List<int>();
             Console.WriteLine("Online: " + dataHandler.characters.Count);
             foreach (var character in dataHandler.characters)
             {
@@ -227,13 +219,6 @@ namespace MMOGameServer
                 SendLogoutMessages(key);
                 dataHandler.characters.Remove(key);
             }
-            //for (int i = dataHandler.loginTokens.Count; i >= 0; i++)
-            //{
-            //    if (dataHandler.loginTokens[i].expireDate < DateTime.Now)//== NetConnectionStatus.Disconnected)
-            //    {
-            //        dataHandler.loginTokens.RemoveAt(i);
-            //    }
-            //}
         }
     }
 }

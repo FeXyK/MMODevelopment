@@ -89,7 +89,7 @@ namespace Lidgren.Network.Wrapper
 
             if (peerSimulateLatency)
             {
-                netPeerConfiguration.SimulatedMinimumLatency = 0.250f;
+                netPeerConfiguration.SimulatedMinimumLatency = 0.040f;
                 netPeerConfiguration.SimulatedRandomLatency = 0.010f;
                 netPeerConfiguration.SimulatedDuplicatesChance = 0.01f;
                 netPeerConfiguration.SimulatedLoss = 0.01f;

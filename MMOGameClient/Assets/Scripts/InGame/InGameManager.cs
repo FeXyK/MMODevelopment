@@ -15,14 +15,14 @@ public class InGameManager : MonoBehaviour
 
     void Start()
     {
-        string[] lines = File.ReadAllLines(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.txt");
+        string[] lines = File.ReadAllLines(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.cfg");
         string[] data;
         foreach (var line in lines)
         {
             data = line.Split('=');
             switch (data[0].Trim().ToLower())
             {
-                case "simulatelag":
+                case "peersimulatelatency":
                     SIMULATE_LATENCY = bool.Parse(data[1]);
                     break;
             }

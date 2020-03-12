@@ -62,7 +62,5 @@ namespace Lidgren.Network.ServerFiles
             byte[] data = System.Text.Encoding.UTF8.GetBytes(dataString);
             return new SHA256Managed().ComputeHash(data);
         }
-
-
     }
 }

@@ -23,7 +23,9 @@ namespace Assets.Scripts.GameNetworkScripts
 
             messageHandler = new GameMessageHandler(netPeer as NetClient);
             menu = GameObject.FindObjectOfType<MenuController>();
+            Debug.Log("INITIALIZING");
             ConnectToGameServer();
+            Debug.Log("CONNECTED TO AREA SERVER");
         }
         public override void ReceiveMessages()
         {
@@ -52,6 +54,7 @@ namespace Assets.Scripts.GameNetworkScripts
                         case MessageType.OtherCharacterRemove:
                             messageHandler.HandleCharacterRemove(msgIn);
                             break;
+
                         case MessageType.AdminChatMessage:
                             messageHandler.HandleAdminCommand(msgIn);
                             break;
@@ -90,9 +93,11 @@ namespace Assets.Scripts.GameNetworkScripts
             Debug.Log(selection.loginDataController.publicKey);
             Debug.Log(selection.loginDataController.serverIP);
             Debug.Log(selection.loginDataController.serverPort);
+            Debug.Log(selection.loginDataController.characterName);
             PacketHandler.WriteEncryptedByteArray(msgOut, selection.loginDataController.authToken, selection.loginDataController.publicKey);
-            PacketHandler.WriteEncryptedByteArray(msgOut, selection.loginDataController.characterName, selection.loginDataController.publicKey);
+            msgOut.Write(LoginDataHandler.GetInstance().selectedCharacter.id,16);
             netPeer.Connect(selection.loginDataController.serverIP, selection.loginDataController.serverPort, msgOut);
+            Debug.Log("CONNECTING TO AREA SERVER");
         }
         public override void Update()
         {

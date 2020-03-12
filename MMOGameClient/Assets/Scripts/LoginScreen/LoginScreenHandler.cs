@@ -21,9 +21,10 @@ public class LoginScreenHandler : MonoBehaviour
     WorldServerNetwork worldServerClient;
     bool flag = false;
 
-    static string configFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.txt";
+    static string configFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.cfg";
     string SERVER_IP = "127.0.0.1";
     int SERVER_PORT = 52221;
+    float tickTime;
     private void Start()
     {
         worldServerClient = new WorldServerNetwork();
@@ -47,6 +48,14 @@ public class LoginScreenHandler : MonoBehaviour
             Debug.Log("RUNNING: " + worldServerClient.dataHandler.authenticationToken);
             worldServerClient.SetupConnection(worldServerClient.dataHandler.selectedWorldServer.ip, worldServerClient.dataHandler.selectedWorldServer.port);
             flag = true;
+        }
+
+        tickTime += Time.deltaTime;
+        if(tickTime > 10f)
+        {
+            loginMessageHandler.SendAlive();
+            worldMessageHandler.SendAlive();
+            tickTime = 0;
         }
     }
     public void LoginWorldServer()

@@ -93,20 +93,29 @@ namespace MMOGameServer.WorldServer
             {
                 account.authToken = Util.GenerateRandomSequence(40);
                 CharacterData character = selection.GetCharacterData(account.id, characterId, characterName);
-                character.name = account.name;
                 character.authToken = account.authToken;
                 character.admin = account.admin;
                 character.authenticated = false;
                 character.accountID = account.id;
                 character.publicKey = account.publicKey;
+                Console.WriteLine("AIUODEHUSADASJKNADSJNDSA:::::::    " + character.id);
+
                 areaServer.newConnections.Enqueue(character);
 
                 NetOutgoingMessage msgOut = netServer.CreateMessage();
                 msgOut.Write((byte)MessageType.NewAuthenticationToken);
                 PacketHandler.WriteEncryptedByteArray(msgOut, account.authToken, account.publicKey);
+                PacketHandler.WriteEncryptedByteArray(msgOut, BitConverter.GetBytes(areaServer.netPeer.Port), account.publicKey);
                 msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
             }
         }
+        internal void Alive(NetIncomingMessage msgIn)
+        {
+            ConnectionData connection = dataHandler.GetAuthenticatedUser(msgIn.SenderConnection);
+            if (connection != null)
+                Debug.Log(connection.name + ": Alive");
+        }
+
         private void SendNotificationMessage(string msg, NetConnection senderConnection)
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
@@ -135,7 +144,7 @@ namespace MMOGameServer.WorldServer
             authToken.token = PacketHandler.ReadEncryptedByteArray(msgIn);
             authToken.accountName = Encoding.UTF8.GetString(PacketHandler.ReadEncryptedByteArray(msgIn));
             authToken.validIP = Encoding.UTF8.GetString(PacketHandler.ReadEncryptedByteArray(msgIn));
-
+            authToken.id = PacketHandler.ReadEncryptedInt(msgIn);
             //authToken.expireDate = PacketHandler.ReadEncryptedByteArray(msgIn);
 
             dataHandler.authTokens.Add(authToken);
@@ -168,6 +177,7 @@ namespace MMOGameServer.WorldServer
                     if (authToken.validIP == ip && authToken.accountName == username)
                     {
                         connection.authenticated = true;
+                        connection.id = authToken.id;
                         NetOutgoingMessage msgOut = netServer.CreateMessage();
                         msgOut.Write((byte)MessageType.ClientAuthenticated);
 
@@ -181,6 +191,8 @@ namespace MMOGameServer.WorldServer
                         dataHandler.authTokens.Remove(authToken);
                         Debug.Log("Unsuccessfull authentication");
                     }
+                    dataHandler.authTokens.Remove(authToken);
+                    break;
                 }
             }
             dataHandler.newConnections.Remove(connection);
@@ -215,6 +227,9 @@ namespace MMOGameServer.WorldServer
         }
         internal void UpdateAccountCharacterList(ClientData account)
         {
+            Console.WriteLine("UPDATE CH LIST");
+            Console.WriteLine(account.id);
+            Console.WriteLine(account.name);
             account.characters = Selection.instance.GetCharactersData(account.id);
         }
         internal void SuccessfullAuthentication(NetIncomingMessage msgIn)

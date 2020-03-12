@@ -3,13 +3,6 @@ using Assets.Scripts.WorldServerNetworkScripts;
 using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using Lidgren.Network.Wrapper;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEditor.VersionControl;
 using UnityEngine;
 
 namespace Assets.Scripts.LoginNetworkScripts
@@ -46,7 +39,7 @@ namespace Assets.Scripts.LoginNetworkScripts
                             messageHandler.HandleNotification(msgIn);
                             break;
                         case MessageType.NewAuthenticationToken:
-                            messageHandler.HandleNewLoginToken(msgIn);
+                            messageHandler.AreaServerConnectionData(msgIn);
                             sceneLoader.LoadGameScene(1);
                             break;
                         case MessageType.ClientAuthenticated:

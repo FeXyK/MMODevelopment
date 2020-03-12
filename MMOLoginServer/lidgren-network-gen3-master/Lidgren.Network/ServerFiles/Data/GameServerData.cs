@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Lidgren.Network.ServerFiles
 {
-    public class GameServerData: ConnectionData
+    public class GameServerData : ConnectionData
     {
+        public int areaServerPort;
+        public byte[] areaServerAuthToken;
         public GameServerData()
         {
             type = ConnectionType.GameServer;

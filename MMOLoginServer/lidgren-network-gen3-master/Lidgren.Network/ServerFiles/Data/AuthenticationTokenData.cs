@@ -13,5 +13,6 @@ namespace Lidgren.Network.ServerFiles.Data
         public string expireDate;
         public string accountName;
         public string validIP;
+        public int id;
     }
 }

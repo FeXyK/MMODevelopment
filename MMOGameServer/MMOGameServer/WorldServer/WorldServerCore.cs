@@ -76,11 +76,17 @@ namespace MMOGameServer
                         case MessageType.PlayCharacter:
                             messageHandler.PlayCharacter(msgIn, areaServer);
                             break;
+                        case MessageType.Alive:
+                            messageHandler.Alive(msgIn);
+                            break;
                     }
                 }
 
             }
         }
+
+     
+
         public void ConnectToLoginServer(string ip, int port)
         {
             Debug.Log("Connecting");

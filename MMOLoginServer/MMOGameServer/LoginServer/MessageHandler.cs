@@ -5,6 +5,7 @@ using MMOLoginServer.ServerData;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Net.Security;
 using System.Security.Claims;
 using System.Text;
 
@@ -71,6 +72,13 @@ namespace MMOLoginServer.LoginServerLogic
             }
         }
 
+        internal void Alive(NetIncomingMessage msgIn)
+        {
+            ConnectionData connection = dataHandler.GetAccount(msgIn);
+            if (connection != null)
+                Debug.Log(connection.name + ": Alive");
+        }
+
         internal void SendWorldServerAuthenticationToken(NetIncomingMessage msgIn)
         {
             ConnectionData account = dataHandler.GetAccount(msgIn);
@@ -95,6 +103,7 @@ namespace MMOLoginServer.LoginServerLogic
                 PacketHandler.WriteEncryptedByteArray(msgOut, clientAuthToken, worldServer.publicKey);
                 PacketHandler.WriteEncryptedByteArray(msgOut, account.name, worldServer.publicKey);
                 PacketHandler.WriteEncryptedByteArray(msgOut, account.ip, worldServer.publicKey);
+                PacketHandler.WriteEncryptedByteArray(msgOut, BitConverter.GetBytes(account.id), worldServer.publicKey);
                 worldServer.connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
             }
         }
@@ -105,43 +114,35 @@ namespace MMOLoginServer.LoginServerLogic
             msgOut.Write(msg);
             connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
         }
-
         public void RegisterAccount(NetIncomingMessage msgIn, ConnectionData account)
         {
-            if (account != null)
+            byte[] username = PacketHandler.ReadEncryptedByteArray(msgIn);
+            byte[] password = PacketHandler.ReadEncryptedByteArray(msgIn);
+            byte[] email = PacketHandler.ReadEncryptedByteArray(msgIn);
+
+            byte[] saltBytes = Util.GenerateRandomSequence(16);
+            byte[] passwordSalted = new byte[password.Length + saltBytes.Length];
+
+            passwordSalted = Util.ConcatByteArrays(password, saltBytes);
+
+            passwordSalted = new System.Security.Cryptography.SHA256Managed().ComputeHash(passwordSalted);
+
+            Debug.Log("Registering: " + Encoding.UTF8.GetString(username) + "\nEmail: " + Encoding.UTF8.GetString(email) + "\nPw: " + BitConverter.ToString(passwordSalted));
+
+            List<string[]> sqlData = dbSelection.GetSqlData("SELECT * FROM Account WHERE username = @0 OR email = @1", new SqlParameter("0", username), new SqlParameter("1", email));
+            if (sqlData.Count == 0)
             {
-                byte[] username = PacketHandler.ReadEncryptedByteArray(msgIn);
-                byte[] password = PacketHandler.ReadEncryptedByteArray(msgIn);
-                byte[] email = PacketHandler.ReadEncryptedByteArray(msgIn);
-
-                byte[] saltBytes = Util.GenerateRandomSequence(16);
-                byte[] passwordSalted = new byte[password.Length + saltBytes.Length];
-
-                passwordSalted = Util.ConcatByteArrays(password, saltBytes);
-
-                passwordSalted = new System.Security.Cryptography.SHA256Managed().ComputeHash(passwordSalted);
-
-                Debug.Log("Registering: " + Encoding.UTF8.GetString(username) + "\nEmail: " + Encoding.UTF8.GetString(email) + "\nPw: " + BitConverter.ToString(passwordSalted));
-
-                List<string[]> sqlData = dbSelection.GetSqlData("SELECT * FROM Account WHERE username = @0 OR email = @1", new SqlParameter("0", username), new SqlParameter("1", email));
-                if (sqlData.Count == 0)
-                {
-                    int result = dbSelection.InsertSqlData("INSERT INTO Account (Username,Password,Email,Salt) VALUES (@username,@password,@email,@salt)",
-                        new SqlParameter("username", username),
-                        new SqlParameter("password", passwordSalted),
-                        new SqlParameter("email", email),
-                        new SqlParameter("salt", saltBytes));
-                    if (result >= 0)
-                        SendNotificationMessage("Successfull registration!", msgIn.SenderConnection);
-                }
-                else
-                {
-                    SendNotificationMessage("Invalid Username or Email: Already exists", msgIn.SenderConnection);
-                }
+                int result = dbSelection.InsertSqlData("INSERT INTO Account (Username,Password,Email,Salt) VALUES (@username,@password,@email,@salt)",
+                    new SqlParameter("username", username),
+                    new SqlParameter("password", passwordSalted),
+                    new SqlParameter("email", email),
+                    new SqlParameter("salt", saltBytes));
+                if (result >= 0)
+                    SendNotificationMessage("Successfull registration!", msgIn.SenderConnection);
             }
             else
             {
-                SendNotificationMessage("Error, not existing connection", msgIn.SenderConnection);
+                SendNotificationMessage("Invalid Username or Email: Already exists", msgIn.SenderConnection);
             }
         }
         public void AuthenticateClient(NetIncomingMessage msgIn)
@@ -174,7 +175,12 @@ namespace MMOLoginServer.LoginServerLogic
                 foreach (var server in dataHandler.worldServers)
                 {
                     msgOut.Write(server.name);
-                    msgOut.Write(server.connection.RemoteEndPoint.Address.ToString());
+                    if (msgIn.SenderConnection.RemoteEndPoint.Address.ToString() == "127.0.0.1")
+                        msgOut.Write(server.connection.RemoteEndPoint.Address.ToString());
+                    else
+                    {
+                        msgOut.Write("86.101.120.217");
+                    }
                     msgOut.Write(server.connection.RemoteEndPoint.Port, 32);
                     msgOut.Write(server.publicKey);
                 }

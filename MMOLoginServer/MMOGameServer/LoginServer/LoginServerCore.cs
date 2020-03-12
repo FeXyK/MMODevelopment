@@ -56,7 +56,9 @@ namespace MMOLoginServer.LoginServerLogic
                         case MessageType.RegisterRequest:
                             messageHandler.RegisterAccount(msgIn, currentAccount);
                             break;
-
+                        case MessageType.Alive:
+                            messageHandler.Alive(msgIn);
+                            break;
                     }
                 }
                 netPeer.Recycle(msgIn);
