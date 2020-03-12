@@ -7,10 +7,10 @@ using System.Text;
 
 namespace MMOGameServer
 {
-    public class MessageCreater: Lidgren.Network.Message.MessageHandler
+    public class AreaMessageCreater: Lidgren.Network.Message.MessageHandler
     {
         NetServer netServer;
-        public MessageCreater(NetServer _netServer)
+        public AreaMessageCreater(NetServer _netServer)
         {
             netServer = _netServer;
         }

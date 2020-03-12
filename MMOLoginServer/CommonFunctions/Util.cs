@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MMOLoginServer.LoginServerLogic
+namespace CommonFunctions
 {
-    public class BasicFunctions
+    public class Util
     {
-        public byte[] GenerateRandomSequence(int length)
+        public static byte[] GenerateRandomSequence(int length)
         {
             byte[] seq = new byte[length];
             for (int i = 0; i < length; i++)
@@ -15,7 +15,7 @@ namespace MMOLoginServer.LoginServerLogic
             }
             return seq;
         }
-        public byte[] ConcatByteArrays(params byte[][] arrays)
+        public static byte[] ConcatByteArrays(params byte[][] arrays)
         {
             byte[] data;
             int length = 0;
@@ -31,6 +31,19 @@ namespace MMOLoginServer.LoginServerLogic
                 offset += array.Length;
             }
             return data;
+        }
+        public static bool CompareByteArrays(byte[] left, byte[] right)
+        {
+            for (int i = 0; i < left.Length && left.Length == right.Length; i++)
+            {
+                Console.Write(left[i] + "" + right[i] + " ");
+                if (left[i] != right[i])
+                {
+                    return false;
+                }
+            }
+            Console.WriteLine();
+            return true;
         }
     }
 }

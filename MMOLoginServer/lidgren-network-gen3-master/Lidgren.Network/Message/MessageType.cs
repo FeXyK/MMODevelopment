@@ -5,22 +5,27 @@ namespace Lidgren.Network.ServerFiles
     {
         ServerLoginRequest,
         ServerLoginSuccess,
+        AuthenticationSuccess,
 
         RegisterRequest,
 
+        CharacterListRequest,
         CharacterData,
         CreateCharacter,
         DeleteCharacter,
+        PlayCharacter,
 
         LoginToken,
         AuthToken,
         LoginServerConnect,
         LoginServerAuthentication,
-        ClientAuthentication,   
+        ClientAuthentication,
+        ClientAuthenticated,
+        WorldServerAuthentication,
+        WorldServerAuthenticated,
+        WorldServerAuthenticationTokenRequest,
 
-        CharacterLogin,
-
-        NewLoginToken,
+        NewAuthenticationToken,
         GameServersData,
         KeyExchange,
 
@@ -35,6 +40,9 @@ namespace Lidgren.Network.ServerFiles
 
         AdminChatMessage,
         PublicChatMessage,
-        PrivateChatMessage
+        PrivateChatMessage,
+        
+        Client,
+        WorldServer
     }
 }

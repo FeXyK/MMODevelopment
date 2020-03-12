@@ -88,10 +88,10 @@ namespace Assets.Scripts.GameNetworkScripts
             SelectionController selection = GameObject.FindObjectOfType<SelectionController>();
             Debug.Log(selection.loginDataController.authToken);
             Debug.Log(selection.loginDataController.publicKey);
-            PacketHandler.WriteEncryptedByteArray(msgOut, selection.loginDataController.authToken, selection.loginDataController.publicKey);
-            PacketHandler.WriteEncryptedByteArray(msgOut, selection.loginDataController.characterName, selection.loginDataController.publicKey);
             Debug.Log(selection.loginDataController.serverIP);
             Debug.Log(selection.loginDataController.serverPort);
+            PacketHandler.WriteEncryptedByteArray(msgOut, selection.loginDataController.authToken, selection.loginDataController.publicKey);
+            PacketHandler.WriteEncryptedByteArray(msgOut, selection.loginDataController.characterName, selection.loginDataController.publicKey);
             netPeer.Connect(selection.loginDataController.serverIP, selection.loginDataController.serverPort, msgOut);
         }
         public override void Update()

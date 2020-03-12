@@ -8,7 +8,7 @@ namespace MMOLoginServer.LoginServerLogic
 {
     public class LoginServerCore : NetPeerOverride
     {
-        ClientData currentAccount = null;
+        ConnectionData currentAccount = null;
         new MessageHandler messageHandler;
         int serverTick = 0;
         public override void Initialize(string SERVER_NAME, int LOGIN_SERVER_PORT, bool IS_SERVER = true, bool simulateLatency = true)
@@ -22,35 +22,41 @@ namespace MMOLoginServer.LoginServerLogic
             MessageType msgType;
             while ((msgIn = netPeer.ReadMessage()) != null)
             {
-                Console.WriteLine(msgIn);
+                Debug.Log(msgIn.ToString());
                 if (msgIn.MessageType == NetIncomingMessageType.ConnectionApproval)
                 {
-                    messageHandler.HandleConnectionApproval(msgIn);
+                    //messageHandler.HandleConnectionApproval(msgIn);
+                    msgType = (MessageType)msgIn.ReadByte();
+                    Debug.Log(((MessageType)msgType).ToString());
+                    switch (msgType)
+                    {
+                        case MessageType.KeyExchange:
+                            messageHandler.KeyExchange(msgIn);
+                            break;
+
+                    }
                 }
                 else if (msgIn.MessageType == NetIncomingMessageType.Data)
                 {
-                    Debug.Log(msgIn.ToString());
                     msgType = (MessageType)msgIn.ReadByte();
-                    Console.WriteLine((MessageType)msgType);
+                    Debug.Log(((MessageType)msgType).ToString());
 
-                    currentAccount = DataHandler.Instance.GetAccount(msgIn.SenderConnection);
+                    currentAccount = DataHandler.Instance.GetAccount(msgIn);
                     switch (msgType)
                     {
                         case MessageType.ClientAuthentication:
-                            messageHandler.HandleLoginMessage(msgIn, currentAccount);
+                            messageHandler.AuthenticateClient(msgIn);
+                            break;
+                        case MessageType.WorldServerAuthenticationTokenRequest:
+                            messageHandler.SendWorldServerAuthenticationToken(msgIn);
+                            break;
+                        case MessageType.WorldServerAuthentication:
+                            messageHandler.AuthenticateWorldServer(msgIn);
                             break;
                         case MessageType.RegisterRequest:
-                            messageHandler.HandleRegisterMessage(msgIn, currentAccount);
+                            messageHandler.RegisterAccount(msgIn, currentAccount);
                             break;
-                        case MessageType.CreateCharacter:
-                            messageHandler.HandleCreateMessage(msgIn, currentAccount);
-                            break;
-                        case MessageType.DeleteCharacter:
-                            messageHandler.HandleDeleteMessage(msgIn, currentAccount);
-                            break;
-                        case MessageType.CharacterLogin:
-                            messageHandler.CharacterLogin(msgIn, currentAccount);
-                            break;
+
                     }
                 }
                 netPeer.Recycle(msgIn);
@@ -64,13 +70,6 @@ namespace MMOLoginServer.LoginServerLogic
                 serverTick = 0;
             }
             serverTick++;
-        }
-        public void ConnectToGameServerList(List<ConnectionData> netConnections)
-        {
-            foreach (var connData in netConnections)
-            {
-                messageHandler.ConnectToGameServer(connData);
-            }
         }
     }
 }

@@ -1,18 +1,22 @@
 ﻿using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using Lidgren.Network.Wrapper;
+using MMOLoginServer.ServerData;
 using System;
+using System.Collections.Concurrent;
 
 namespace MMOGameServer
 {
-    class GameServerCore : NetPeerOverride
+    class AreaServerCore : NetPeerOverride
     {
-        new MessageHandler messageHandler = null;
+        new AreaMessageHandler messageHandler = null;
+        public ConcurrentQueue<CharacterData> newConnections = new ConcurrentQueue<CharacterData>();
         int tickCount = 0;
-        public override void Initialize(string PEER_NAME, int PEER_PORT = 0, bool IS_SERVER = true, bool simulateLatency = true)
+
+        public override void Initialize(string source)
         {
-            base.Initialize(PEER_NAME, PEER_PORT, IS_SERVER, simulateLatency);
-            messageHandler = new MessageHandler(netPeer as NetServer);
+            base.Initialize(source);
+            messageHandler = new AreaMessageHandler(netPeer as NetServer);
         }
         public override void ReceiveMessages()
         {
@@ -27,7 +31,7 @@ namespace MMOGameServer
                     switch (msgType)
                     {
                         case MessageType.KeyExchange:
-                            messageHandler.KeyExchange(msgIn);
+                            //messageHandler.KeyExchange(msgIn);
                             break;
                         case MessageType.ClientAuthentication:
                             messageHandler.ClientAuthentication(msgIn);
@@ -39,13 +43,13 @@ namespace MMOGameServer
                     MessageType msgType = (MessageType)msgIn.ReadByte();
                     switch (msgType)
                     {
-                        case MessageType.NewLoginToken:
+                        case MessageType.NewAuthenticationToken:
                             Console.WriteLine((MessageType)msgType);
                             messageHandler.NewLoginToken(msgIn);
                             break;
                         case MessageType.LoginServerAuthentication:
                             Console.WriteLine((MessageType)msgType);
-                            messageHandler.LoginServerAuthentication(msgIn);
+                            //messageHandler.LoginServerAuthentication(msgIn);
                             break;
                         ///GameLogic
                         ///
@@ -57,20 +61,18 @@ namespace MMOGameServer
                             Console.WriteLine((MessageType)msgType);
                             messageHandler.ClientReady(msgIn);
                             break;
-                        case MessageType.HideNames:
-                            break;
-                        case MessageType.PublicChatMessage:
+                        //case MessageType.PublicChatMessage:
 
-                            messageHandler.SendPublicChatMessage(msgIn);
-                            break;
-                        case MessageType.PrivateChatMessage:
+                        //    messageHandler.SendPublicChatMessage(msgIn);
+                        //    break;
+                        //case MessageType.PrivateChatMessage:
 
-                            messageHandler.SendPrivateChatMessage(msgIn);
-                            break;
-                        case MessageType.AdminChatMessage:
+                        //    messageHandler.SendPrivateChatMessage(msgIn);
+                        //    break;
+                        //case MessageType.AdminChatMessage:
 
-                            messageHandler.HandleAdminMessage(msgIn);
-                            break;
+                        //    messageHandler.HandleAdminMessage(msgIn);
+                        //    break;
 
                     }
                 }

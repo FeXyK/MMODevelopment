@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Scripts.Handlers
+namespace Assets.Scripts.WorldServerNetworkScripts
 {
-    class MessageReader
+    class WorldServerMessageCreater
     {
     }
 }

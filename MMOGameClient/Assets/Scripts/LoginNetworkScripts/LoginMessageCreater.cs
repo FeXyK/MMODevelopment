@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.Handlers
 {
-    class MessageCreater
+    class LoginMessageCreater
     {
         private NetClient netClient;
 
-        public MessageCreater(NetClient netClient)
+        public LoginMessageCreater(NetClient netClient)
         {
             this.netClient = netClient;
         }

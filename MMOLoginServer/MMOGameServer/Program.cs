@@ -52,7 +52,6 @@ namespace MMOLoginServer
             loginMaster = new LoginServerCore();
 
             loginMaster.Initialize(LOGIN_SERVER_NAME, LOGIN_SERVER_PORT);
-            loginMaster.ConnectToGameServerList(gameServers);
             loginMaster.StartServer(LOGIN_SERVER_FRAMERATE);
         }
     }

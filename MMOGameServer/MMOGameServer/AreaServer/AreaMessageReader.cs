@@ -5,7 +5,7 @@ using MMOLoginServer.ServerData;
 
 namespace MMOGameServer
 {
-    public class MessageReader
+    public class AreaMessageReader
     {
         public  ConnectionData ReadKeyExchangeMessage(NetIncomingMessage msgIn)
         {
@@ -18,18 +18,18 @@ namespace MMOGameServer
             connection.publicKey = msgIn.ReadString();
             return connection;
         }
-        public LoginTokenData ReadLoginToken(NetIncomingMessage msgIn)
+        public AuthenticationTokenData ReadLoginToken(NetIncomingMessage msgIn)
         {
-            LoginTokenData newLoginToken = new LoginTokenData();
-            newLoginToken.characterData = new CharacterData();
+            AuthenticationTokenData newLoginToken = new AuthenticationTokenData();
+            //newLoginToken.characterData = new CharacterData();
 
-            newLoginToken.token = PacketHandler.ReadEncryptedByteArray(msgIn);
-            newLoginToken.expireDate = msgIn.ReadString();
-            newLoginToken.characterData.id = msgIn.ReadInt16();
-            newLoginToken.characterData.level = msgIn.ReadInt16();
-            newLoginToken.characterData.currentHealth = msgIn.ReadInt16();
-            newLoginToken.characterData.characterType = msgIn.ReadInt16();
-            newLoginToken.characterData.name = msgIn.ReadString();
+            //newLoginToken.token = PacketHandler.ReadEncryptedByteArray(msgIn);
+            //newLoginToken.expireDate = msgIn.ReadString();
+            //newLoginToken.characterData.id = msgIn.ReadInt16();
+            //newLoginToken.characterData.level = msgIn.ReadInt16();
+            //newLoginToken.characterData.currentHealth = msgIn.ReadInt16();
+            //newLoginToken.characterData.characterType = msgIn.ReadInt16();
+            //newLoginToken.characterData.name = msgIn.ReadString();
             return newLoginToken;
         }
     }

@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\MMOLoginServer\CommonFunctions\Utility.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Lidgren.Network">
       <HintPath>bin\Debug\netcoreapp3.1\Lidgren.Network.dll</HintPath>
     </Reference>

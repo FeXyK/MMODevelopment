@@ -8,22 +8,21 @@ using System.Text;
 
 namespace MMOGameServer
 {
-    public class MessageHandler
+    public class AreaMessageHandler
     {
         NetServer netServer;
 
-        DataHandler dataHandler;
+        AreaDataHandler dataHandler;
 
-        MessageReader messageReader;
-        MessageCreater messageCreate;
-        ConnectionData loginServer;
+        AreaMessageReader messageReader;
+        AreaMessageCreater messageCreate;
         public bool hideNames = false;
-        public MessageHandler(NetServer server)
+        public AreaMessageHandler(NetServer server)
         {
             netServer = server;
-            dataHandler = new DataHandler();
-            messageCreate = new MessageCreater(netServer);
-            messageReader = new MessageReader();
+            dataHandler = new AreaDataHandler();
+            messageCreate = new AreaMessageCreater(netServer);
+            messageReader = new AreaMessageReader();
         }
         public void ClientReady(NetIncomingMessage msgIn)
         {
@@ -47,24 +46,24 @@ namespace MMOGameServer
         }
         public void NewLoginToken(NetIncomingMessage msgIn)
         {
-            LoginTokenData newLoginToken = messageReader.ReadLoginToken(msgIn);
+            AuthenticationTokenData newLoginToken = messageReader.ReadLoginToken(msgIn);
             dataHandler.loginTokens.Add(newLoginToken);
         }
-        public void LoginServerAuthentication(NetIncomingMessage msgIn)
-        {
-            byte[] encoded = PacketHandler.ReadEncryptedByteArray(msgIn);
-            if (Encoding.UTF8.GetString(encoded) == "HARDCODEDKEY")
-            {
-                //loginServer = dataHandler.FindConnection(msgIn.SenderConnection) as LoginServerData;
-                //Console.WriteLine(loginServer.connection.ToString());
-                Console.WriteLine("LoginServerConnectionApproved");
-            }
-            else
-            {
-                loginServer = null;
-                msgIn.SenderConnection.Disconnect("Bad AuthenticationKey");
-            }
-        }
+        //public void LoginServerAuthentication(NetIncomingMessage msgIn)
+        //{
+        //    byte[] encoded = PacketHandler.ReadEncryptedByteArray(msgIn);
+        //    if (Encoding.UTF8.GetString(encoded) == "HARDCODEDKEY")
+        //    {
+        //        //loginServer = dataHandler.FindConnection(msgIn.SenderConnection) as LoginServerData;
+        //        //Console.WriteLine(loginServer.connection.ToString());
+        //        Console.WriteLine("LoginServerConnectionApproved");
+        //    }
+        //    else
+        //    {
+        //        loginServer = null;
+        //        msgIn.SenderConnection.Disconnect("Bad AuthenticationKey");
+        //    }
+        //}
         public NetOutgoingMessage CreateHideNamesMessage()
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
@@ -74,15 +73,15 @@ namespace MMOGameServer
                 msgOut.Write((byte)MessageType.ShowNames);
             return msgOut;
         }
-        public void KeyExchange(NetIncomingMessage msgIn)
-        {
-            ConnectionData connection = messageReader.ReadKeyExchangeMessage(msgIn);
-            dataHandler.connections.Add(connection);
-            loginServer = connection;
+        //public void KeyExchange(NetIncomingMessage msgIn)
+        //{
+        //    ConnectionData connection = messageReader.ReadKeyExchangeMessage(msgIn);
+        //    dataHandler.connections.Add(connection);
+        //    loginServer = connection;
 
-            NetOutgoingMessage msgOut = messageCreate.CreateRSAKeyMessage(netServer, ConnectionType.GameServer, dataHandler.serverName);
-            msgIn.SenderConnection.Approve(msgOut);
-        }
+        //    NetOutgoingMessage msgOut = messageCreate.CreateRSAKeyMessage(netServer, ConnectionType.GameServer, dataHandler.serverName);
+        //    msgIn.SenderConnection.Approve(msgOut);
+        //}
 
         internal void SendPrivateChatMessage(NetIncomingMessage msgIn)
         {
@@ -147,15 +146,15 @@ namespace MMOGameServer
             Console.WriteLine("Token length: " + clientLoginToken.Length);
             Console.WriteLine(BitConverter.ToString(clientLoginToken));
             Console.WriteLine(username);
-            LoginTokenData validToken = null;
+            AuthenticationTokenData validToken = null;
             if ((validToken = dataHandler.CheckLoginToken(clientLoginToken, username)) != null)
             {
                 msgIn.SenderConnection.Approve();
 
                 CharacterData characterData = new CharacterData();
                 characterData.connection = msgIn.SenderConnection;
-                characterData.id = validToken.characterData.id;
-                characterData.name = validToken.characterData.name;
+                //characterData.id = validToken.characterData.id;
+                //characterData.name = validToken.characterData.name;
                 characterData.currentHealth = 100;
                 characterData.position = new System.Numerics.Vector3(0, 0, 0);
                 characterData.rotation = 0;

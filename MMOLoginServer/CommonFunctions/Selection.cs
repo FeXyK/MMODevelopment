@@ -1,18 +1,17 @@
-﻿using Lidgren.Network;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Data.SqlClient;
 using Lidgren.Network.ServerFiles;
 using MMOLoginServer.ServerData;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Text;
 
-namespace MMOLoginServer.LoginServerLogic
+namespace CommonFunctions
 {
-    public class DatabaseSelection
+    public class Selection
     {
         private string connectionString;
-        public static DatabaseSelection instance;
-        public DatabaseSelection(string connString)
+        public static Selection instance;
+        public Selection(string connString)
         {
             connectionString = connString;
             instance = this;
@@ -22,14 +21,14 @@ namespace MMOLoginServer.LoginServerLogic
             int result = DeleteSqlData("DELETE FROM Character WHERE Name = @characterName AND accountID = @accountId", new SqlParameter("characterName", characterName), new SqlParameter("accountId", accountId));
             return result;
         }
-        public int CreateCharacter(string characterName, ClientData account)
+        public int CreateCharacter(int accountID, string characterName, int characterType = 0)
         {
-            int result = InsertSqlData("INSERT INTO Character(AccountID,Name) VALUES(@accountId,@name)", new SqlParameter("accountId", account.id), new SqlParameter("name", characterName));
+            int result = InsertSqlData("INSERT INTO Character(AccountID,Type,Name) VALUES(@accountId,@type,@name)", new SqlParameter("accountId", accountID), new SqlParameter("type", characterType), new SqlParameter("name", characterName));
             return result;
         }
         public int UserAuthentication(string username, byte[] password)
         {
-            List<ClientData> accounts = GetSqlClientData("SELECT Username, Password, Salt, Id FROM Account WHERE Username = @0", new SqlParameter("0", username));
+            List<ConnectionData> accounts = GetSqlClientData("SELECT Username, Password, Salt, Id FROM Account WHERE Username = @0", new SqlParameter("0", username));
 
             if (accounts.Count == 0)
                 return -1;
@@ -42,12 +41,10 @@ namespace MMOLoginServer.LoginServerLogic
 
             passwordSalted = new System.Security.Cryptography.SHA256Managed().ComputeHash(passwordSalted);
 
-            Console.WriteLine("Got: {0}\nStoredPassword: {1}\nMessagedPassword: {2}", username, BitConverter.ToString(passwordSalted), BitConverter.ToString(accounts[0].password));
+            Console.WriteLine("Got: {0}\nStoredPassword:    {1}\nMessagedPassword: {2}", username, BitConverter.ToString(passwordSalted), BitConverter.ToString(accounts[0].password));
 
-            Console.WriteLine(BitConverter.ToString(passwordSalted));
-            Console.WriteLine(BitConverter.ToString(accounts[0].password));
 
-            if (username.ToLower() == accounts[0].name.ToLower() && BitConverter.ToString(passwordSalted) == BitConverter.ToString(accounts[0].password))
+            if (username.ToLower() == accounts[0].name.ToLower() && Util.CompareByteArrays(passwordSalted, accounts[0].password))
             {
                 return accounts[0].id;
             }
@@ -62,6 +59,25 @@ namespace MMOLoginServer.LoginServerLogic
                 characters.Add(new CharacterData(row));
             }
             return characters;
+        }
+        public CharacterData GetCharacterData(int accountId, int characterId, string characterName)
+        {
+            CharacterData character = null;
+            List<string[]> rows = GetSqlData("SELECT * FROM Character WHERE AccountID = @0 AND Name = @characterName AND Id = @characterId", new SqlParameter("0", accountId), new SqlParameter("characterId", characterId), new SqlParameter("characterName", characterName));
+            if (rows.Count == 1)
+                foreach (var row in rows)
+                {
+                    character = new CharacterData(row);
+                }
+            if (rows.Count == 0)
+            {
+                throw new Exception("No such character");
+            }
+            if (rows.Count > 1)
+            {
+                throw new Exception("More then 1 character in the list! IMPOSSIBLE");
+            }
+            return character;
         }
         public int DeleteSqlData(string selection, params SqlParameter[] sqlParam)
         {
@@ -79,7 +95,7 @@ namespace MMOLoginServer.LoginServerLogic
 
             }
             if (result < 0)
-                Debug.Log("Error deleting from database");
+                Console.WriteLine("Error deleting from database");
             return result;
         }
         public int InsertSqlData(string selection, params SqlParameter[] sqlParam)
@@ -99,7 +115,7 @@ namespace MMOLoginServer.LoginServerLogic
 
             }
             if (result < 0)
-                Debug.Log("Error inserting into database");
+                Console.WriteLine("Error inserting into database");
             return result;
         }
         public List<string[]> GetSqlData(string selection, params SqlParameter[] sqlParam)
@@ -131,9 +147,9 @@ namespace MMOLoginServer.LoginServerLogic
             }
             return data;
         }
-        public List<ClientData> GetSqlClientData(string selection, params SqlParameter[] sqlParam)
+        public List<ConnectionData> GetSqlClientData(string selection, params SqlParameter[] sqlParam)
         {
-            List<ClientData> data = new List<ClientData>();
+            List<ConnectionData> data = new List<ConnectionData>();
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = connectionString;
@@ -148,7 +164,7 @@ namespace MMOLoginServer.LoginServerLogic
                 {
                     while (reader.Read())
                     {
-                        ClientData acc = new ClientData();
+                        ConnectionData acc = new ConnectionData();
                         acc.name = (string)reader[0];
                         acc.password = (byte[])reader[1];
                         acc.salt = (byte[])reader[2];

@@ -1,6 +1,8 @@
 ﻿using Assets.Scripts.Handlers;
 using Assets.Scripts.LoginNetworkScripts;
-using Assets.Scripts.LoginScreen;
+using Assets.Scripts.WorldServerNetworkScripts;
+using System;
+using System.Data;
 using TMPro;
 using UnityEngine;
 
@@ -13,32 +15,54 @@ public class LoginScreenHandler : MonoBehaviour
     public GameObject CharacterSelectForm;
     public GameObject CharacterCreateForm;
 
-    LoginMessageHandler messageHandler;
+    LoginMessageHandler loginMessageHandler;
+    WorldServerMessageHandler worldMessageHandler;
     LoginClientManager loginClient;
+    WorldServerNetwork worldServerClient;
+    bool flag = false;
 
-    string PEER_NAME = "NetLidgrenLogin";
-    string SERVER_IP = "86.101.120.217";
+    static string configFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.txt";
+    string SERVER_IP = "127.0.0.1";
     int SERVER_PORT = 52221;
     private void Start()
     {
+        worldServerClient = new WorldServerNetwork();
         loginClient = new LoginClientManager();
-        loginClient.Initialize(PEER_NAME);
-        messageHandler = LoginMessageHandler.GetInstance();
+
+        loginClient.Initialize(configFile);
+        worldServerClient.Initialize(configFile);
+
+        loginMessageHandler = LoginMessageHandler.GetInstance();
+        worldMessageHandler = WorldServerMessageHandler.GetInstance();
     }
     private void Update()
     {
         if (loginClient != null)
             loginClient.ReceiveMessages();
+        if(worldServerClient != null)
+            worldServerClient.ReceiveMessages();
+
+        if (worldServerClient.dataHandler.authenticationToken != null && flag == false)
+        {
+            Debug.Log("RUNNING: " + worldServerClient.dataHandler.authenticationToken);
+            worldServerClient.SetupConnection(worldServerClient.dataHandler.selectedWorldServer.ip, worldServerClient.dataHandler.selectedWorldServer.port);
+            flag = true;
+        }
+    }
+    public void LoginWorldServer()
+    {
+        loginMessageHandler.WorldServerAuthenticationTokenRequest();
+
     }
     public void Login()
     {
-        messageHandler.SetupConnection(SERVER_IP, SERVER_PORT);
-        messageHandler.Login();
+        loginMessageHandler.SetupConnection(SERVER_IP, SERVER_PORT);
+        loginMessageHandler.Login();
     }
     public void Register()
     {
-        messageHandler.SetupConnection(SERVER_IP, SERVER_PORT);
-        messageHandler.Register();
+        loginMessageHandler.SetupConnection(SERVER_IP, SERVER_PORT);
+        loginMessageHandler.Register();
     }
     public void ClearCharacterSelection()
     {
@@ -53,9 +77,10 @@ public class LoginScreenHandler : MonoBehaviour
         else
             SwitchForm.GetComponentInChildren<TMP_Text>().text = "Registration";
     }
+
     public void PlayCharacter()
     {
-        messageHandler.PlayCharacter();
+        worldMessageHandler.PlayCharacter();
     }
     public void ShowCharacterCreation()
     {
@@ -64,10 +89,10 @@ public class LoginScreenHandler : MonoBehaviour
     }
     public void CreateCharacter()
     {
-        messageHandler.CreateCharacter();
+        worldMessageHandler.CreateCharacter();
     }
     public void DeleteCharacter()
     {
-        messageHandler.DeleteCharacter();
+        worldMessageHandler.DeleteCharacter();
     }
 }

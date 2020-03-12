@@ -5,9 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using TMPro;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 namespace Assets.Scripts.Handlers
@@ -17,12 +19,14 @@ namespace Assets.Scripts.Handlers
         NetClient netClient;
         LoginDataHandler dataHandler;
         LoginScreenHandler loginScreenHandler;
-
+        string publicKey;
         TMP_Text Notification;
 
         private static LoginMessageHandler instance;
         public static LoginMessageHandler GetInstance()
         {
+            if (instance == null)
+                Debug.Log("Message Handler is NULL");
             return instance;
 
         }
@@ -48,70 +52,38 @@ namespace Assets.Scripts.Handlers
 
                 msgRegister.Write((byte)MessageType.RegisterRequest);
 
-                PacketHandler.WriteEncryptedByteArray(msgRegister, dataHandler.inputData.UsernameReg);
-                PacketHandler.WriteEncryptedByteArray(msgRegister, hashPassword);
-                PacketHandler.WriteEncryptedByteArray(msgRegister, dataHandler.inputData.EmailReg);
+                PacketHandler.WriteEncryptedByteArray(msgRegister, dataHandler.inputData.UsernameReg, publicKey);
+                PacketHandler.WriteEncryptedByteArray(msgRegister, hashPassword, publicKey);
+                PacketHandler.WriteEncryptedByteArray(msgRegister, dataHandler.inputData.EmailReg, publicKey);
 
                 netClient.SendMessage(msgRegister, NetDeliveryMethod.ReliableOrdered);
                 Debug.Log("Registration sent");
             }
         }
 
-        public void CreateCharacter()
+        internal void WorldServerAuthenticationTokenRequest()
         {
-            NetOutgoingMessage msgCreate = netClient.CreateMessage();
+            dataHandler.selectedWorldServer = dataHandler.worldServers[dataHandler.selectionController.SelectedServerID];
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
 
-            msgCreate.Write((byte)MessageType.CreateCharacter);
+            msgOut.Write((byte)MessageType.WorldServerAuthenticationTokenRequest);
+            PacketHandler.WriteEncryptedByteArray(msgOut, dataHandler.selectedWorldServer.name, publicKey);
 
-            PacketHandler.WriteEncryptedByteArray(msgCreate, dataHandler.inputData.CharacterName);
-            PacketHandler.WriteEncryptedByteArray(msgCreate, "male");
-            Debug.Log(dataHandler.inputData.CharacterName);
-            Debug.Log(dataHandler.inputData.CharacterType);
-            netClient.SendMessage(msgCreate, NetDeliveryMethod.ReliableOrdered);
-            loginScreenHandler.CharacterCreateForm.SetActive(false);
+            netClient.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered);
         }
-
         public void HandleNewLoginToken(NetIncomingMessage msgIn)
         {
             dataHandler.authenticationToken = PacketHandler.ReadEncryptedByteArray(msgIn);
             LoginDataController loginData = new LoginDataController();
             loginData.authToken = dataHandler.authenticationToken;
-            loginData.characterName = dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter].name;
-            loginData.characterID = dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter].id;
-            loginData.serverIP = dataHandler.gameServers[dataHandler.selectionController.SelectedServerID].ip;
-            loginData.serverPort = dataHandler.gameServers[dataHandler.selectionController.SelectedServerID].port;
-            loginData.publicKey = dataHandler.gameServers[dataHandler.selectionController.SelectedServerID].publicKey;
-            loginData.characterData = dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter];
 
             dataHandler.selectionController.loginDataController = loginData;
-            //input.DText.text += "\n" + Encoding.UTF8.GetString(PacketHandler.ReadEncryptedByteArray(msgIn));
-            //input.DText.text += "\n" + Encoding.UTF8.GetString(PacketHandler.ReadEncryptedByteArray(msgIn));
             Debug.Log(BitConverter.ToString(dataHandler.authenticationToken));
+
+
 
             netClient.Disconnect("connectingtogameserver");
         }
-
-        public void DeleteCharacter()
-        {
-            NetOutgoingMessage msgDelete = netClient.CreateMessage();
-
-            msgDelete.Write((byte)MessageType.DeleteCharacter);
-
-            PacketHandler.WriteEncryptedByteArray(msgDelete, dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter].name);
-            netClient.SendMessage(msgDelete, NetDeliveryMethod.ReliableOrdered);
-            loginScreenHandler.ClearCharacterSelection();
-        }
-
-        public void PlayCharacter()
-        {
-            NetOutgoingMessage msgOut = netClient.CreateMessage();
-            msgOut.Write((byte)MessageType.CharacterLogin);
-
-            msgOut.Write(dataHandler.gameServers[dataHandler.selectionController.SelectedServerID].name);
-            msgOut.Write(dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter].name);
-            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
-        }
-
         public void Login()
         {
             NetOutgoingMessage msgLogin = netClient.CreateMessage();
@@ -119,33 +91,21 @@ namespace Assets.Scripts.Handlers
             byte[] hashPassword = DataEncryption.HashString(dataHandler.inputData.Password);
 
             msgLogin.Write((byte)MessageType.ClientAuthentication);
-            PacketHandler.WriteEncryptedByteArray(msgLogin, dataHandler.inputData.Username);
-            PacketHandler.WriteEncryptedByteArray(msgLogin, hashPassword);
+            PacketHandler.WriteEncryptedByteArray(msgLogin, dataHandler.inputData.Username, publicKey);
+            PacketHandler.WriteEncryptedByteArray(msgLogin, hashPassword, publicKey);
 
             netClient.SendMessage(msgLogin, NetDeliveryMethod.ReliableOrdered);
         }
-
         public void HandleGameServerData(NetIncomingMessage msgIn)
         {
             dataHandler.LoadGameServerData(msgIn);
         }
-
-        public void HandleAuthenticationToken(NetIncomingMessage msgIn)
-        {
-            dataHandler.authenticationToken = PacketHandler.ReadEncryptedByteArray(msgIn);
-        }
-
-        public void HandleCharacterData(NetIncomingMessage msgIn)
-        {
-            dataHandler.LoadCharacterData(msgIn);
-        }
-
         public void HandleSuccessfullLogin()
         {
             loginScreenHandler.LoginForm.SetActive(false);
             loginScreenHandler.RegisterForm.SetActive(false);
             loginScreenHandler.SwitchForm.SetActive(false);
-            loginScreenHandler.CharacterSelectForm.SetActive(true);
+            loginScreenHandler.CharacterSelectForm.SetActive(false);
             loginScreenHandler.ServerSelectForm.SetActive(true);
         }
         public void SetupConnection(string SERVER_IP = "123123123", int SERVER_PORT = 2)
@@ -168,7 +128,7 @@ namespace Assets.Scripts.Handlers
                 return;
             NetOutgoingMessage msgLogin = netClient.CreateMessage();
 
-            msgLogin.Write((byte)ConnectionType.Client);
+            msgLogin.Write((byte)MessageType.KeyExchange);
             msgLogin.Write(DataEncryption.publicKey);
             netClient.Connect(SERVER_IP, SERVER_PORT, msgLogin);
             NetIncomingMessage msgIn = null;
@@ -181,8 +141,9 @@ namespace Assets.Scripts.Handlers
                         switch ((NetConnectionStatus)msgIn.ReadByte())
                         {
                             case NetConnectionStatus.Connected:
-                                DataEncryption.publicKey = (netClient as NetClient).ServerConnection.RemoteHailMessage.ReadString();
-                                Debug.Log(DataEncryption.publicKey);
+                                (netClient as NetClient).ServerConnection.RemoteHailMessage.ReadByte();
+                                publicKey = (netClient as NetClient).ServerConnection.RemoteHailMessage.ReadString();
+                                Debug.Log(publicKey);
                                 break;
                             case NetConnectionStatus.Disconnected:
                                 {

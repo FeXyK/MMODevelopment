@@ -8,15 +8,15 @@ using System.Text;
 
 namespace MMOGameServer
 {
-    public class DataHandler
+    public class AreaDataHandler
     {
         public string serverName = "Europe";
         public Dictionary<int, CharacterData> characters = new Dictionary<int, CharacterData>();
         public List<NetConnection> netConnections = new List<NetConnection>();
         public List<ConnectionData> connections = new List<ConnectionData>();
 
-        public List<LoginTokenData> loginTokens = new List<LoginTokenData>();
-        public DataHandler()
+        public List<AuthenticationTokenData> loginTokens = new List<AuthenticationTokenData>();
+        public AreaDataHandler()
         {
 
         }
@@ -32,7 +32,7 @@ namespace MMOGameServer
             return null;
         }
 
-        public LoginTokenData CheckLoginToken(byte[] clientLoginToken, string username)
+        public AuthenticationTokenData CheckLoginToken(byte[] clientLoginToken, string username)
         {
             foreach (var token in loginTokens)
             {
@@ -40,13 +40,14 @@ namespace MMOGameServer
                 Console.WriteLine(BitConverter.ToString(token.token));
                 Console.WriteLine(BitConverter.ToString(clientLoginToken));
                 Console.WriteLine(username + " END");
-                Console.WriteLine(token.characterData.name + " END");
+                //Console.WriteLine(token.characterData.name + " END");
                 Console.WriteLine("---------------------");
 
 
                 if (ByteArrayCompare(token.token, clientLoginToken)//token.expireDate > DateTime.Now &&
                                                                    //token.token == clientLoginToken
-                    && token.characterData.name == username)
+                    //&& token.characterData.name == username
+                    )
                 {
                     Console.WriteLine("ClientAuthenticated");
                     return token;
@@ -67,7 +68,7 @@ namespace MMOGameServer
         }
         public void RemoveExpiredLoginTokens()
         {
-            LoginTokenData remove = null;
+            AuthenticationTokenData remove = null;
             foreach (var token in loginTokens)
             {
                 if (DateTime.Parse(token.expireDate) < DateTime.Now)
