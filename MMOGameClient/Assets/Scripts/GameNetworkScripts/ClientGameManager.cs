@@ -16,16 +16,22 @@ namespace Assets.Scripts.GameNetworkScripts
     {
         GameObject[] gameObjects;
         public new GameMessageHandler messageHandler;
-        public override void Initialize(string PEER_NAME, int PEER_PORT = 0, bool IS_SERVER = false)
+        private MenuController menu;
+        public override void Initialize(string PEER_NAME, int PEER_PORT = 0, bool IS_SERVER = false, bool simulateLatency = true)
         {
-            base.Initialize(PEER_NAME, PEER_PORT, IS_SERVER);
+            base.Initialize(PEER_NAME, PEER_PORT, IS_SERVER, simulateLatency);
 
             messageHandler = new GameMessageHandler(netPeer as NetClient);
-
+            menu = GameObject.FindObjectOfType<MenuController>();
+            Debug.Log("INITIALIZING");
             ConnectToGameServer();
+            Debug.Log("CONNECTED TO AREA SERVER");
         }
         public override void ReceiveMessages()
         {
+            if ((netPeer as NetClient).ServerConnection != null)
+                menu.PingText.text = Mathf.RoundToInt((netPeer as NetClient).ServerConnection.AverageRoundtripTime * 1000) + " ms";
+            else menu.PingText.text = "Disconnected";
             NetIncomingMessage msgIn;
             MessageType msgType;
             while ((msgIn = netPeer.ReadMessage()) != null)
@@ -48,6 +54,7 @@ namespace Assets.Scripts.GameNetworkScripts
                         case MessageType.OtherCharacterRemove:
                             messageHandler.HandleCharacterRemove(msgIn);
                             break;
+
                         case MessageType.AdminChatMessage:
                             messageHandler.HandleAdminCommand(msgIn);
                             break;
@@ -70,7 +77,7 @@ namespace Assets.Scripts.GameNetworkScripts
                             Debug.Log("Connected to GameServer");
                             break;
                         case NetConnectionStatus.Disconnected:
-                            Debug.Log("Disconnecting from LoginServer");
+                            Debug.Log("Disconnected from GameServer");
                             break;
                     }
                 }
@@ -84,11 +91,13 @@ namespace Assets.Scripts.GameNetworkScripts
             SelectionController selection = GameObject.FindObjectOfType<SelectionController>();
             Debug.Log(selection.loginDataController.authToken);
             Debug.Log(selection.loginDataController.publicKey);
-            PacketHandler.WriteEncryptedByteArray(msgOut, selection.loginDataController.authToken, selection.loginDataController.publicKey);
-            PacketHandler.WriteEncryptedByteArray(msgOut, selection.loginDataController.characterName, selection.loginDataController.publicKey);
             Debug.Log(selection.loginDataController.serverIP);
             Debug.Log(selection.loginDataController.serverPort);
+            Debug.Log(selection.loginDataController.characterName);
+            PacketHandler.WriteEncryptedByteArray(msgOut, selection.loginDataController.authToken, selection.loginDataController.publicKey);
+            msgOut.Write(LoginDataHandler.GetInstance().selectedCharacter.id,16);
             netPeer.Connect(selection.loginDataController.serverIP, selection.loginDataController.serverPort, msgOut);
+            Debug.Log("CONNECTING TO AREA SERVER");
         }
         public override void Update()
         {

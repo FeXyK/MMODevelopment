@@ -13,8 +13,8 @@ namespace Assets.Scripts.Handlers
     {
         NetClient netClient;
         public GameDataHandler dataHandler;
-        MessageCreater messageCreater;
-        MessageReader messageReader;
+        LoginMessageCreater messageCreater;
+        LoginMessageReader messageReader;
         MenuController menuController;
         GameObject[] hiddenNameTags;
         bool hideNames = false;
@@ -46,8 +46,8 @@ namespace Assets.Scripts.Handlers
         {
             netClient = client;
             dataHandler = new GameDataHandler();
-            messageCreater = new MessageCreater(netClient);
-            messageReader = new MessageReader();
+            messageCreater = new LoginMessageCreater(netClient);
+            messageReader = new LoginMessageReader();
             menuController = GameObject.FindObjectOfType<MenuController>();
         }
 

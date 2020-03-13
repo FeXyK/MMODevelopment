@@ -25,6 +25,18 @@ namespace Lidgren.Network.ServerFiles
             byte[] data = msgIn.ReadBytes(length);
             return DataEncryption.RSADecrypt(data);
         }
+        public static string ReadEncryptedString(NetIncomingMessage msgIn)
+        {
+            int length = msgIn.ReadInt16();
+            byte[] data = msgIn.ReadBytes(length);
+            return Encoding.UTF8.GetString(DataEncryption.RSADecrypt(data));
+        }
+        public static int ReadEncryptedInt(NetIncomingMessage msgIn)
+        {
+            int length = msgIn.ReadInt16();
+            byte[] data = msgIn.ReadBytes(length);
+            return BitConverter.ToInt32(DataEncryption.RSADecrypt(data), 0);
+        }
         public static void WriteEncryptedByteArray(NetOutgoingMessage msgOut, byte[] msgData, string publicKey = null)
         {
             if (publicKey == null)

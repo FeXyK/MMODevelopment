@@ -3,6 +3,7 @@ using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using MMOLoginServer.ServerData;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 
 namespace Assets.Scripts.Handlers
@@ -13,10 +14,17 @@ namespace Assets.Scripts.Handlers
         public byte[] authenticationToken;
         
         public List<CharacterData> myCharacters = new List<CharacterData>();
-        public List<GameServerData> gameServers = new List<GameServerData>();
+        public List<GameServerData> worldServers = new List<GameServerData>();
+
+        public CharacterData selectedCharacter;
+        public GameServerData selectedWorldServer;
 
         public SelectionController selectionController;
         public  LoginScreenInputData inputData;
+        public byte[] GetAuthToken()
+        {
+            return authenticationToken;
+        }
         public static LoginDataHandler GetInstance()
         {
             if (Instance == null)
@@ -55,7 +63,7 @@ namespace Assets.Scripts.Handlers
         }
         public void LoadGameServerData(NetIncomingMessage msgIn)
         {
-            gameServers.Clear();
+            worldServers.Clear();
             GameServerData gameServer;
 
             int count = msgIn.ReadInt16();
@@ -67,9 +75,9 @@ namespace Assets.Scripts.Handlers
                 gameServer.port = msgIn.ReadInt32();
                 gameServer.publicKey = msgIn.ReadString();
 
-                gameServers.Add(gameServer);
+                worldServers.Add(gameServer);
             }
-            selectionController.DrawServerItems(gameServers);
+            selectionController.DrawServerItems(worldServers);
         }
     }
 }

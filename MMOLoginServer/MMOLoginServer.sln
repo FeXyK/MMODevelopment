@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MMOGameServer", "..\MMOGame
 		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8} = {49BA1C69-6104-41AC-A5D8-B54FA9F696E8}
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "CommonFunctions\Utility.csproj", "{2FAB87D7-B9DD-4ECE-B8F3-8ACB4D7929C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{D5325327-1847-4FC9-B39D-4A8DCEBE122D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5325327-1847-4FC9-B39D-4A8DCEBE122D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5325327-1847-4FC9-B39D-4A8DCEBE122D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FAB87D7-B9DD-4ECE-B8F3-8ACB4D7929C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FAB87D7-B9DD-4ECE-B8F3-8ACB4D7929C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FAB87D7-B9DD-4ECE-B8F3-8ACB4D7929C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FAB87D7-B9DD-4ECE-B8F3-8ACB4D7929C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

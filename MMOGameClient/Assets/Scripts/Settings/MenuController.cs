@@ -11,6 +11,7 @@ public class MenuController : MonoBehaviour
     public GameObject OptionsMenu;
     public TMP_InputField ChatInput;
     public TMP_InputField ChatWindow;
+    public TMP_Text PingText;
     public GameMessageHandler messageHandler;
 
     private Image chatBg;
@@ -45,6 +46,7 @@ public class MenuController : MonoBehaviour
             if (movement != null)
                 movement.movementEnabled = false;
             Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
         }
         else
         {
@@ -52,7 +54,9 @@ public class MenuController : MonoBehaviour
                 movement = FindObjectOfType<Movement>();
             else
             {
-                movement.movementEnabled = true;
+                movement.movementEnabled = true;              
+                Cursor.lockState = CursorLockMode.Locked;
+
                 Cursor.visible = false;
             }
         }

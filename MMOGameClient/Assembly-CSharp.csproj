@@ -63,21 +63,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\ResourceBarController.cs" />
     <Compile Include="Assets\Scripts\Character\CameraOrbit.cs" />
     <Compile Include="Assets\Scripts\Character\Character.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterOverHead.cs" />
     <Compile Include="Assets\Scripts\Character\Movement.cs" />
     <Compile Include="Assets\Scripts\GameNetworkScripts\ClientGameManager.cs" />
+    <Compile Include="Assets\Scripts\GameScripts\TargetSelector.cs" />
     <Compile Include="Assets\Scripts\Handlers\GameDataHandler.cs" />
     <Compile Include="Assets\Scripts\Handlers\GameMessageHandler.cs" />
     <Compile Include="Assets\Scripts\Handlers\LoginDataHandler.cs" />
-    <Compile Include="Assets\Scripts\Handlers\LoginMessageHandler.cs" />
-    <Compile Include="Assets\Scripts\Handlers\MessageCreater.cs" />
-    <Compile Include="Assets\Scripts\Handlers\MessageReader.cs" />
     <Compile Include="Assets\Scripts\InGame\InGameManager.cs" />
     <Compile Include="Assets\Scripts\LoginDataController.cs" />
-    <Compile Include="Assets\Scripts\LoginNetworkScripts\ClientLoginManager_OLD.cs" />
     <Compile Include="Assets\Scripts\LoginNetworkScripts\LoginClientManager.cs" />
+    <Compile Include="Assets\Scripts\LoginNetworkScripts\LoginMessageCreater.cs" />
+    <Compile Include="Assets\Scripts\LoginNetworkScripts\LoginMessageHandler.cs" />
+    <Compile Include="Assets\Scripts\LoginNetworkScripts\LoginMessageReader.cs" />
     <Compile Include="Assets\Scripts\LoginScreen\CharacterSelectionItem.cs" />
     <Compile Include="Assets\Scripts\LoginScreen\LoginScreenHandler.cs" />
     <Compile Include="Assets\Scripts\LoginScreen\LoginScreenInputData.cs" />
@@ -90,6 +91,12 @@
     <Compile Include="Assets\Scripts\Settings\SliderWithValue.cs" />
     <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
     <Compile Include="Assets\Scripts\SimpleLogic\DontDestroy.cs" />
+    <Compile Include="Assets\Scripts\WorldServerNetworkScripts\WorldServerMessageCreater.cs" />
+    <Compile Include="Assets\Scripts\WorldServerNetworkScripts\WorldServerMessageHandler.cs" />
+    <Compile Include="Assets\Scripts\WorldServerNetworkScripts\WorldServerMessageReader.cs" />
+    <Compile Include="Assets\Scripts\WorldServerNetworkScripts\WorldServerNetwork.cs" />
+    <Compile Include="Assets\TargetFrameController.cs" />
+    <Compile Include="Assets\UIManager.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />

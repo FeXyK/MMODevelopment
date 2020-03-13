@@ -11,7 +11,6 @@ namespace MMOLoginServer.ServerData
         public int maxHealth;
         public int maxMana;
 
-        public int id;
         public int accountID;
         public int currentHealth;
         public int currentMana;

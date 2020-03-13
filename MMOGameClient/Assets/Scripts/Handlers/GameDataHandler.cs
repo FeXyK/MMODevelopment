@@ -16,7 +16,7 @@ namespace Assets.Scripts.Handlers
         public GameDataHandler()
         {
             myCharacter = GameObject.FindObjectOfType<Character>();
-            myCharacter.Set(GameObject.FindObjectOfType<SelectionController>().loginDataController.characterData);
+            myCharacter.Set(LoginDataHandler.GetInstance().selectedCharacter);
         }
     }
 }
