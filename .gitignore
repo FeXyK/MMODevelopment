@@ -413,3 +413,7 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+MMOGameClient/Library/ArtifactDB
+*.dwlt
+MMOGameClient/Library/ShaderCache/EditorEncounteredVariants
+MMOGameClient/Library/SourceAssetDB
