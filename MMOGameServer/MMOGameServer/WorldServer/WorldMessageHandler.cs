@@ -20,7 +20,7 @@ namespace MMOGameServer.WorldServer
         WorldMessageCreater messageCreater;
         WorldDataHandler dataHandler;
         Selection selection;
-        const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMODevelopment\MMOLoginServer\MMOGameServer\MMODatabase.mdf;Integrated Security=True";
+        const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMODevelopment\MMOLoginServer\MMOGameServer\MMODB.mdf;Integrated Security=True";
 
         public WorldMessageHandler(NetServer server, WorldDataHandler handler)
         {

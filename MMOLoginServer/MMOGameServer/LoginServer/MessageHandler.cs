@@ -17,7 +17,7 @@ namespace MMOLoginServer.LoginServerLogic
         private Selection dbSelection;
         DataHandler dataHandler;
         MessageCreater messageCreate;
-        const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMODevelopment\MMOLoginServer\MMOGameServer\MMODatabase.mdf;Integrated Security=True";
+        const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMODevelopment\MMOLoginServer\MMOGameServer\MMODB.mdf;Integrated Security=True";
         public MessageHandler(NetServer server)
         {
             netServer = server;
