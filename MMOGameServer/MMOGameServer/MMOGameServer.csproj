@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MMOLoginServer\CommonFunctions\Utility.csproj" />
+    <ProjectReference Include="..\..\Utility\Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>

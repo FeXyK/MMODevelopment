@@ -1,4 +1,4 @@
-﻿using CommonFunctions;
+﻿using Utility;
 using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using MMOLoginServer.ServerData;
@@ -116,9 +116,9 @@ namespace MMOLoginServer.LoginServerLogic
         }
         public void RegisterAccount(NetIncomingMessage msgIn, ConnectionData account)
         {
-            byte[] username = PacketHandler.ReadEncryptedByteArray(msgIn);
+            string username = PacketHandler.ReadEncryptedString(msgIn);
             byte[] password = PacketHandler.ReadEncryptedByteArray(msgIn);
-            byte[] email = PacketHandler.ReadEncryptedByteArray(msgIn);
+            string email = PacketHandler.ReadEncryptedString(msgIn);
 
             byte[] saltBytes = Util.GenerateRandomSequence(16);
             byte[] passwordSalted = new byte[password.Length + saltBytes.Length];
@@ -127,23 +127,32 @@ namespace MMOLoginServer.LoginServerLogic
 
             passwordSalted = new System.Security.Cryptography.SHA256Managed().ComputeHash(passwordSalted);
 
-            Debug.Log("Registering: " + Encoding.UTF8.GetString(username) + "\nEmail: " + Encoding.UTF8.GetString(email) + "\nPw: " + BitConverter.ToString(passwordSalted));
+            Debug.Log("Registering: " + username + "\nEmail: " + email + "\nPw: " + BitConverter.ToString(passwordSalted));
+            int result = dbSelection.CreateAccount(username, email, passwordSalted, saltBytes);
 
-            List<string[]> sqlData = dbSelection.GetSqlData("SELECT * FROM Account WHERE username = @0 OR email = @1", new SqlParameter("0", username), new SqlParameter("1", email));
-            if (sqlData.Count == 0)
+            if (result >= 0)
             {
-                int result = dbSelection.InsertSqlData("INSERT INTO Account (Username,Password,Email,Salt) VALUES (@username,@password,@email,@salt)",
-                    new SqlParameter("username", username),
-                    new SqlParameter("password", passwordSalted),
-                    new SqlParameter("email", email),
-                    new SqlParameter("salt", saltBytes));
-                if (result >= 0)
-                    SendNotificationMessage("Successfull registration!", msgIn.SenderConnection);
+                SendNotificationMessage("Successfull registration!", msgIn.SenderConnection);
             }
             else
             {
                 SendNotificationMessage("Invalid Username or Email: Already exists", msgIn.SenderConnection);
             }
+            //List<string[]> sqlData = dbSelection.GetSqlData("SELECT * FROM Account WHERE username = @0 OR email = @1", new SqlParameter("0", username), new SqlParameter("1", email));
+            //if (sqlData.Count == 0)
+            //{
+            //    int result = dbSelection.InsertSqlData("INSERT INTO Account (Username,Password,Email,Salt) VALUES (@username,@password,@email,@salt)",
+            //        new SqlParameter("username", username),
+            //        new SqlParameter("password", passwordSalted),
+            //        new SqlParameter("email", email),
+            //        new SqlParameter("salt", saltBytes));
+            //    if (result >= 0)
+            //        SendNotificationMessage("Successfull registration!", msgIn.SenderConnection);
+            //}
+            //else
+            //{
+            //    SendNotificationMessage("Invalid Username or Email: Already exists", msgIn.SenderConnection);
+            //}
         }
         public void AuthenticateClient(NetIncomingMessage msgIn)
         {

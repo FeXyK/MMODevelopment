@@ -8,10 +8,12 @@
     <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
     <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonFunctions\Utility.csproj" />
+    <ProjectReference Include="..\..\Utility\Utility.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Lidgren.Network">

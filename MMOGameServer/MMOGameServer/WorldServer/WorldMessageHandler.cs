@@ -1,14 +1,12 @@
-﻿using CommonFunctions;
-using Lidgren.Network;
+﻿using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using Lidgren.Network.ServerFiles.Data;
-using Microsoft.VisualBasic.CompilerServices;
 using MMOLoginServer.ServerData;
 using System;
-using System.Buffers.Text;
-using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Text;
+using System.Collections.Generic;
+using Utility;
+using Utility.Models;
 
 namespace MMOGameServer.WorldServer
 {
@@ -64,13 +62,13 @@ namespace MMOGameServer.WorldServer
             byte[] characterNameEncrypted = PacketHandler.ReadEncryptedByteArray(msgIn);
             string characterName = Encoding.UTF8.GetString(characterNameEncrypted);
             int characterType = msgIn.ReadInt32();
+            int result;
+            //if (0 == Selection.instance.CountSqlData("SELECT COUNT(*) FROM Character WHERE LOWER(Name) = LOWER(@characterName)", new SqlParameter("characterName", characterName)))
+            account = dataHandler.GetAuthenticatedUser(msgIn.SenderConnection);
+            result = Selection.instance.CreateCharacter(account.id, characterName, characterType);
 
-            if (0 == Selection.instance.CountSqlData("SELECT COUNT(*) FROM Character WHERE LOWER(Name) = LOWER(@characterName)", new SqlParameter("characterName", characterName)))
-            {
-                account = dataHandler.GetAuthenticatedUser(msgIn.SenderConnection);
-                Selection.instance.CreateCharacter(account.id, characterName, characterType);
+            if (result > 0)
                 SendNotificationMessage("Character created!", msgIn.SenderConnection);
-            }
             else
                 SendNotificationMessage("Invalid Name: Character already exists", msgIn.SenderConnection);
             SendCharacterList(msgIn);
@@ -92,7 +90,26 @@ namespace MMOGameServer.WorldServer
             if (username == account.name && account.authenticated)
             {
                 account.authToken = Util.GenerateRandomSequence(40);
-                CharacterData character = selection.GetCharacterData(account.id, characterId, characterName);
+                CharacterData character = new CharacterData();
+                Character temp = selection.GetCharacterData(account.id, characterId, characterName);
+
+                {
+                    character.name = temp.Name;
+                    character.id = temp.Id;
+                    character.accountID = temp.AccountId;
+                    character.positionX = (float)temp.PosX.Value;
+                    character.positionY = (float)temp.PosY.Value;
+                    character.positionZ = (float)temp.PosZ.Value;
+                    character.rotation = (float)temp.Rotation.Value;
+                    character.currentHealth = temp.Health.Value;
+                    character.currentMana = temp.Mana.Value;
+                    character.level = temp.Level.Value;
+                    character.currentExp = temp.Exp.Value;
+                    character.characterType = temp.CharType.Value;
+                    //character.= temp.CharSkills.Value;
+                    character.gold = temp.Gold.Value;
+                }
+
                 character.authToken = account.authToken;
                 character.admin = account.admin;
                 character.authenticated = false;
@@ -230,7 +247,27 @@ namespace MMOGameServer.WorldServer
             Console.WriteLine("UPDATE CH LIST");
             Console.WriteLine(account.id);
             Console.WriteLine(account.name);
-            account.characters = Selection.instance.GetCharactersData(account.id);
+            List<Character> charactersTemp = Selection.instance.GetCharactersData(account.id);
+            CharacterData character;
+            foreach (var temp in charactersTemp)
+            {
+                character = new CharacterData();
+                character.name = temp.Name;
+                character.id = temp.Id;
+                character.accountID = temp.AccountId;
+                character.positionX = (float)temp.PosX.Value;
+                character.positionY = (float)temp.PosY.Value;
+                character.positionZ = (float)temp.PosZ.Value;
+                character.rotation = (float)temp.Rotation.Value;
+                character.currentHealth = temp.Health.Value;
+                character.currentMana = temp.Mana.Value;
+                character.level = temp.Level.Value;
+                character.currentExp = temp.Exp.Value;
+                character.characterType = temp.CharType.Value;
+                //character.= temp.CharSkills.Value;
+                character.gold = temp.Gold.Value;
+                account.characters.Add(character);
+            }
         }
         internal void SuccessfullAuthentication(NetIncomingMessage msgIn)
         {

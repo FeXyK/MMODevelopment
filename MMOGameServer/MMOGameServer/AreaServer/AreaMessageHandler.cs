@@ -144,7 +144,9 @@ namespace MMOGameServer
                 //characterData.id = validToken.characterData.id;
                 //characterData.name = validToken.characterData.name;
                 characterData.currentHealth = 100;
-                characterData.position = new System.Numerics.Vector3(0, 0, 0);
+                characterData.positionX = 0;//new System.Numerics.Vector3(0, 0, 0);
+                characterData.positionY = 0;//new System.Numerics.Vector3(0, 0, 0);
+                characterData.positionZ = 0;//new System.Numerics.Vector3(0, 0, 0);
                 characterData.rotation = 0;
                 if (dataHandler.characters.ContainsKey(characterData.id))
                     dataHandler.characters.Remove(characterData.id);
@@ -168,7 +170,9 @@ namespace MMOGameServer
             float y = msgIn.ReadFloat();
             float z = msgIn.ReadFloat();
             float r = msgIn.ReadFloat();
-            dataHandler.characters[id].position = new System.Numerics.Vector3(x, y, z);
+            dataHandler.characters[id].positionX= x;
+            dataHandler.characters[id].positionY= y;
+            dataHandler.characters[id].positionZ= z;
             dataHandler.characters[id].rotation = r;
         }
         public void SendMovementMessages()
