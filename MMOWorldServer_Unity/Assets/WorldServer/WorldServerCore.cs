@@ -81,9 +81,6 @@ namespace MMOGameServer
 
             }
         }
-
-
-
         public bool ConnectToLoginServer(string ip, int port)
         {
             Debug.Log("Connecting");

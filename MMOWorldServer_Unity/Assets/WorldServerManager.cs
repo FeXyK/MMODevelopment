@@ -42,4 +42,9 @@ public class WorldServerManager : MonoBehaviour
         worldServer.ReceiveMessages();
         worldServer.Update();
     }
+    private void OnApplicationQuit()
+    {
+        worldServer.netPeer.Shutdown("bye");
+        worldServer.areaServer.netPeer.Shutdown("byte");
+    }
 }

@@ -193,35 +193,35 @@ namespace MMOGameServer
         }
         public void ClearConnections()
         {
-            List<int> removeKeys = new List<int>();
-            Console.WriteLine("Online: " + dataHandler.characters.Count);
-            foreach (var character in dataHandler.characters)
-            {
-                Console.WriteLine(character.Value.name + ": " + character.Value.connection.Status);
-                if (character.Value.connection.Status == NetConnectionStatus.Disconnected)
-                {
-                    removeKeys.Add(character.Key);
-                }
-            }
-            for (int i = dataHandler.connections.Count - 1; i >= 0; i--)
-            {
-                if (dataHandler.connections[i].connection.Status == NetConnectionStatus.Disconnected)
-                {
-                    dataHandler.connections.RemoveAt(i);
-                }
-            }
-            for (int i = dataHandler.netConnections.Count - 1; i >= 0; i--)
-            {
-                if (dataHandler.netConnections[i].Status == NetConnectionStatus.Disconnected)
-                {
-                    dataHandler.netConnections.RemoveAt(i);
-                }
-            }
-            foreach (var key in removeKeys)
-            {
-                SendLogoutMessages(key);
-                dataHandler.characters.Remove(key);
-            }
+            //List<int> removeKeys = new List<int>();
+            //Console.WriteLine("Online: " + dataHandler.characters.Count);
+            //foreach (var character in dataHandler.characters)
+            //{
+            //    Console.WriteLine(character.Value.name + ": " + character.Value.connection.Status);
+            //    if (character.Value.connection.Status == NetConnectionStatus.Disconnected)
+            //    {
+            //        removeKeys.Add(character.Key);
+            //    }
+            //}
+            //for (int i = dataHandler.connections.Count - 1; i >= 0; i--)
+            //{
+            //    if (dataHandler.connections[i].connection.Status == NetConnectionStatus.Disconnected)
+            //    {
+            //        dataHandler.connections.RemoveAt(i);
+            //    }
+            //}
+            //for (int i = dataHandler.netConnections.Count - 1; i >= 0; i--)
+            //{
+            //    if (dataHandler.netConnections[i].Status == NetConnectionStatus.Disconnected)
+            //    {
+            //        dataHandler.netConnections.RemoveAt(i);
+            //    }
+            //}
+            //foreach (var key in removeKeys)
+            //{
+            //    SendLogoutMessages(key);
+            //    dataHandler.characters.Remove(key);
+            //}
         }
     }
 }
