@@ -76,6 +76,7 @@
     <Compile Include="Assets\WorldServer\WorldMessageReader.cs" />
     <Compile Include="Assets\WorldServer\WorldServerCore.cs" />
     <Compile Include="Assets\WorldServerManager.cs" />
+    <None Include="Assets\Include\MySql.Data.xml" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/Github/MMODevelopment/MMOWorldServer_Unity/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
@@ -286,11 +287,26 @@
     <Reference Include="UnityEngine.XRModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.1f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
     </Reference>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>D:/Github/MMODevelopment/MMOWorldServer_Unity/Assets/Include/BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf">
+      <HintPath>D:/Github/MMODevelopment/MMOWorldServer_Unity/Assets/Include/Google.Protobuf.dll</HintPath>
+    </Reference>
     <Reference Include="Lidgren.Network">
       <HintPath>D:/Github/MMODevelopment/MMOWorldServer_Unity/Assets/Include/Lidgren.Network.dll</HintPath>
     </Reference>
-    <Reference Include="Utility">
-      <HintPath>D:/Github/MMODevelopment/MMOWorldServer_Unity/Assets/Include/Utility.dll</HintPath>
+    <Reference Include="MySql.Data">
+      <HintPath>D:/Github/MMODevelopment/MMOWorldServer_Unity/Assets/Include/MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Renci.SshNet">
+      <HintPath>D:/Github/MMODevelopment/MMOWorldServer_Unity/Assets/Include/Renci.SshNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Ubiety.Dns.Core">
+      <HintPath>D:/Github/MMODevelopment/MMOWorldServer_Unity/Assets/Include/Ubiety.Dns.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Utility_dotNET_Framework">
+      <HintPath>D:/Github/MMODevelopment/MMOWorldServer_Unity/Assets/Include/Utility_dotNET_Framework.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.1f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

@@ -82,9 +82,9 @@ namespace MMOGameServer
             }
         }
 
-     
 
-        public void ConnectToLoginServer(string ip, int port)
+
+        public bool ConnectToLoginServer(string ip, int port)
         {
             Debug.Log("Connecting");
             NetOutgoingMessage msgOut = netPeer.CreateMessage();
@@ -93,9 +93,11 @@ namespace MMOGameServer
             netPeer.Connect(ip, port, msgOut);
             Debug.Log("Connecting sent");
             NetIncomingMessage msgIn = netPeer.WaitMessage(30);
-            bool exitFlag = false;
-            while (exitFlag != true)
+            bool success = false;
+            int timeout = 0;
+            while (success != true)
             {
+                timeout++;
                 msgIn = netPeer.WaitMessage(500);
                 Debug.Log("Waiting");
                 if (msgIn != null)
@@ -116,11 +118,14 @@ namespace MMOGameServer
 
                             messageHandler.SendAuthenticationToken(msgIn, dataHandler.loginServerAuthToken, dataHandler.worldServerName);
 
-                            exitFlag = true;
+                            success = true;
                         }
                     }
                 }
+                if (timeout > 5)
+                    break;
             }
+            return success;
         }
         public override void Update()
         {

@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Utility\Utility.csproj" />
+    <ProjectReference Include="..\..\Utility_dotNET_Framework\Utility_dotNET_Framework.csproj" />
   </ItemGroup>
 
   <ItemGroup>

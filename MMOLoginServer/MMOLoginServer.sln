@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MMOGameServer", "..\MMOGame
 		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8} = {49BA1C69-6104-41AC-A5D8-B54FA9F696E8}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility", "..\Utility\Utility.csproj", "{AEE04DB4-40F0-486E-91F3-2F41C386C572}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "..\Utility\Utility.csproj", "{AEE04DB4-40F0-486E-91F3-2F41C386C572}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility_dotNET_Framework", "..\Utility_dotNET_Framework\Utility_dotNET_Framework.csproj", "{841BED65-C9AF-4962-B0C5-E79AA344CF89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{AEE04DB4-40F0-486E-91F3-2F41C386C572}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEE04DB4-40F0-486E-91F3-2F41C386C572}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEE04DB4-40F0-486E-91F3-2F41C386C572}.Release|Any CPU.Build.0 = Release|Any CPU
+		{841BED65-C9AF-4962-B0C5-E79AA344CF89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{841BED65-C9AF-4962-B0C5-E79AA344CF89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{841BED65-C9AF-4962-B0C5-E79AA344CF89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{841BED65-C9AF-4962-B0C5-E79AA344CF89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

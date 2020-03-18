@@ -1,7 +1,11 @@
-﻿using MMOGameServer;
+using MMOGameServer;
 using System;
 using System.Threading;
 using UnityEngine;
+using System.Data;
+using System.IO;
+using System.Diagnostics.PerformanceData;
+using System.Text;
 
 public class WorldServerManager : MonoBehaviour
 {
@@ -9,21 +13,25 @@ public class WorldServerManager : MonoBehaviour
     WorldServerCore worldServer;
     string worldServerConfigFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\WorldServerConfig.txt";
     string areaServerConfigFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\AreaServerConfig.txt";
-
     void Start()
     {
-
         worldServer = new WorldServerCore();
         worldServer.areaServer = new AreaServerCore();
 
         worldServer.Initialize(worldServerConfigFile);
-        worldServer.ConnectToLoginServer("127.0.0.1", 52221);
-        worldServer.areaServer.Initialize(areaServerConfigFile);
+        bool success = worldServer.ConnectToLoginServer("127.0.0.1", 52221);
+        if (success)
+        {
+            worldServer.areaServer.Initialize(areaServerConfigFile);
 
-
-        areaServerThread = new Thread(new ThreadStart(WorkerThread));
-        areaServerThread.IsBackground = true;
-        areaServerThread.Start();
+            areaServerThread = new Thread(new ThreadStart(WorkerThread));
+            areaServerThread.IsBackground = true;
+            areaServerThread.Start();
+        }
+        else
+        {
+            Debug.LogError("Unable to connect to login server");
+        }
     }
     private void WorkerThread()
     {

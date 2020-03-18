@@ -98,10 +98,12 @@ public class LoginScreenHandler : MonoBehaviour
     }
     public void CreateCharacter()
     {
+        ClearCharacterSelection();
         worldMessageHandler.CreateCharacter();
     }
     public void DeleteCharacter()
     {
+        ClearCharacterSelection();
         worldMessageHandler.DeleteCharacter();
     }
 }

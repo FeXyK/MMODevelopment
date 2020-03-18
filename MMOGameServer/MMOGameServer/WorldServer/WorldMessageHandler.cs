@@ -5,8 +5,8 @@ using MMOLoginServer.ServerData;
 using System;
 using System.Text;
 using System.Collections.Generic;
-using Utility;
-using Utility.Models;
+using Utility_dotNET_Framework;
+using Utility_dotNET_Framework.Models;
 
 namespace MMOGameServer.WorldServer
 {
@@ -27,7 +27,7 @@ namespace MMOGameServer.WorldServer
             messageReader = new WorldMessageReader();
             messageCreater = new WorldMessageCreater();
             messageCreater = new WorldMessageCreater();
-            selection = new Selection(connectionString);
+            selection = new Selection("192.168.0.24", "mmo",3306, "fexyk", "asdqwe123");
         }
         internal void KeyExchange(NetIncomingMessage msgIn)
         {
@@ -95,8 +95,8 @@ namespace MMOGameServer.WorldServer
 
                 {
                     character.name = temp.Name;
-                    character.id = temp.Id;
-                    character.accountID = temp.AccountId;
+                    character.id = temp.CharacterID;
+                    character.accountID = temp.AccountID;
                     character.positionX = (float)temp.PosX.Value;
                     character.positionY = (float)temp.PosY.Value;
                     character.positionZ = (float)temp.PosZ.Value;
@@ -253,8 +253,8 @@ namespace MMOGameServer.WorldServer
             {
                 character = new CharacterData();
                 character.name = temp.Name;
-                character.id = temp.Id;
-                character.accountID = temp.AccountId;
+                character.id = temp.CharacterID;
+                character.accountID = temp.AccountID;
                 character.positionX = (float)temp.PosX.Value;
                 character.positionY = (float)temp.PosY.Value;
                 character.positionZ = (float)temp.PosZ.Value;

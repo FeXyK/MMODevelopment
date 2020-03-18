@@ -1,5 +1,4 @@
-﻿using Utility;
-using Lidgren.Network;
+﻿using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using MMOLoginServer.ServerData;
 using System;
@@ -8,6 +7,7 @@ using System.Data.SqlClient;
 using System.Net.Security;
 using System.Security.Claims;
 using System.Text;
+using Utility_dotNET_Framework;
 
 namespace MMOLoginServer.LoginServerLogic
 {
@@ -17,14 +17,14 @@ namespace MMOLoginServer.LoginServerLogic
         private Selection dbSelection;
         DataHandler dataHandler;
         MessageCreater messageCreate;
-        const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMODevelopment\MMOLoginServer\MMOGameServer\MMODB.mdf;Integrated Security=True";
+        string connectionString = "Server=192.168.0.24" + ";Database=mmo" + ";Port=" + 3306 + ";User=fexyk" + ";Password=asdqwe123" + ";" + "CharSet=utf8;";
         public MessageHandler(NetServer server)
         {
             netServer = server;
             dataHandler = new DataHandler();
             messageCreate = new MessageCreater();
 
-            dbSelection = new Selection(connectionString);
+            dbSelection = new Selection("192.168.0.24", "mmo", 3306, "fexyk", "asdqwe123");
         }
 
 
@@ -129,7 +129,6 @@ namespace MMOLoginServer.LoginServerLogic
 
             Debug.Log("Registering: " + username + "\nEmail: " + email + "\nPw: " + BitConverter.ToString(passwordSalted));
             int result = dbSelection.CreateAccount(username, email, passwordSalted, saltBytes);
-
             if (result >= 0)
             {
                 SendNotificationMessage("Successfull registration!", msgIn.SenderConnection);

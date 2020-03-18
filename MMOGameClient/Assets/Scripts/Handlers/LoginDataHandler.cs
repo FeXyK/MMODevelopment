@@ -43,6 +43,7 @@ namespace Assets.Scripts.Handlers
         public void LoadCharacterData(NetIncomingMessage msgIn)
         {
             myCharacters.Clear();
+            Debug.Log("MYCHARACTERS COUNT: " + myCharacters.Count);
             CharacterData character;
 
             int count = msgIn.ReadInt16();

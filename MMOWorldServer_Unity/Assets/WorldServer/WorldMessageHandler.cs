@@ -5,9 +5,10 @@ using MMOLoginServer.ServerData;
 using System;
 using System.Text;
 using System.Collections.Generic;
-using Utility;
-using Utility.Models;
 using UnityEngine;
+using Utility_dotNET_Framework;
+using Utility_dotNET_Framework.Models;
+
 namespace MMOGameServer.WorldServer
 {
     class WorldMessageHandler : Lidgren.Network.Message.MessageHandler
@@ -27,7 +28,7 @@ namespace MMOGameServer.WorldServer
             messageReader = new WorldMessageReader();
             messageCreater = new WorldMessageCreater();
             messageCreater = new WorldMessageCreater();
-            selection = new Selection(connectionString);
+            selection = new Selection("192.168.0.24", "mmo", 3306, "fexyk", "asdqwe123");
         }
         internal void KeyExchange(NetIncomingMessage msgIn)
         {
@@ -66,8 +67,8 @@ namespace MMOGameServer.WorldServer
             //if (0 == Selection.instance.CountSqlData("SELECT COUNT(*) FROM Character WHERE LOWER(Name) = LOWER(@characterName)", new SqlParameter("characterName", characterName)))
             account = dataHandler.GetAuthenticatedUser(msgIn.SenderConnection);
             result = Selection.instance.CreateCharacter(account.id, characterName, characterType);
-
-            if (result > 0)
+            Debug.LogError(result);
+            if (result >= 0)
                 SendNotificationMessage("Character created!", msgIn.SenderConnection);
             else
                 SendNotificationMessage("Invalid Name: Character already exists", msgIn.SenderConnection);
@@ -95,12 +96,12 @@ namespace MMOGameServer.WorldServer
 
                 {
                     character.name = temp.Name;
-                    character.id = temp.Id;
-                    character.accountID = temp.AccountId;
+                    character.id = temp.CharacterID;
+                    character.accountID = temp.AccountID;
                     character.positionX = (float)temp.PosX.Value;
                     character.positionY = (float)temp.PosY.Value;
                     character.positionZ = (float)temp.PosZ.Value;
-                    character.rotation = (float)temp.Rotation.Value;
+                    //character.rotation = (float)temp.Rotation.Value;
                     character.currentHealth = temp.Health.Value;
                     character.currentMana = temp.Mana.Value;
                     character.level = temp.Level.Value;
@@ -244,21 +245,18 @@ namespace MMOGameServer.WorldServer
         }
         internal void UpdateAccountCharacterList(ClientData account)
         {
-            Console.WriteLine("UPDATE CH LIST");
-            Console.WriteLine(account.id);
-            Console.WriteLine(account.name);
+            account.characters.Clear();
             List<Character> charactersTemp = Selection.instance.GetCharactersData(account.id);
             CharacterData character;
             foreach (var temp in charactersTemp)
             {
                 character = new CharacterData();
                 character.name = temp.Name;
-                character.id = temp.Id;
-                character.accountID = temp.AccountId;
+                character.id = temp.CharacterID;
+                character.accountID = temp.AccountID;
                 character.positionX = (float)temp.PosX.Value;
                 character.positionY = (float)temp.PosY.Value;
                 character.positionZ = (float)temp.PosZ.Value;
-                character.rotation = (float)temp.Rotation.Value;
                 character.currentHealth = temp.Health.Value;
                 character.currentMana = temp.Mana.Value;
                 character.level = temp.Level.Value;
