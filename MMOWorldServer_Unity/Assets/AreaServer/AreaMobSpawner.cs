@@ -21,7 +21,7 @@ namespace MMOGameServer
             for (int i = 0; i < MaximumSpawnCount; i++)
             {
                 MobBase mob;// = new MobBase(MobID, MobID + i, MobBehaviour.Passive, this);
-                GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                GameObject gameObject = GameObject.Instantiate(Resources.Load<GameObject>("Mob"));
                 gameObject.transform.position = RandomVector(-SpawnRadius / 2, SpawnRadius / 2);
 
                 mob = gameObject.AddComponent<MobBase>();
@@ -34,7 +34,7 @@ namespace MMOGameServer
         {
             var x = Random.Range(position.x + min, position.x + max);
             var z = Random.Range(position.z + min, position.z + max);
-            return new Vector3(x, 10, z);
+            return new Vector3(x, position.y, z);
         }
         public override string ToString()
         {

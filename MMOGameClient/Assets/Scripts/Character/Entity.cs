@@ -21,6 +21,7 @@ public class Entity : MonoBehaviour
     public Transform character;
     public TMPro.TMP_Text NameText;
     public Slider HealthBar;
+    public float tickRate = (1000f / 20f) * Time.deltaTime;
     public Entity(int cId, int cLevel, int cHealth, int cType, string cName)
     {
         id = cId;
@@ -57,12 +58,7 @@ public class Entity : MonoBehaviour
         characterName = ch.name;
         NameText.text = id + ": " + characterName;
     }
-    public void SpawnCharacter()
-    {
-        character = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
 
-    }
-    float tickRate;
     float time;
     public void Update()
     {
@@ -74,7 +70,6 @@ public class Entity : MonoBehaviour
                 health = 100;
             time = 0;
         }
-        tickRate = (1000f / 20f) * Time.deltaTime;
         HealthBar.value = health;
 
         if (this.gameObject.tag != "PlayerCharacter")

@@ -140,6 +140,7 @@ MonoBehaviour:
   character: {fileID: 1303965956081498466}
   NameText: {fileID: 9132735826036749509}
   HealthBar: {fileID: 9132735827023404043}
+  tickRate: 0.1
 --- !u!1 &3090846864775281730
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,6 +334,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1303965956081498466}
     m_Modifications:
+    - target: {fileID: 2961101471372575091, guid: 53d3fdc62cc4d5f4fafa0b489fd8e9a6,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961101471372575091, guid: 53d3fdc62cc4d5f4fafa0b489fd8e9a6,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 2961101471865545402, guid: 53d3fdc62cc4d5f4fafa0b489fd8e9a6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -396,7 +407,7 @@ PrefabInstance:
     - target: {fileID: 2961101471865545402, guid: 53d3fdc62cc4d5f4fafa0b489fd8e9a6,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.6
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 2961101471865545402, guid: 53d3fdc62cc4d5f4fafa0b489fd8e9a6,
         type: 3}
@@ -462,6 +473,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_textInfo.pageCount
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961101472938158524, guid: 53d3fdc62cc4d5f4fafa0b489fd8e9a6,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961101472938158524, guid: 53d3fdc62cc4d5f4fafa0b489fd8e9a6,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961101472938158524, guid: 53d3fdc62cc4d5f4fafa0b489fd8e9a6,
+        type: 3}
+      propertyPath: m_firstOverflowCharacterIndex
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961101472938158525, guid: 53d3fdc62cc4d5f4fafa0b489fd8e9a6,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2961101473361534272, guid: 53d3fdc62cc4d5f4fafa0b489fd8e9a6,
         type: 3}

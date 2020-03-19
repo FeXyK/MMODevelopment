@@ -18,6 +18,9 @@ namespace Assets.AreaServer.Entity
         public float RespawnTimerDefault = 5;
         public bool Alive = true;
         MobAreaSpawner spawner;
+        Vector3 Target;
+        public float MoveForce = 500;
+        Rigidbody rigi;
         //public MobBase(int mobID, int entityID, MobBehaviour mobBehaviour, MobAreaSpawner mobAreaSpawner)
         //{
         //    this.EntityID = entityID;
@@ -25,7 +28,11 @@ namespace Assets.AreaServer.Entity
         //    Behaviour = mobBehaviour;
         //    spawner = mobAreaSpawner;
         //}
-
+        private void Start()
+        {
+            rigi = this.gameObject.GetComponent<Rigidbody>();
+            MoveTimerDefault = UnityEngine.Random.Range(2, 10);
+        }
         public override void Update()
         {
             if (Alive)
@@ -35,12 +42,14 @@ namespace Assets.AreaServer.Entity
                 if (MoveTimer < 0)
                 {
                     MoveTimer = MoveTimerDefault;
-                    MoveHere(RandomVector(-3, 3));
+                    Target = MoveHere(RandomVector(-3, 3));
+                rigi.AddForce(RandomVector(-MoveForce, MoveForce));
                 }
                 if (EntityHealth <= 0)
                 {
                     Alive = false;
                 }
+                //this.transform.position = Vector3.Lerp(this.transform.position, Target,  Time.deltaTime);
             }
             else
             {
@@ -64,15 +73,15 @@ namespace Assets.AreaServer.Entity
             EntityHealth = 100;
         }
 
-        public void MoveHere(Vector3 target)
+        public Vector3 MoveHere(Vector3 target)
         {
-            this.transform.position = target;
+            return target;
         }
         private Vector3 RandomVector(float min, float max)
         {
-            var x = UnityEngine.Random.Range(this.transform.position.x + min, this.transform.position.x + max);
-            var z = UnityEngine.Random.Range(this.transform.position.z + min, this.transform.position.z + max);
-            return new Vector3(x, 1, z);
+            var x = UnityEngine.Random.Range( min, max);
+            var z = UnityEngine.Random.Range( min,  max);
+            return new Vector3(x, 0 , z);
         }
         public override string ToString()
         {

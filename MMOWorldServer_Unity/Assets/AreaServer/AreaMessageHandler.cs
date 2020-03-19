@@ -29,7 +29,7 @@ namespace MMOGameServer
             messageCreate = new AreaMessageCreater(netServer);
             messageReader = new AreaMessageReader();
             {
-                MobAreaSpawner mobArea = new MobAreaSpawner(new Vector3(0, 0, 0));
+                MobAreaSpawner mobArea = new MobAreaSpawner(new Vector3(7, 80, 178));
                 mobAreas.Add(mobArea);
                 Debug.Log("MobSpawner COUNT: " + mobAreas.Count);
             }

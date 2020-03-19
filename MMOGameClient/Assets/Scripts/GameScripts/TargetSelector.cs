@@ -13,7 +13,7 @@ public class TargetSelector : MonoBehaviour
     UIManager uiManager;
     void Start()
     {
-        targetCircle = Instantiate(Resources.Load<GameObject>("TargetingMark"));
+        targetCircle = Instantiate(Resources.Load<GameObject>("SelectionIndicator"));
         targetCircle.SetActive(false);
         uiManager = GameObject.FindObjectOfType<UIManager>();
         targetFrameController = uiManager.TargetFrame.GetComponent<TargetFrameController>();
