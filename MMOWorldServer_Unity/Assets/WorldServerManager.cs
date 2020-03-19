@@ -9,6 +9,7 @@ using System.Text;
 
 public class WorldServerManager : MonoBehaviour
 {
+    public bool TestingNonNetworkCode = false;
     static Thread worldServerThread;
     WorldServerCore worldServer;
     string worldServerConfigFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\WorldServerConfig.txt";
@@ -16,19 +17,25 @@ public class WorldServerManager : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 60;
-        worldServer = new WorldServerCore();
-        worldServer.areaServer = new AreaServerCore();
-        worldServer.areaServer.Initialize(areaServerConfigFile);
-
-        worldServer.Initialize(worldServerConfigFile);
-
-        worldServerThread = new Thread(new ThreadStart(WorkerThread));
-        worldServerThread.IsBackground = true;
-        worldServerThread.Start();
-        bool success = worldServer.ConnectToLoginServer("127.0.0.1", 52221);
-        if (!success)
         {
-            Debug.LogError("Unable to connect to login server");
+            worldServer = new WorldServerCore();
+            worldServer.areaServer = new AreaServerCore();
+            worldServer.areaServer.Initialize(areaServerConfigFile);
+
+
+            if (!TestingNonNetworkCode)
+            {
+                worldServer.Initialize(worldServerConfigFile);
+
+                worldServerThread = new Thread(new ThreadStart(WorkerThread));
+                worldServerThread.IsBackground = true;
+                worldServerThread.Start();
+                bool success = worldServer.ConnectToLoginServer("127.0.0.1", 52221);
+                if (!success)
+                {
+                    Debug.LogError("Unable to connect to login server");
+                }
+            }
         }
     }
     private void WorkerThread()

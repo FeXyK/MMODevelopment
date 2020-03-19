@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: New Material
+  m_Name: low_poly_terrain_final
   m_Shader: {fileID: -6465566751694194690, guid: 2c7ce6439a71ef649a6e659d26f4538d,
     type: 3}
   m_ShaderKeywords: 
