@@ -93,6 +93,8 @@ namespace Assets.Scripts.Handlers
                     break;
             }
         }
+
+
         public void ShowNameTags()
         {
             hideNames = false;
@@ -126,7 +128,46 @@ namespace Assets.Scripts.Handlers
         {
             throw new NotImplementedException();
         }
+        internal void HandleMobAreaData(NetIncomingMessage msgIn)
+        {
+            int count = msgIn.ReadInt16();
+            Debug.Log("MOBCOUNT: " + count);
+            for (int i = 0; i < count; i++)
+            {
+                GameObject newMobObj = GameObject.Instantiate(Resources.Load<GameObject>("Mob"));
 
+                string entityName = msgIn.ReadString();
+                int entityID = msgIn.ReadInt16();
+                int entityLevel = msgIn.ReadInt16();
+                float x = msgIn.ReadFloat();
+                float y = msgIn.ReadFloat();
+                float z = msgIn.ReadFloat();
+                Debug.Log("Adding MOB: " + entityName);
+
+                newMobObj.transform.position = new Vector3(x, y, z);
+                Entity newMob = newMobObj.GetComponent<Entity>();
+                newMob.Set(entityID, entityLevel, 100, 0, entityName);
+                dataHandler.otherCharacters.Add(entityID, newMob);
+            }
+        }
+        internal void MobInformationUpdate(NetIncomingMessage msgIn)
+        {
+
+            int count = msgIn.ReadInt16();
+            for (int i = 0; i < count; i++)
+            {
+                int entityID = msgIn.ReadInt16();
+                if (dataHandler.otherCharacters.ContainsKey(entityID))
+                {
+                    float posX = msgIn.ReadFloat();
+                    float posY = msgIn.ReadFloat();
+                    float posZ = msgIn.ReadFloat();
+                    dataHandler.otherCharacters[entityID].posX = posX;
+                    dataHandler.otherCharacters[entityID].posY = posY;
+                    dataHandler.otherCharacters[entityID].posZ = posZ;
+                }
+            }
+        }
         internal void HandleNewCharacter(NetIncomingMessage msgIn)
         {
             int characterID = msgIn.ReadInt16();
@@ -152,7 +193,7 @@ namespace Assets.Scripts.Handlers
                     newCharacterObj = GameObject.Instantiate(Resources.Load<GameObject>("Type1Character"));
                     break;
             }
-            Character newCharacter = newCharacterObj.GetComponent<Character>();
+            Entity newCharacter = newCharacterObj.GetComponent<Entity>();
 
             newCharacter.Set(characterID, characterLevel, characterHealth, characterType, characterName);
             if (dataHandler.otherCharacters.ContainsKey(newCharacter.id))
@@ -177,11 +218,9 @@ namespace Assets.Scripts.Handlers
                 float posX = msgIn.ReadFloat();
                 float posY = msgIn.ReadFloat();
                 float posZ = msgIn.ReadFloat();
-                float rot = msgIn.ReadFloat();
                 dataHandler.otherCharacters[cId].posX = posX;
                 dataHandler.otherCharacters[cId].posY = posY;
                 dataHandler.otherCharacters[cId].posZ = posZ;
-                dataHandler.otherCharacters[cId].rot = rot;
 
             }
         }

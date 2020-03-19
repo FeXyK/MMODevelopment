@@ -18,7 +18,9 @@ namespace Assets.AreaServer.Entity
         public int EntityLevel;
         public int EntityGold;
 
+        public float EntityMaxHealth;
         public float EntityHealth;
+        public float EntityMaxMana;
         public float EntityMana;
 
         public float EntityAttackRange;

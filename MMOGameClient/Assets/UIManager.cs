@@ -14,13 +14,13 @@ public class UIManager : MonoBehaviour
     ResourceBarController healthBarController;
     ResourceBarController manaBarController;
 
-    Character player;
+    Entity player;
 
     private void Start()
     {
         healthBarController = HealthBar.GetComponent<ResourceBarController>();
         manaBarController = ManaBar.GetComponent<ResourceBarController>();
-        player = FindObjectOfType<Character>();
+        player = FindObjectOfType<Entity>();
     }
     private void Update()
     {

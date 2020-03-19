@@ -54,7 +54,7 @@ public class TargetSelector : MonoBehaviour
                 targetCircle.transform.localPosition = Vector3.zero;
 
                 uiManager.TargetFrame.SetActive(true);
-                targetFrameController.Set(selectedTarget.GetComponent<Character>());
+                targetFrameController.Set(selectedTarget.GetComponent<Entity>());
             }
             Debug.Log(targets.Count);
         }

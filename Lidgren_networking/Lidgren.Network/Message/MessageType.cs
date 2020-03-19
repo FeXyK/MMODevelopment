@@ -36,6 +36,8 @@ namespace Lidgren.Network.ServerFiles
         OtherCharacterRemove,
         CharacterMovement,
         Notification,
+        MobInformation,
+        NewMobAreaData,
 
         HideNames,
         ShowNames,

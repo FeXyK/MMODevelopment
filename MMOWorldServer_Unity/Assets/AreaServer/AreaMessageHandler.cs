@@ -1,4 +1,5 @@
-﻿using Lidgren.Network;
+﻿using Assets.AreaServer.Entity;
+using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using MMOLoginServer.ServerData;
 using System;
@@ -13,11 +14,12 @@ namespace MMOGameServer
         NetServer netServer;
 
         AreaDataHandler dataHandler;
-
         AreaMessageReader messageReader;
         AreaMessageCreater messageCreate;
         ConcurrentQueue<CharacterData> newConnectionsQue;
-
+        Dictionary<NetConnection, Character> onlineCharacters = new Dictionary<NetConnection, Character>();
+        List<NetConnection> onlineConnections = new List<NetConnection>();
+        List<MobAreaSpawner> mobAreas = new List<MobAreaSpawner>();
         public bool hideNames = false;
         public AreaMessageHandler(NetServer server, ConcurrentQueue<CharacterData> newConnections)
         {
@@ -26,6 +28,47 @@ namespace MMOGameServer
             dataHandler = new AreaDataHandler();
             messageCreate = new AreaMessageCreater(netServer);
             messageReader = new AreaMessageReader();
+            {
+                MobAreaSpawner mobArea = new MobAreaSpawner(new Vector3(0, 0, 0));
+                mobAreas.Add(mobArea);
+                Debug.Log("MobSpawner COUNT: " + mobAreas.Count);
+            }
+            Debug.Log(mobAreas.ToString());
+        }
+        internal void GetNewConnections()
+        {
+            if (newConnectionsQue.Count > 0)
+            {
+                CharacterData character = new CharacterData();
+                newConnectionsQue.TryDequeue(out character);
+                if (character != null)
+                {
+                    dataHandler.connections.Add(character);
+
+                    Character newCharacter = LoadCharacterFrom(character);
+
+                    //onlineCharacters.Add(character.connection, newCharacter);
+                    //onlineConnections.Add(character.connection);
+
+                    Debug.Log(character.name + " added to characters");
+                }
+            }
+        }
+        private Character LoadCharacterFrom(CharacterData data)
+        {
+            Character character = new Character();
+            character.EntityID = data.id;
+            character.AccountID = data.accountID;
+            character.EntityName = data.name;
+            character.EntityGold = data.gold;
+            character.EntityHealth = data.currentHealth;
+            character.EntityMana = data.currentMana;
+            character.EntityLevel = data.level;
+            character.EntityBaseArmor = 60;
+            character.EntityBaseMagicResist = 60;
+            character.CharacterType = (CharacterApperance)data.characterType;
+
+            return character;
         }
         public void ClientReady(NetIncomingMessage msgIn)
         {
@@ -46,7 +89,47 @@ namespace MMOGameServer
             }
             msgOut = CreateHideNamesMessage();
             msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+            ClientMobSpawn(msgIn.SenderConnection);
         }
+
+        internal void SendMobPositions()
+        {
+            foreach (var mobArea in mobAreas)
+            {
+                NetOutgoingMessage msgOut = netServer.CreateMessage();
+                msgOut.Write((byte)MessageType.MobInformation);
+                msgOut.Write(mobArea.SpawnedMobs.Count,16);
+                foreach (var mob in mobArea.SpawnedMobs)
+                {
+                    msgOut.Write(mob.EntityID,16);
+                    msgOut.Write(mob.transform.position.x);
+                    msgOut.Write(mob.transform.position.y);
+                    msgOut.Write(mob.transform.position.z);
+                }
+                netServer.SendToAll(msgOut, NetDeliveryMethod.Unreliable);
+            }
+        }
+        public void ClientMobSpawn(NetConnection connection)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.NewMobAreaData);
+            Debug.Log(connection.ToString() + " SENDING NEW MOBINFO: " + mobAreas.Count);
+            foreach (var mobArea in mobAreas)
+            {
+                msgOut.Write(mobArea.SpawnedMobs.Count, 16);
+                foreach (var mob in mobArea.SpawnedMobs)
+                {
+                    msgOut.Write(mob.EntityName);
+                    msgOut.Write(mob.EntityID, 16);
+                    msgOut.Write(mob.EntityLevel, 16);
+                    msgOut.Write(mob.transform.position.x);
+                    msgOut.Write(mob.transform.position.y);
+                    msgOut.Write(mob.transform.position.z);
+                }
+                connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+            }
+        }
+
         public NetOutgoingMessage CreateHideNamesMessage()
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
@@ -75,19 +158,7 @@ namespace MMOGameServer
             }
         }
 
-        internal void GetNewConnections()
-        {
-            if (newConnectionsQue.Count > 0)
-            {
-                CharacterData character = new CharacterData();
-                newConnectionsQue.TryDequeue(out character);
-                if (character != null)
-                {
-                    dataHandler.connections.Add(character);
-                    Debug.Log(character.name + " added to characters");
-                }
-            }
-        }
+
 
         internal void SendPublicChatMessage(NetIncomingMessage msgIn)
         {
@@ -168,11 +239,9 @@ namespace MMOGameServer
             float x = msgIn.ReadFloat();
             float y = msgIn.ReadFloat();
             float z = msgIn.ReadFloat();
-            float r = msgIn.ReadFloat();
-            dataHandler.characters[id].positionX= x;
-            dataHandler.characters[id].positionY= y;
-            dataHandler.characters[id].positionZ= z;
-            dataHandler.characters[id].rotation = r;
+            dataHandler.characters[id].positionX = x;
+            dataHandler.characters[id].positionY = y;
+            dataHandler.characters[id].positionZ = z;
         }
         public void SendMovementMessages()
         {

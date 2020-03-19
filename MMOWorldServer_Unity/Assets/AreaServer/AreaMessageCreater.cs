@@ -24,7 +24,6 @@ namespace MMOGameServer
             msgOut.Write(character.positionX);
             msgOut.Write(character.positionY);
             msgOut.Write(character.positionZ);
-            msgOut.Write(character.rotation);
             return msgOut;
         }
         public NetOutgoingMessage CreateNewCharacterMessage(CharacterData character)

@@ -67,6 +67,7 @@
     <Compile Include="Assets\AreaServer\AreaMessageCreater.cs" />
     <Compile Include="Assets\AreaServer\AreaMessageHandler.cs" />
     <Compile Include="Assets\AreaServer\AreaMessageReader.cs" />
+    <Compile Include="Assets\AreaServer\AreaMobSpawner.cs" />
     <Compile Include="Assets\AreaServer\AreaServerCore.cs" />
     <Compile Include="Assets\AreaServer\Entity\Character.cs" />
     <Compile Include="Assets\AreaServer\Entity\CharacterApperance.cs" />

@@ -5,9 +5,9 @@ ScriptsOnlyBuild:
     - Assets.Scripts.LoginScreen.SelectionController
     - Assets.Scripts.LoginScreen.ServerSelectionItem
     - CameraOrbit
-    - Character
     - CharacterOverHead
     - DontDestroy
+    - Entity
     - GameOptions
     - InGameManager
     - LoginScreenHandler
@@ -139,8 +139,6 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 12634}
     - Class: 114
-      Script: {instanceID: 12694}
-    - Class: 114
       Script: {instanceID: 13208}
     - Class: 114
       Script: {instanceID: 13528}
@@ -160,6 +158,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 14722}
     - Class: 114
       Script: {instanceID: 14778}
+    - Class: 114
+      Script: {instanceID: 24410}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -276,8 +276,6 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 12644}
     - Class: 114
-      Script: {instanceID: 12694}
-    - Class: 114
       Script: {instanceID: 12726}
     - Class: 114
       Script: {instanceID: 12766}
@@ -347,6 +345,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 14856}
     - Class: 114
       Script: {instanceID: 14862}
+    - Class: 114
+      Script: {instanceID: 24410}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -750,12 +750,6 @@ ScriptsOnlyBuild:
     className: UniversalRenderPipelineAsset
   - hash:
       serializedVersion: 2
-      Hash: bfe8e9cfbded78e84808e40e3f0f37b6
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: Character
-  - hash:
-      serializedVersion: 2
       Hash: 5e1eefcd5106de6c2e85908a3b2d3f04
     assemblyName: Unity.RenderPipelines.Core.Runtime.dll
     namespaceName: UnityEngine.Rendering.UI
@@ -1068,7 +1062,7 @@ ScriptsOnlyBuild:
     className: CinemachineUniversalPixelPerfect
   - hash:
       serializedVersion: 2
-      Hash: bba8d4ef585df177f0efe77512a3b75a
+      Hash: 710273245a29e30f8016e9e4446cfdba
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: TargetFrameController
@@ -1294,6 +1288,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
+  - hash:
+      serializedVersion: 2
+      Hash: bfe8e9cfbded78e84808e40e3f0f37b6
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Entity
   platform: 19
   scenePathNames:
   - Assets/Scenes/LoginScreen.unity

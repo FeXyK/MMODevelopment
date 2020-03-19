@@ -11,11 +11,11 @@ namespace Assets.Scripts.Handlers
 {
   public  class GameDataHandler
     {
-        public Dictionary<int, Character> otherCharacters = new Dictionary<int, Character>();
-        public Character myCharacter;
+        public Dictionary<int, Entity> otherCharacters = new Dictionary<int, Entity>();
+        public Entity myCharacter;
         public GameDataHandler()
         {
-            myCharacter = GameObject.FindObjectOfType<Character>();
+            myCharacter = GameObject.FindObjectOfType<Entity>();
             myCharacter.Set(LoginDataHandler.GetInstance().selectedCharacter);
         }
     }

@@ -64,7 +64,14 @@ namespace Assets.Scripts.GameNetworkScripts
                         case MessageType.PublicChatMessage:
                             messageHandler.HandleChatMessage(msgIn);
                             break;
-
+                        case MessageType.NewMobAreaData:
+                            Debug.Log(msgType);
+                            messageHandler.HandleMobAreaData(msgIn);
+                            break;
+                        case MessageType.MobInformation:
+                            Debug.Log(msgType);
+                            messageHandler.MobInformationUpdate(msgIn);
+                            break;
                     }
                 }
                 if (msgIn.MessageType == NetIncomingMessageType.StatusChanged)

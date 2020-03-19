@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class TargetFrameController : MonoBehaviour
 {
-    public Character target;
+    public Entity target;
     public Slider HealthBar;
     public TMP_Text NameBar;
     private void Update()
@@ -14,7 +14,7 @@ public class TargetFrameController : MonoBehaviour
         if (target != null)
             HealthBar.value = target.health;
     }
-    public void Set(Character target)
+    public void Set(Entity target)
     {
         this.target = target;
         HealthBar.value = target.health;

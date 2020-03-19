@@ -66,6 +66,7 @@ namespace MMOGameServer
         {
             messageHandler.GetNewConnections();
             messageHandler.SendMovementMessages();
+            messageHandler.SendMobPositions();
             if (tickCount > 1000)
             {
                 Console.WriteLine("Remove connections");

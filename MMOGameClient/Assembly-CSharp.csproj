@@ -65,8 +65,8 @@
   <ItemGroup>
     <Compile Include="Assets\ResourceBarController.cs" />
     <Compile Include="Assets\Scripts\Character\CameraOrbit.cs" />
-    <Compile Include="Assets\Scripts\Character\Character.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterOverHead.cs" />
+    <Compile Include="Assets\Scripts\Character\Entity.cs" />
     <Compile Include="Assets\Scripts\Character\Movement.cs" />
     <Compile Include="Assets\Scripts\GameNetworkScripts\ClientGameManager.cs" />
     <Compile Include="Assets\Scripts\GameScripts\TargetSelector.cs" />

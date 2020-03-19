@@ -34,6 +34,7 @@ public class GameOptions : MonoBehaviour
     AudioSource aSource;
     private void Start()
     {
+        //Application.targetFrameRate = 60;
         aSource = FindObjectOfType<AudioSource>();
         AudioVolume = 0.1f;
         MouseX = 20;
