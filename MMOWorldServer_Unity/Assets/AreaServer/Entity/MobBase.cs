@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Assets.AreaServer.Entity
 {
-    class MobBase : Entity
+   public class MobBase : Entity
     {
         MobBehaviour Behaviour;
         public int MobTypeID;
@@ -66,11 +66,13 @@ namespace Assets.AreaServer.Entity
 
         internal void Set(int mobID, int entityID, MobBehaviour mobBehaviour, MobAreaSpawner mobAreaSpawner)
         {
-            this.EntityID = entityID;
+            //this.EntityID = entityID;
+            this.EntityID = mobID * 100 + entityID;
             this.MobTypeID = mobID;
             Behaviour = mobBehaviour;
             spawner = mobAreaSpawner;
-            EntityHealth = 100;
+            EntityHealth = 110;
+           EntityMaxHealth= 111;
         }
 
         public Vector3 MoveHere(Vector3 target)

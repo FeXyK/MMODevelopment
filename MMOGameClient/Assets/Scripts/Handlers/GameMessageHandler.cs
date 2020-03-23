@@ -1,4 +1,5 @@
-﻿using Lidgren.Network;
+﻿using Assets.Scripts.Character;
+using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Assets.Scripts.Handlers
         public GameDataHandler dataHandler;
         LoginMessageCreater messageCreater;
         LoginMessageReader messageReader;
+        GameMessageSender messageSender;
         MenuController menuController;
         GameObject[] hiddenNameTags;
         bool hideNames = false;
@@ -45,6 +47,7 @@ namespace Assets.Scripts.Handlers
         public GameMessageHandler(NetClient client)
         {
             netClient = client;
+            messageSender = new GameMessageSender(netClient);
             dataHandler = new GameDataHandler();
             messageCreater = new LoginMessageCreater(netClient);
             messageReader = new LoginMessageReader();
@@ -94,6 +97,33 @@ namespace Assets.Scripts.Handlers
             }
         }
 
+        internal void EntityUpdate(NetIncomingMessage msgIn)
+        {
+
+            int targetID = msgIn.ReadInt16();
+            Entity target;
+            if (targetID == dataHandler.myCharacter.id)
+                target = dataHandler.myCharacter;
+            else
+                target = dataHandler.otherCharacters[targetID];
+
+            target.Health = msgIn.ReadInt16();
+        }
+
+        internal void SkillCasted(NetIncomingMessage msgIn)
+        {
+            int sourceID = msgIn.ReadInt16();
+            int targetID = msgIn.ReadInt16();
+            int skillID = msgIn.ReadInt16();
+
+            Entity target = dataHandler.otherCharacters[targetID];
+            Entity source;
+
+            if (sourceID != dataHandler.myCharacter.id)
+                source = dataHandler.otherCharacters[sourceID];
+            else source = dataHandler.myCharacter;
+            target.Health = msgIn.ReadInt16();
+        }
 
         public void ShowNameTags()
         {
@@ -142,11 +172,13 @@ namespace Assets.Scripts.Handlers
                 float x = msgIn.ReadFloat();
                 float y = msgIn.ReadFloat();
                 float z = msgIn.ReadFloat();
+                int health = msgIn.ReadInt16();
+                int maxHealth = msgIn.ReadInt16();
                 Debug.Log("Adding MOB: " + entityName);
 
                 newMobObj.transform.position = new Vector3(x, y, z);
                 Entity newMob = newMobObj.GetComponent<Entity>();
-                newMob.Set(entityID, entityLevel, 100, 0, entityName);
+                newMob.Set(entityID, entityLevel, health, 0, entityName, maxHealth);
                 dataHandler.otherCharacters.Add(entityID, newMob);
             }
         }
@@ -171,31 +203,36 @@ namespace Assets.Scripts.Handlers
         internal void HandleNewCharacter(NetIncomingMessage msgIn)
         {
             int characterID = msgIn.ReadInt16();
-            Debug.Log("ADDING NEW CHARACTER ID: " + characterID);
             if (characterID == dataHandler.myCharacter.id)
             {
                 return;
             }
             int characterLevel = msgIn.ReadInt16();
             int characterHealth = msgIn.ReadInt16();
-            int characterType = msgIn.ReadInt16();
+            int characterMaxHealth = msgIn.ReadInt16();
+            CharacterApperance characterType = (CharacterApperance)msgIn.ReadInt16();
             string characterName = msgIn.ReadString();
+            Debug.Log("ADDING NEW CHARACTER ID: " + characterID + " HEALTH " + characterHealth);
+
             GameObject newCharacterObj = null;
             switch (characterType)
             {
-                case 1:
-                    newCharacterObj = GameObject.Instantiate(Resources.Load<GameObject>("Type1Character"));
+                case CharacterApperance.Male:
+                    newCharacterObj = GameObject.Instantiate(Resources.Load<GameObject>("TypeMale"));
                     break;
-                case 2:
-                    newCharacterObj = GameObject.Instantiate(Resources.Load<GameObject>("Type2Character"));
+                case CharacterApperance.Female:
+                    newCharacterObj = GameObject.Instantiate(Resources.Load<GameObject>("TypeFemale"));
+                    break;
+                case CharacterApperance.NotDecided:
+                    newCharacterObj = GameObject.Instantiate(Resources.Load<GameObject>("TypeNonDecided"));
                     break;
                 default:
-                    newCharacterObj = GameObject.Instantiate(Resources.Load<GameObject>("Type1Character"));
+                    newCharacterObj = GameObject.Instantiate(Resources.Load<GameObject>("TypeMale"));
                     break;
             }
             Entity newCharacter = newCharacterObj.GetComponent<Entity>();
 
-            newCharacter.Set(characterID, characterLevel, characterHealth, characterType, characterName);
+            newCharacter.Set(characterID, characterLevel, characterHealth, characterType, characterName, characterMaxHealth);
             if (dataHandler.otherCharacters.ContainsKey(newCharacter.id))
             {
                 GameObject.Destroy(dataHandler.otherCharacters[newCharacter.id].character.gameObject);
@@ -205,7 +242,6 @@ namespace Assets.Scripts.Handlers
             if (hideNames)
                 HideNameTags();
         }
-
         internal void HandePositionUpdate(NetIncomingMessage msgIn)
         {
             int cId = msgIn.ReadInt16();
@@ -221,10 +257,8 @@ namespace Assets.Scripts.Handlers
                 dataHandler.otherCharacters[cId].posX = posX;
                 dataHandler.otherCharacters[cId].posY = posY;
                 dataHandler.otherCharacters[cId].posZ = posZ;
-
             }
         }
-
         public void SendClientReady()
         {
             NetOutgoingMessage msgReady = netClient.CreateMessage();

@@ -100,7 +100,7 @@ namespace Assets.Scripts.WorldServerNetworkScripts
             msgCreate.Write((byte)MessageType.CreateCharacter);
 
             PacketHandler.WriteEncryptedByteArray(msgCreate, dataHandler.inputData.CharacterName, dataHandler.selectedWorldServer.publicKey);
-            PacketHandler.WriteEncryptedByteArray(msgCreate, "male", dataHandler.selectedWorldServer.publicKey);
+            msgCreate.Write(dataHandler.inputData.CharacterType, 16);
             Debug.Log(dataHandler.inputData.CharacterName);
             Debug.Log(dataHandler.inputData.CharacterType);
             netClient.SendMessage(msgCreate, NetDeliveryMethod.ReliableOrdered);

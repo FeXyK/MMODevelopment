@@ -20,16 +20,35 @@ public class TargetSelector : MonoBehaviour
     }
     void Update()
     {
-
-        for (int i = targets.Count - 1; i >= 0; i--)
+        if (Input.GetMouseButtonDown(0))
         {
-            if (!IsVisibleOnScreen(targets[i]))
+            //create a ray cast and set it to the mouses cursor position in game
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, maxSelectableDistance))
             {
-                targets.Remove(targets[i]);
+                if (hit.transform.tag == "Entity")
+                {
+                    selectedTarget = hit.transform.gameObject;
+                    targetFrameController.Set(hit.transform.GetComponent<Entity>());
+                    targetCircle.SetActive(true);
+                    targetCircle.transform.SetParent(hit.transform);
+                    targetCircle.transform.localPosition = Vector3.zero;
+
+                    uiManager.TargetFrame.SetActive(true);
+                    targetFrameController.Set(hit.transform.GetComponent<Entity>());
+                }
             }
         }
         if (Input.GetKeyDown(KeyCode.Tab))
         {
+            for (int i = targets.Count - 1; i >= 0; i--)
+            {
+                if (!IsVisibleOnScreen(targets[i]))
+                {
+                    targets.Remove(targets[i]);
+                }
+            }
             GameObject[] entities = GameObject.FindGameObjectsWithTag("Entity");
             foreach (var entity in entities)
             {

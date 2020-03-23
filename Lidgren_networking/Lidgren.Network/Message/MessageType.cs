@@ -45,6 +45,11 @@ namespace Lidgren.Network.ServerFiles
         AdminChatMessage,
         PublicChatMessage,
         PrivateChatMessage,
+        
+        StartSkillCast,
+        EndSkillCast,
+        SkillCasted,
+        EntityUpdate,
 
         Client,
         WorldServer

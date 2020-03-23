@@ -4,6 +4,7 @@ using Lidgren.Network.Wrapper;
 using MMOLoginServer.ServerData;
 using System;
 using System.Collections.Concurrent;
+using UnityEngine;
 
 namespace MMOGameServer
 {
@@ -57,6 +58,10 @@ namespace MMOGameServer
                             Console.WriteLine((MessageType)msgType);
                             messageHandler.ClientReady(msgIn);
                             break;
+                        case MessageType.StartSkillCast:
+                            messageHandler.StartSkillCast(msgIn);
+                            break;
+
                     }
                 }
                 netPeer.Recycle(msgIn);

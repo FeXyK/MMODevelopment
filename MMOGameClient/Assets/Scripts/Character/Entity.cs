@@ -1,4 +1,5 @@
-﻿using MMOLoginServer.ServerData;
+﻿using Assets.Scripts.Character;
+using MMOLoginServer.ServerData;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,8 +12,28 @@ public class Entity : MonoBehaviour
     public int level;
     public int exp;
     public int mana;
-    public int health;
-    public int type;
+    private int health;
+
+    public int Health
+    {
+        get { return health; }
+        set
+        {
+            health = value;
+            HealthBar.value = health;
+        }
+    }
+    private int maxHealth;
+    public int MaxHealth
+    {
+        get { return maxHealth; }
+        set
+        {
+            maxHealth = value;
+            HealthBar.maxValue = maxHealth;
+        }
+    }
+    public CharacterApperance characterType;
     public int gold;
     public float posX;
     public float posY;
@@ -21,62 +42,43 @@ public class Entity : MonoBehaviour
     public Transform character;
     public TMPro.TMP_Text NameText;
     public Slider HealthBar;
-    public float tickRate = (1000f / 20f) * Time.deltaTime;
-    public Entity(int cId, int cLevel, int cHealth, int cType, string cName)
+    public float tickRate = 0;
+    public void Set(int cId, int cLevel, int cHealth, CharacterApperance cType, string cName, int cMaxHealth)
     {
         id = cId;
         level = cLevel;
-        health = cHealth;
-        type = cType;
+        Health = cHealth;
+        characterType = cType;
         characterName = cName;
         NameText.text = id + ": " + characterName;
-    }
-    public void Set(int cId, int cLevel, int cHealth, int cType, string cName)
-    {
-        id = cId;
-        level = cLevel;
-        health = cHealth;
-        type = cType;
-        characterName = cName;
-        NameText.text = id + ": " + characterName;
+        MaxHealth = cMaxHealth;
     }
     public void Set(CharacterData characterData)
     {
         id = characterData.id;
         level = characterData.level;
-        health = 100;
-        type = characterData.characterType;
+        Health = characterData.currentHealth;
+        characterType = (CharacterApperance)characterData.characterType;
         characterName = characterData.name;
         NameText.text = id + ": " + characterName;
+        MaxHealth = characterData.maxHealth;
     }
     public void Set(Entity ch)
     {
         id = ch.id;
         level = ch.level;
-        health = ch.health;
-        type = ch.type;
+        Health = ch.health;
+        characterType = ch.characterType;
         characterName = ch.name;
         NameText.text = id + ": " + characterName;
+        MaxHealth = ch.MaxHealth;
     }
-
-    float time;
     public void Update()
     {
-        time += Time.deltaTime;
-        if (time > 1)
-        {
-            health--;
-            if (health == 0)
-                health = 100;
-            time = 0;
-        }
-        HealthBar.value = health;
-
+        tickRate = (1000f / 20f) * Time.deltaTime;
         if (this.gameObject.tag != "PlayerCharacter")
         {
             character.position = Vector3.Lerp(character.position, new Vector3(posX, posY, posZ), tickRate);
-            //Quaternion toRotation = Quaternion.LookRotation((new Vector3(posX, 0, posZ) - character.position).normalizedsZ));
-            //transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, speed * Time.time);
             character.LookAt(new Vector3(posX, character.position.y, posZ));// new Vector3(0, rot, 0);
         }
     }

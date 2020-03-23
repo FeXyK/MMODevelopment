@@ -94,16 +94,11 @@ namespace Assets.Scripts.LoginScreen
 
         public void ClearSelection<T>(List<T> items)
         {
-            Debug.Log("CLEARING");
             foreach (T button in items)
             {
-                Debug.Log("CLEARING ITEM");
                 Destroy((button as Button).gameObject);
             }
-            Debug.Log("ITEMS CLEAR");
             items.Clear();
-            Debug.Log("ITEMS CLEAR");
-            Debug.Log("ITEMS COUNT: " + items.Count);
 
             SelectedCharacter = -1;
             SelectedServerID = -1;

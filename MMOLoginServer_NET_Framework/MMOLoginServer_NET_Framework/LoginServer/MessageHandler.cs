@@ -120,7 +120,7 @@ namespace MMOLoginServer.LoginServerLogic
             byte[] bytePassword = PacketHandler.ReadEncryptedByteArray(msgIn);
             string email = PacketHandler.ReadEncryptedString(msgIn);
 
-            byte[] byteSalt= Util.GenerateRandomSequence(16);
+            byte[] byteSalt = Util.GenerateRandomSequence(16);
             string hexPassword = BitConverter.ToString(bytePassword);
             string hexSalt = BitConverter.ToString(byteSalt);
             string hexPasswordSalted = hexPassword + hexSalt;
@@ -143,7 +143,7 @@ namespace MMOLoginServer.LoginServerLogic
         public void AuthenticateClient(NetIncomingMessage msgIn)
         {
             ConnectionData account = dataHandler.GetNewConnection(msgIn);
-            
+
             string username = PacketHandler.ReadEncryptedString(msgIn);
             byte[] password = PacketHandler.ReadEncryptedByteArray(msgIn);
             string hexPassword = BitConverter.ToString(password);
@@ -168,7 +168,11 @@ namespace MMOLoginServer.LoginServerLogic
                 foreach (var server in dataHandler.worldServers)
                 {
                     msgOut.Write(server.name);
-                    if (msgIn.SenderConnection.RemoteEndPoint.Address.ToString() == "127.0.0.1")
+                    if (msgIn.SenderConnection.RemoteEndPoint.Address.ToString().StartsWith("192."))
+                    {
+                        msgOut.Write("192.168.0.65");
+                    }
+                    else if (msgIn.SenderConnection.RemoteEndPoint.Address.ToString() == "127.0.0.1")
                         msgOut.Write(server.connection.RemoteEndPoint.Address.ToString());
                     else
                     {

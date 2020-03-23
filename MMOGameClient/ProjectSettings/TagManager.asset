@@ -8,6 +8,8 @@ TagManager:
   - Notification
   - NameTag
   - Entity
+  - Game UI Base
+  - SkillBar
   layers:
   - Default
   - TransparentFX

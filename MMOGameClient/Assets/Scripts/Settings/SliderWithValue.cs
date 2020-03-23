@@ -6,15 +6,13 @@ using UnityEngine;
 using UnityEngine.UI;
 public class SliderWithValue : MonoBehaviour
 {
-    [SerializeField]
     public Slider slider;
-    [SerializeField]
     public TMP_InputField inputField;
     private void Start()
     {
         try
         {
-            slider.value = float.Parse(inputField.text);
+            //slider.value = float.Parse(inputField.text);
         }
         catch (Exception)
         {

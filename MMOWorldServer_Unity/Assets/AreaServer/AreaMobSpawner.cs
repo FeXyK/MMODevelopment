@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace MMOGameServer
 {
-    internal class MobAreaSpawner
+    public class MobAreaSpawner
     {
         public int MobID = 50;
         public int MaximumSpawnCount = 30;
         public float SpawnRadius = 30;
-        public List<MobBase> SpawnedMobs = new List<MobBase>();
+        public Dictionary<int,MobBase> SpawnedMobs = new Dictionary<int, MobBase>();
         public Vector3 position;
         public MobAreaSpawner(Vector3 position)
         {
@@ -27,7 +27,7 @@ namespace MMOGameServer
                 mob = gameObject.AddComponent<MobBase>();
                 mob.Set(MobID, MobID + i, MobBehaviour.Passive, this);
                 mob.EntityName = "Mob_" + MobID + i;
-                SpawnedMobs.Add(mob);
+                SpawnedMobs.Add(mob.EntityID,mob);
             }
         }
         private Vector3 RandomVector(float min, float max)

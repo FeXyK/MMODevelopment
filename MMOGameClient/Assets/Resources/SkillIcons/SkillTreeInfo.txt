@@ -1,0 +1,10 @@
+Basic Attack;0;0;0;0
+Fireball;1;0;0;1
+Fireclaw;2;0;0;1
+Sunfire;3;0;0;1
+Fireshock;4;0;0;1
+Shock;5;0;0;1
+Shockwave;6;0;0;1
+Singularity;7;0;0;1
+Grabbing Shock;8;0;0;1
+Melting Fire;9;0;0;1

@@ -62,12 +62,11 @@ namespace MMOGameServer.WorldServer
             ConnectionData account;
             byte[] characterNameEncrypted = PacketHandler.ReadEncryptedByteArray(msgIn);
             string characterName = Encoding.UTF8.GetString(characterNameEncrypted);
-            int characterType = msgIn.ReadInt32();
+            int characterType = msgIn.ReadInt16();
             int result;
             //if (0 == Selection.instance.CountSqlData("SELECT COUNT(*) FROM Character WHERE LOWER(Name) = LOWER(@characterName)", new SqlParameter("characterName", characterName)))
             account = dataHandler.GetAuthenticatedUser(msgIn.SenderConnection);
             result = Selection.instance.CreateCharacter(account.id, characterName, characterType);
-            Debug.LogError(result);
             if (result >= 0)
                 SendNotificationMessage("Character created!", msgIn.SenderConnection);
             else
@@ -103,6 +102,7 @@ namespace MMOGameServer.WorldServer
                     character.positionZ = (float)temp.PosZ.Value;
                     //character.rotation = (float)temp.Rotation.Value;
                     character.currentHealth = temp.Health.Value;
+                    character.maxHealth = temp.Health.Value;
                     character.currentMana = temp.Mana.Value;
                     character.level = temp.Level.Value;
                     character.currentExp = temp.Exp.Value;
@@ -262,6 +262,7 @@ namespace MMOGameServer.WorldServer
                 character.level = temp.Level.Value;
                 character.currentExp = temp.Exp.Value;
                 character.characterType = temp.CharType.Value;
+                Debug.Log("CHTYPE: " + character.characterType);
                 //character.= temp.CharSkills.Value;
                 character.gold = temp.Gold.Value;
                 account.characters.Add(character);

@@ -1,4 +1,5 @@
 ﻿using Assets.AreaServer.Entity;
+using Assets.Scripts.Handlers;
 using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using MMOLoginServer.ServerData;
@@ -17,9 +18,9 @@ namespace MMOGameServer
         AreaMessageReader messageReader;
         AreaMessageCreater messageCreate;
         ConcurrentQueue<CharacterData> newConnectionsQue;
+        AreaMessageSender messageSender;
         Dictionary<NetConnection, Character> onlineCharacters = new Dictionary<NetConnection, Character>();
         List<NetConnection> onlineConnections = new List<NetConnection>();
-        List<MobAreaSpawner> mobAreas = new List<MobAreaSpawner>();
         public bool hideNames = false;
         public AreaMessageHandler(NetServer server, ConcurrentQueue<CharacterData> newConnections)
         {
@@ -28,12 +29,13 @@ namespace MMOGameServer
             dataHandler = new AreaDataHandler();
             messageCreate = new AreaMessageCreater(netServer);
             messageReader = new AreaMessageReader();
+            messageSender = new AreaMessageSender(netServer);
             {
                 MobAreaSpawner mobArea = new MobAreaSpawner(new Vector3(7, 80, 178));
-                mobAreas.Add(mobArea);
-                Debug.Log("MobSpawner COUNT: " + mobAreas.Count);
+                dataHandler.mobAreas.Add(mobArea);
+                Debug.Log("MobSpawner COUNT: " + dataHandler.mobAreas.Count);
             }
-            Debug.Log(mobAreas.ToString());
+            Debug.Log(dataHandler.mobAreas.ToString());
         }
         internal void GetNewConnections()
         {
@@ -45,7 +47,7 @@ namespace MMOGameServer
                 {
                     dataHandler.connections.Add(character);
 
-                    Character newCharacter = LoadCharacterFrom(character);
+                    //Character newCharacter = LoadCharacterFrom(character);
 
                     //onlineCharacters.Add(character.connection, newCharacter);
                     //onlineConnections.Add(character.connection);
@@ -62,6 +64,7 @@ namespace MMOGameServer
             character.EntityName = data.name;
             character.EntityGold = data.gold;
             character.EntityHealth = data.currentHealth;
+            character.EntityMaxHealth = data.maxHealth;
             character.EntityMana = data.currentMana;
             character.EntityLevel = data.level;
             character.EntityBaseArmor = 60;
@@ -70,6 +73,52 @@ namespace MMOGameServer
 
             return character;
         }
+
+        internal void StartSkillCast(NetIncomingMessage msgIn)
+        {
+            int sourceID;//= msgIn.ReadInt16();
+            int targetID = msgIn.ReadInt16();
+            int skillID = msgIn.ReadInt16();
+            sourceID = dataHandler.GetCharacter(msgIn).id;
+
+            Entity target = null;
+            if (targetID < 10000)
+            {
+                target = dataHandler.GetMob(targetID);//[sourceID] as Character;
+            }
+            else
+            {
+                target = dataHandler.entities[targetID] as Character;
+            }
+            Character source = dataHandler.entities[sourceID] as Character;
+
+            target.ApplyDamage(24);
+
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.SkillCasted);
+            msgOut.Write(sourceID, 16);
+            msgOut.Write(targetID, 16);
+            msgOut.Write(skillID, 16);
+            msgOut.Write(target.EntityHealth,16);
+            netServer.SendToAll(msgOut, NetDeliveryMethod.Unreliable);
+            //if (source.SkillReady(skillID))
+            //{
+            //    Character target = dataHandler.entities[targetID] as Character;
+            //    NetOutgoingMessage msgOut = netServer.CreateMessage();
+            //    msgOut.Write((byte)MessageType.SkillCasted);
+            //    msgOut.Write(skillID, 16);
+            //    SendInRange(msgOut);
+
+            //    target.ApplyDamage(50);
+            //}
+
+        }
+
+        private void SendInRange(NetOutgoingMessage msgOut)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ClientReady(NetIncomingMessage msgIn)
         {
             CharacterData characterData = dataHandler.GetCharacter(msgIn);
@@ -87,21 +136,21 @@ namespace MMOGameServer
                     msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
                 }
             }
-            msgOut = CreateHideNamesMessage();
-            msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+            //msgOut = CreateHideNamesMessage();
+            //msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
             ClientMobSpawn(msgIn.SenderConnection);
         }
 
         internal void SendMobPositions()
         {
-            foreach (var mobArea in mobAreas)
+            foreach (var mobArea in dataHandler.mobAreas)
             {
                 NetOutgoingMessage msgOut = netServer.CreateMessage();
                 msgOut.Write((byte)MessageType.MobInformation);
-                msgOut.Write(mobArea.SpawnedMobs.Count,16);
-                foreach (var mob in mobArea.SpawnedMobs)
+                msgOut.Write(mobArea.SpawnedMobs.Count, 16);
+                foreach (var mob in mobArea.SpawnedMobs.Values)
                 {
-                    msgOut.Write(mob.EntityID,16);
+                    msgOut.Write(mob.EntityID, 16);
                     msgOut.Write(mob.transform.position.x);
                     msgOut.Write(mob.transform.position.y);
                     msgOut.Write(mob.transform.position.z);
@@ -113,11 +162,11 @@ namespace MMOGameServer
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
             msgOut.Write((byte)MessageType.NewMobAreaData);
-            Debug.Log(connection.ToString() + " SENDING NEW MOBINFO: " + mobAreas.Count);
-            foreach (var mobArea in mobAreas)
+            Debug.Log(connection.ToString() + " SENDING NEW MOBINFO: " + dataHandler.mobAreas.Count);
+            foreach (var mobArea in dataHandler.mobAreas)
             {
                 msgOut.Write(mobArea.SpawnedMobs.Count, 16);
-                foreach (var mob in mobArea.SpawnedMobs)
+                foreach (var mob in mobArea.SpawnedMobs.Values)
                 {
                     msgOut.Write(mob.EntityName);
                     msgOut.Write(mob.EntityID, 16);
@@ -125,6 +174,8 @@ namespace MMOGameServer
                     msgOut.Write(mob.transform.position.x);
                     msgOut.Write(mob.transform.position.y);
                     msgOut.Write(mob.transform.position.z);
+                    msgOut.Write(mob.EntityHealth,16);
+                    msgOut.Write(mob.EntityMaxHealth,16);
                 }
                 connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
             }
@@ -157,9 +208,6 @@ namespace MMOGameServer
                 }
             }
         }
-
-
-
         internal void SendPublicChatMessage(NetIncomingMessage msgIn)
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
@@ -222,6 +270,10 @@ namespace MMOGameServer
                     dataHandler.characters.Remove(characterData.id);
                 dataHandler.characters.Add(characterData.id, characterData);
                 dataHandler.netConnections.Add(msgIn.SenderConnection);
+
+                //Character newCharacter = new Character(characterData);
+                Character newCharacter = LoadCharacterFrom(characterData);
+                dataHandler.entities.Add(characterData.id, newCharacter);
                 foreach (var item in dataHandler.characters.Values)
                 {
                     Console.WriteLine("CHARACTER: " + item.ToString());

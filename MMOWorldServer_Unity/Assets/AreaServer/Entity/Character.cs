@@ -16,5 +16,13 @@ namespace Assets.AreaServer.Entity
         {
             base.Update();
         }
+        internal bool SkillReady(int skillID)
+        {
+            return true;
+        }
+        //internal void ApplyDamage(int incomingDamage)
+        //{
+        //    EntityHealth -= incomingDamage;
+        //}
     }
 }

@@ -2,8 +2,8 @@
 {
     public enum CharacterApperance
     {
-        Male,
-        Female,
-        NotDecided
+        Male=0,
+        Female=1,
+        NotDecided=2
     }
 }

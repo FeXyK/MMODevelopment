@@ -17,6 +17,7 @@ namespace Assets.Scripts.Handlers
         {
             myCharacter = GameObject.FindObjectOfType<Entity>();
             myCharacter.Set(LoginDataHandler.GetInstance().selectedCharacter);
+            myCharacter.Health = 100;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Lidgren.Network;
+﻿using Assets.AreaServer.Entity;
+using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using MMOLoginServer.ServerData;
 using System;
@@ -33,6 +34,7 @@ namespace MMOGameServer
             msgOut.Write(character.id, 16);
             msgOut.Write(character.level, 16);
             msgOut.Write(character.currentHealth, 16);
+            msgOut.Write(character.maxHealth, 16);
             msgOut.Write(character.characterType, 16);
             msgOut.Write(character.name);
             return msgOut;

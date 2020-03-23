@@ -78,7 +78,6 @@ namespace MMOGameServer
                             break;
                     }
                 }
-
             }
         }
         public bool ConnectToLoginServer(string ip, int port)

@@ -1,0 +1,10 @@
+0;1|5|9;Basic Attack
+1;2|3;Fireball
+2;;Fireclaw
+3;4;Sunfire
+4;;Fireshock
+5;6|7|8;Shock
+6;;Shockwave
+7;;Singularity
+8;;Grabbing Shock
+9;;Melting Fire

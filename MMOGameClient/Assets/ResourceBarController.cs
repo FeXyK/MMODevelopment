@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -8,8 +9,14 @@ public class ResourceBarController : MonoBehaviour
 {
     public TMP_Text ValueText;
     public Slider Slider;
-    public void Update()
+    private void Start()
     {
-        ValueText.text = Slider.value + " / " + Slider.maxValue + "   [" + (Slider.value / Slider.maxValue )* 100 + "%]";
+        Slider.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
+
+    }
+
+    private void ValueChangeCheck()
+    {
+        ValueText.text = Slider.value + " / " + Slider.maxValue + "   [" + (int)((Slider.value / Slider.maxValue) * 100) + "%]";
     }
 }

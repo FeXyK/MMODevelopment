@@ -69,8 +69,14 @@ namespace Assets.Scripts.GameNetworkScripts
                             messageHandler.HandleMobAreaData(msgIn);
                             break;
                         case MessageType.MobInformation:
-                            Debug.Log(msgType);
                             messageHandler.MobInformationUpdate(msgIn);
+                            break;
+                        case MessageType.SkillCasted:
+                            Debug.Log("SKillCASTED");
+                            messageHandler.SkillCasted(msgIn);
+                            break;
+                        case MessageType.EntityUpdate:
+                            messageHandler.EntityUpdate(msgIn);
                             break;
                     }
                 }

@@ -11,13 +11,16 @@ public class TargetFrameController : MonoBehaviour
     public TMP_Text NameBar;
     private void Update()
     {
-        if (target != null)
-            HealthBar.value = target.health;
-    }
+     if (target != null)
+        {
+            HealthBar.value = target.Health;
+            HealthBar.maxValue = target.MaxHealth;
+        }
+}
     public void Set(Entity target)
     {
         this.target = target;
-        HealthBar.value = target.health;
+        HealthBar.value = target.Health;
 
         NameBar.text = target.characterName;
     }

@@ -8,5 +8,7 @@ namespace Assets.AreaServer.SkillSystem
 {
     class SkillInstant : SkillBase
     {
+
+
     }
 }

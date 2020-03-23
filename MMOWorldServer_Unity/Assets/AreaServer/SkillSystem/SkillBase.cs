@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.AreaServer.SkillSystem
 {
-    class SkillBase
+  public  class SkillBase
     {
     }
 }

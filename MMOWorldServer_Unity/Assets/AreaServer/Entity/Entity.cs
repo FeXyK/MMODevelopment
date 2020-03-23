@@ -1,4 +1,5 @@
 ﻿using Assets.AreaServer.SkillSystem;
+using Assets.Scripts.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using UnityEngine;
 
 namespace Assets.AreaServer.Entity
 {
-    class Entity : MonoBehaviour
+    public class Entity : MonoBehaviour
     {
         public string EntityName;
 
@@ -18,10 +19,21 @@ namespace Assets.AreaServer.Entity
         public int EntityLevel;
         public int EntityGold;
 
-        public float EntityMaxHealth;
-        public float EntityHealth;
-        public float EntityMaxMana;
-        public float EntityMana;
+        public int EntityMaxHealth;
+        private int entityHealth;
+
+        public int EntityHealth
+        {
+            get { return entityHealth; }
+            set
+            {
+                entityHealth = value;
+
+                AreaMessageSender.Instance.SendEntityUpdate(this);
+            }
+        }
+        public int EntityMaxMana;
+        public int EntityMana;
 
         public float EntityAttackRange;
         public float EntityBaseArmor;
@@ -52,6 +64,10 @@ namespace Assets.AreaServer.Entity
                 buff.ApplyEffect();
             }
         }
-       
+
+        internal void ApplyDamage(int dmg)
+        {
+            EntityHealth -= dmg;
+        }
     }
 }
