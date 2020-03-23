@@ -43,8 +43,6 @@ public class Movement : MonoBehaviour
     void Start()
     {
         options = FindObjectOfType<GameOptions>();
-        Debug.Log(options.MouseY);
-        Debug.Log(options.MouseX);
         characterController = GetComponent<CharacterController>();
         rigidbody = GetComponent<Rigidbody>();
     }

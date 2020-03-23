@@ -65,25 +65,25 @@ public class MenuController : MonoBehaviour
                 movement.movementEnabled = true;
             }
         }
-        if (Input.GetKeyDown(KeyCode.Return) && !MainMenu.activeSelf && !OptionsMenu.activeSelf)
-        {
-            ChatInput.gameObject.SetActive(!ChatInput.gameObject.activeSelf);
-            isOpen = ChatInput.gameObject.activeSelf;
-            if (ChatInput.gameObject.activeSelf)
-            {
-                ChatInput.ActivateInputField();
-                chatBg.color = new Color(chatBg.color.r, chatBg.color.g, chatBg.color.b, 0.5f);
-            }
-            else
-            {
-                if (ChatInput.text.Length > 0)
-                    messageHandler.ChatMessage = ChatInput.text;
+        //if (Input.GetKeyDown(KeyCode.Return) && !MainMenu.activeSelf && !OptionsMenu.activeSelf)
+        //{
+        //    ChatInput.gameObject.SetActive(!ChatInput.gameObject.activeSelf);
+        //    isOpen = ChatInput.gameObject.activeSelf;
+        //    if (ChatInput.gameObject.activeSelf)
+        //    {
+        //        ChatInput.ActivateInputField();
+        //        chatBg.color = new Color(chatBg.color.r, chatBg.color.g, chatBg.color.b, 0.5f);
+        //    }
+        //    else
+        //    {
+        //        if (ChatInput.text.Length > 0)
+        //            messageHandler.ChatMessage = ChatInput.text;
 
-                ChatInput.text = "";
-                ChatInput.DeactivateInputField();
-                chatBg.color = new Color(chatBg.color.r, chatBg.color.g, chatBg.color.b, 0);
-            }
-        }
+        //        ChatInput.text = "";
+        //        ChatInput.DeactivateInputField();
+        //        chatBg.color = new Color(chatBg.color.r, chatBg.color.g, chatBg.color.b, 0);
+        //    }
+        //}
         if(Input.GetMouseButton(1))
         {
             Cursor.lockState = CursorLockMode.Locked;

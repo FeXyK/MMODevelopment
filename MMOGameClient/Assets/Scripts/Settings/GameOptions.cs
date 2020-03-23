@@ -9,6 +9,7 @@ public class GameOptions : MonoBehaviour
     public SliderWithValue SliderMouseX;
     public SliderWithValue SliderMouseY;
     public SliderWithValue SliderVolume;
+    public GameObject GameOpt;
 
     [SerializeField]
     private float mouseX = 1;
@@ -98,6 +99,7 @@ public class GameOptions : MonoBehaviour
             }
             File.WriteAllLines(path, content);
         }
+        GameOpt.SetActive(false);
     }
     void OnChange()
     {

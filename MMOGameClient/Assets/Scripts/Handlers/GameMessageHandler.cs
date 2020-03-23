@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Character;
+using Assets.Scripts.SkillSystem;
 using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using System;
@@ -20,6 +21,9 @@ namespace Assets.Scripts.Handlers
         MenuController menuController;
         GameObject[] hiddenNameTags;
         bool hideNames = false;
+
+        GameObject FireShock;
+
         public string ChatMessage
         {
             set
@@ -116,13 +120,37 @@ namespace Assets.Scripts.Handlers
             int targetID = msgIn.ReadInt16();
             int skillID = msgIn.ReadInt16();
 
-            Entity target = dataHandler.otherCharacters[targetID];
-            Entity source;
+            Debug.Log("SOURCE ID: " + sourceID);
+            Debug.Log("TARGET ID: " + targetID);
+            Debug.Log("Characters count : " + dataHandler.otherCharacters.Count);
 
+            foreach (var ch in dataHandler.otherCharacters)
+            {
+                Debug.Log("CHARACTERS: " + ch.Key);
+            }
+            Entity target;
+            if (targetID != dataHandler.myCharacter.id)
+                target = dataHandler.otherCharacters[targetID];
+            else target = dataHandler.myCharacter;
+
+
+            Entity source;
             if (sourceID != dataHandler.myCharacter.id)
                 source = dataHandler.otherCharacters[sourceID];
             else source = dataHandler.myCharacter;
-            target.Health = msgIn.ReadInt16();
+            switch (skillID)
+            {
+                case 1:
+                    GameObject.Instantiate(SkillList.Instance.skill[skillID]).GetComponent<Skill_FireballScript>().Set(source.transform, target.transform);
+                    break;
+                case 4:
+                    GameObject.Instantiate(SkillList.Instance.skill[skillID], target.transform);
+                    break;
+                default:
+                    break;
+            }
+
+            //target.Health = msgIn.ReadInt16();
         }
 
         public void ShowNameTags()

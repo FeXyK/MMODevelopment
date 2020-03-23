@@ -39,11 +39,32 @@ namespace Assets.AreaServer.Entity
         public float EntityBaseArmor;
         public float EntityBaseMagicResist;
 
-        List<SkillBuff> buffs = new List<SkillBuff>();
+        public Dictionary<int, float> skillCooldown = new Dictionary<int, float>();
 
+        List<SkillBuff> buffs = new List<SkillBuff>();
+        private void Start()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                skillCooldown.Add(i, Time.time);
+            }
+        }
         public virtual void Update()
         {
             ApplyBuffEffects();
+        }
+        public void ApplyCD(int skillID, float cooldown)
+        {
+            skillCooldown[skillID] = Time.time + cooldown;
+            Debug.Log("COOLDOWN: " + Time.time + "       Time: " + skillCooldown[skillID]);
+        }
+        public bool SkillReady(int skillID)
+        {
+            if (skillCooldown[skillID] < Time.time)
+            {
+                return true;
+            }
+            return false;
         }
         public void BasicAttack(Entity Target)
         {

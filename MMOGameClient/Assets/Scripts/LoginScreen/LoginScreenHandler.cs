@@ -5,6 +5,7 @@ using System;
 using System.Data;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LoginScreenHandler : MonoBehaviour
 {
@@ -14,6 +15,13 @@ public class LoginScreenHandler : MonoBehaviour
     public GameObject ServerSelectForm;
     public GameObject CharacterSelectForm;
     public GameObject CharacterCreateForm;
+
+    public Button LoginButton;
+    public Button RegisterButton;
+    public Button SwitchFormsButton;
+    public Button LoginWorldServerButton;
+    public Button PlayCharacterButton;
+
 
     LoginMessageHandler loginMessageHandler;
     WorldServerMessageHandler worldMessageHandler;
@@ -40,7 +48,7 @@ public class LoginScreenHandler : MonoBehaviour
     {
         if (loginClient != null)
             loginClient.ReceiveMessages();
-        if(worldServerClient != null)
+        if (worldServerClient != null)
             worldServerClient.ReceiveMessages();
 
         if (worldServerClient.dataHandler.authenticationToken != null && flag == false)
@@ -51,33 +59,52 @@ public class LoginScreenHandler : MonoBehaviour
         }
 
         tickTime += Time.deltaTime;
-        if(tickTime > 10f)
+        if (tickTime > 10f)
         {
             loginMessageHandler.SendAlive();
             worldMessageHandler.SendAlive();
             tickTime = 0;
         }
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            if (LoginForm.activeSelf)
+                Login();
+            if (RegisterForm.activeSelf)
+                Register();
+            if (CharacterSelectForm.activeSelf)
+                PlayCharacter();
+            if (ServerSelectForm.activeSelf)
+                LoginWorldServer();
+        }
     }
     public void LoginWorldServer()
     {
+        LoginWorldServerButton.interactable = false;
         loginMessageHandler.WorldServerAuthenticationTokenRequest();
+        LoginWorldServerButton.interactable = true;
 
     }
     public void Login()
     {
+        LoginButton.interactable = false;
         loginMessageHandler.SetupConnection(SERVER_IP, SERVER_PORT);
         loginMessageHandler.Login();
+        LoginButton.interactable = true;
     }
     public void Register()
     {
+        RegisterButton.interactable = false;
         loginMessageHandler.SetupConnection(SERVER_IP, SERVER_PORT);
         loginMessageHandler.Register();
+        SwitchForms();
+        RegisterButton.interactable = true;
     }
     public void ClearCharacterSelection()
     {
     }
     public void SwitchForms()
     {
+        SwitchFormsButton.interactable = false;
         LoginForm.SetActive(!LoginForm.activeSelf);
         RegisterForm.SetActive(!RegisterForm.activeSelf);
 
@@ -85,11 +112,13 @@ public class LoginScreenHandler : MonoBehaviour
             SwitchForm.GetComponentInChildren<TMP_Text>().text = "Login";
         else
             SwitchForm.GetComponentInChildren<TMP_Text>().text = "Registration";
+        SwitchFormsButton.interactable = true;
     }
-
     public void PlayCharacter()
     {
+        PlayCharacterButton.interactable = false;
         worldMessageHandler.PlayCharacter();
+        PlayCharacterButton.interactable = true;
     }
     public void ShowCharacterCreation()
     {

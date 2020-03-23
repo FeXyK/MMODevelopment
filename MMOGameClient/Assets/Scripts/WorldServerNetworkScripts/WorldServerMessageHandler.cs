@@ -57,7 +57,7 @@ namespace Assets.Scripts.WorldServerNetworkScripts
         public void HandleCharacterData(NetIncomingMessage msgIn)
         {
             dataHandler.LoadCharacterData(msgIn);
-            dataHandler.selectionController.CharacterForm.gameObject.SetActive(true);
+            dataHandler.selectionController.CharacterForm.parent.parent.gameObject.SetActive(true);
             dataHandler.selectionController.ServerForm.gameObject.SetActive(false);
         }
 
@@ -81,17 +81,20 @@ namespace Assets.Scripts.WorldServerNetworkScripts
 
         public void PlayCharacter()
         {
-            dataHandler.selectedCharacter = dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter];
-            dataHandler.selectedWorldServer = dataHandler.worldServers[dataHandler.selectionController.SelectedServerID];
+            if (dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter] != null)
+            {
+                dataHandler.selectedCharacter = dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter];
+                dataHandler.selectedWorldServer = dataHandler.worldServers[dataHandler.selectionController.SelectedServerID];
 
-            NetOutgoingMessage msgOut = netClient.CreateMessage();
+                NetOutgoingMessage msgOut = netClient.CreateMessage();
 
-            msgOut.Write((byte)MessageType.PlayCharacter);
-            PacketHandler.WriteEncryptedByteArray(msgOut, dataHandler.inputData.Username, dataHandler.selectedWorldServer.publicKey);
-            PacketHandler.WriteEncryptedByteArray(msgOut, dataHandler.selectedCharacter.name, dataHandler.selectedWorldServer.publicKey);
-            msgOut.Write(dataHandler.selectedCharacter.id, 16);
-            Debug.Log(dataHandler.selectedCharacter.id);
-            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+                msgOut.Write((byte)MessageType.PlayCharacter);
+                PacketHandler.WriteEncryptedByteArray(msgOut, dataHandler.inputData.Username, dataHandler.selectedWorldServer.publicKey);
+                PacketHandler.WriteEncryptedByteArray(msgOut, dataHandler.selectedCharacter.name, dataHandler.selectedWorldServer.publicKey);
+                msgOut.Write(dataHandler.selectedCharacter.id, 16);
+                Debug.Log(dataHandler.selectedCharacter.id);
+                netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+            }
         }
         public void CreateCharacter()
         {

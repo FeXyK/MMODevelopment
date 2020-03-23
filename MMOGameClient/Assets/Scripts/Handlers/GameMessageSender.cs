@@ -40,11 +40,10 @@ namespace Assets.Scripts.Handlers
             {
                 NetOutgoingMessage msgOut = netClient.CreateMessage();
                 msgOut.Write((byte)MessageType.StartSkillCast);
-                msgOut.Write(target.id);
+                msgOut.Write(target.id,16);
                 msgOut.Write(skill.SkillID, 16);
 
                 netClient.SendMessage(msgOut, NetDeliveryMethod.Unreliable);
-                Debug.Log("SKILL SNET");
             }
         }
     }

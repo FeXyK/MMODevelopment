@@ -14,7 +14,6 @@ namespace Assets.Scripts.Handlers
         LoginScreenHandler loginScreenHandler;
         string publicKey;
         TMP_Text Notification;
-
         private static LoginMessageHandler instance;
         public static LoginMessageHandler GetInstance()
         {
@@ -66,13 +65,16 @@ namespace Assets.Scripts.Handlers
 
         internal void WorldServerAuthenticationTokenRequest()
         {
-            dataHandler.selectedWorldServer = dataHandler.worldServers[dataHandler.selectionController.SelectedServerID];
-            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            if (dataHandler.worldServers[dataHandler.selectionController.SelectedServerID] != null)
+            {
+                dataHandler.selectedWorldServer = dataHandler.worldServers[dataHandler.selectionController.SelectedServerID];
+                NetOutgoingMessage msgOut = netClient.CreateMessage();
 
-            msgOut.Write((byte)MessageType.WorldServerAuthenticationTokenRequest);
-            PacketHandler.WriteEncryptedByteArray(msgOut, dataHandler.selectedWorldServer.name, publicKey);
+                msgOut.Write((byte)MessageType.WorldServerAuthenticationTokenRequest);
+                PacketHandler.WriteEncryptedByteArray(msgOut, dataHandler.selectedWorldServer.name, publicKey);
 
-            netClient.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered);
+                netClient.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered);
+            }
         }
         public void HandleNewLoginToken(NetIncomingMessage msgIn)
         {
@@ -85,15 +87,17 @@ namespace Assets.Scripts.Handlers
         }
         public void Login()
         {
-            NetOutgoingMessage msgLogin = netClient.CreateMessage();
+            {
+                NetOutgoingMessage msgLogin = netClient.CreateMessage();
 
-            byte[] hashPassword = DataEncryption.HashString(dataHandler.inputData.Password);
+                byte[] hashPassword = DataEncryption.HashString(dataHandler.inputData.Password);
 
-            msgLogin.Write((byte)MessageType.ClientAuthentication);
-            PacketHandler.WriteEncryptedByteArray(msgLogin, dataHandler.inputData.Username, publicKey);
-            PacketHandler.WriteEncryptedByteArray(msgLogin, hashPassword, publicKey);
+                msgLogin.Write((byte)MessageType.ClientAuthentication);
+                PacketHandler.WriteEncryptedByteArray(msgLogin, dataHandler.inputData.Username, publicKey);
+                PacketHandler.WriteEncryptedByteArray(msgLogin, hashPassword, publicKey);
 
-            netClient.SendMessage(msgLogin, NetDeliveryMethod.ReliableOrdered);
+                netClient.SendMessage(msgLogin, NetDeliveryMethod.ReliableOrdered);
+            }
         }
         public void HandleGameServerData(NetIncomingMessage msgIn)
         {

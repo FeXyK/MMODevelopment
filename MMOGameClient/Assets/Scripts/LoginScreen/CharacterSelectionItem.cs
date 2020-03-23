@@ -1,11 +1,12 @@
 ﻿using MMOLoginServer.ServerData;
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.LoginScreen
 {
-    class CharacterSelectionItem : MonoBehaviour
+    public class CharacterSelectionItem : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler
     {
         private SelectionController selectionController;
 
@@ -15,6 +16,9 @@ namespace Assets.Scripts.LoginScreen
         public Text typeText;
         public Text characterIDText;
         public Text accountIDText;
+
+        public Image Border;
+        public Image Background;
 
         private string characterName;
         public string Name
@@ -56,12 +60,15 @@ namespace Assets.Scripts.LoginScreen
             get { return characterID; }
             set { characterID = value; characterIDText.text = "ChID: " + characterID; }
         }
+
+
         private void Start()
         {
             selectionController = FindObjectOfType<SelectionController>();
         }
         public void Selected()
         {
+            selectionController = FindObjectOfType<SelectionController>();
             selectionController.SelectedCharacter = characterID;
         }
 
@@ -74,5 +81,26 @@ namespace Assets.Scripts.LoginScreen
             Gold = characterData.gold;
             Level = characterData.level;
         }
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            Background.color = new Color(0.5f, 0.5f, 0.5f);
+        }
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            Background.color = Color.white;
+        }
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            Border.gameObject.SetActive(true);
+        }
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            Border.gameObject.SetActive(false);
+        }
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            Selected();
+        }
+
     }
 }
