@@ -1,15 +1,12 @@
-﻿using Lidgren.Network;
-using Lidgren.Network.ServerFiles;
-using MMOLoginServer.ServerData;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Net.Security;
-using System.Security.Claims;
+﻿using System;
 using System.Text;
+using Lidgren.Network;
+using Lidgren.Network.Message;
+using Lidgren.Network.ServerFiles;
+using Lidgren.Network.ServerFiles.Data;
 using Utility_dotNET_Framework;
 
-namespace MMOLoginServer.LoginServerLogic
+namespace MMOLoginServer
 {
     public class MessageHandler
     {

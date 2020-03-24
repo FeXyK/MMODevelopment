@@ -1,8 +1,7 @@
-﻿using Lidgren.Network;
-using Lidgren.Network.ServerFiles;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using Lidgren.Network;
+using Lidgren.Network.ServerFiles.Data;
 
 namespace MMOLoginServer
 {

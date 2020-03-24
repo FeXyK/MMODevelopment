@@ -1,0 +1,77 @@
+﻿using Assets.Scripts.SkillSystem;
+using Lidgren.Network;
+using Lidgren.Network.Message;
+using Lidgren.Network.ServerFiles;
+using UnityEngine;
+
+namespace Assets.Scripts.Handlers
+{
+    class GameMessageCreater
+
+    {
+        private NetClient netClient;
+
+        public GameMessageCreater(NetClient netClient)
+        {
+            this.netClient = netClient;
+        }
+        public NetOutgoingMessage CreateSkillCast(SkillItem skill, Entity target)
+        {
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            msgOut.Write((byte)MessageType.StartSkillCast);
+            msgOut.Write(target.id, 16);
+            msgOut.Write(skill.SkillID, 16);
+            return msgOut;
+        }
+        public NetOutgoingMessage ClientReady()
+        {
+            NetOutgoingMessage msgReady = netClient.CreateMessage();
+            msgReady.Write((byte)MessageType.ClientReady);
+            return msgReady;
+        }
+        public NetOutgoingMessage PositionUpdate(int id, Vector3 position)
+        {
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            msgOut.Write((byte)MessageType.CharacterMovement);
+            msgOut.Write(id, 16);
+            msgOut.Write(position.x);
+            msgOut.Write(position.y);
+            msgOut.Write(position.z);
+            //msgOut.Write(dataHandler.myCharacter.transform.rotation.eulerAngles.y);
+            return msgOut;
+        }
+        public NetOutgoingMessage PrivateChatMessage(string characterName,string[] msg)
+        {
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            msgOut.Write((byte)MessageType.PrivateChatMessage);
+            msgOut.Write(characterName);
+            msgOut.Write(msg[0]);
+            msgOut.Write(msg[1]);
+            return msgOut;
+        }
+        public NetOutgoingMessage ChatMessage(string characterName,string msg)
+        {
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            msgOut.Write((byte)MessageType.PublicChatMessage);
+            msgOut.Write(characterName);
+            msgOut.Write(msg);
+            return msgOut;
+        }
+        public NetOutgoingMessage AdminChatMessage(string msg)
+        {
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            msgOut.Write((byte)MessageType.AdminChatMessage);
+            msgOut.Write(msg);
+            return msgOut;
+        }
+        public NetOutgoingMessage ConnectingMessage(int id, byte[] authToken, string publicKey)
+        {
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            msgOut.Write((byte)MessageType.ClientAuthentication);
+            PacketHandler.WriteEncryptedByteArray(msgOut, authToken, publicKey);
+            msgOut.Write(id, 16);
+            return msgOut;
+        }
+
+    }
+}

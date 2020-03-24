@@ -1,10 +1,9 @@
-﻿using Lidgren.Network.Wrapper;
-using System;
-using System.Collections.Generic;
-using Lidgren.Network.ServerFiles;
-using Lidgren.Network;
+﻿using Lidgren.Network;
+using Lidgren.Network.Message;
+using Lidgren.Network.Override;
+using Lidgren.Network.ServerFiles.Data;
 
-namespace MMOLoginServer.LoginServerLogic
+namespace MMOLoginServer
 {
     public class LoginServerCore : NetPeerOverride
     {

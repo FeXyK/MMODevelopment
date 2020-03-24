@@ -1,12 +1,7 @@
-﻿using Assets.AreaServer.Entity;
+﻿using System;
 using Lidgren.Network;
-using Lidgren.Network.ServerFiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+using Lidgren.Network.Message;
+using Assets.AreaServer.Entity;
 
 namespace Assets.Scripts.Handlers
 {

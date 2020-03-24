@@ -1,5 +1,4 @@
-﻿using Lidgren.Network.ServerFiles;
-using MMOLoginServer.ServerData;
+﻿using Lidgren.Network.ServerFiles.Data;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;

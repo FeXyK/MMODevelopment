@@ -1,10 +1,4 @@
-﻿using MMOGameServer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.AreaServer.Entity
 {
@@ -17,7 +11,6 @@ namespace Assets.AreaServer.Entity
         public float RespawnTimer = 5;
         public float RespawnTimerDefault = 5;
         public bool Alive = true;
-        MobAreaSpawner spawner;
         Vector3 Target;
         public float MoveForce = 500;
         Rigidbody rigi;
@@ -64,13 +57,12 @@ namespace Assets.AreaServer.Entity
             }
         }
 
-        internal void Set(int mobID, int entityID, MobBehaviour mobBehaviour, MobAreaSpawner mobAreaSpawner)
+        internal void Set(int mobID, int entityID, MobBehaviour mobBehaviour)
         {
             //this.EntityID = entityID;
             this.EntityID = mobID * 100 + entityID;
             this.MobTypeID = mobID;
             Behaviour = mobBehaviour;
-            spawner = mobAreaSpawner;
             EntityHealth = 110;
            EntityMaxHealth= 111;
         }

@@ -1,9 +1,6 @@
-﻿using Lidgren.Network.ServerFiles;
-using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
-namespace MMOLoginServer.ServerData
+﻿using System;
+
+namespace Lidgren.Network.ServerFiles.Data
 {
     public class CharacterData : ConnectionData
     {
@@ -45,7 +42,7 @@ namespace MMOLoginServer.ServerData
         }
         public override string ToString()
         {
-            return String.Format("{0};{1};{2};{3};{4};{5};{6};{7};{8};{9};{10};{11};{12}", name, id, accountID, level, gold, characterType, positionX,positionY,positionZ, rotation, currentExp, currentHealth, currentMana);
+            return String.Format("{0};{1};{2};{3};{4};{5};{6};{7};{8};{9};{10};{11};{12}", name, id, accountID, level, gold, characterType, positionX, positionY, positionZ, rotation, currentExp, currentHealth, currentMana);
         }
     }
 }

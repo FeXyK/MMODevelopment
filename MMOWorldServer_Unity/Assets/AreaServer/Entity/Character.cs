@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Assets.AreaServer.Entity
 {
-    class Character : Entity
+  public class Character : Entity
     {
         public int AccountID;
         public CharacterApperance CharacterType;
@@ -16,9 +11,5 @@ namespace Assets.AreaServer.Entity
         {
             base.Update();
         }
-        //internal void ApplyDamage(int incomingDamage)
-        //{
-        //    EntityHealth -= incomingDamage;
-        //}
     }
 }

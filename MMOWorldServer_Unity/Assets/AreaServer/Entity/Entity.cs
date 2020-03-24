@@ -1,10 +1,5 @@
-﻿using Assets.AreaServer.SkillSystem;
-using Assets.Scripts.Handlers;
-using System;
+﻿using Assets.Scripts.Handlers;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.AreaServer.Entity
@@ -41,7 +36,7 @@ namespace Assets.AreaServer.Entity
 
         public Dictionary<int, float> skillCooldown = new Dictionary<int, float>();
 
-        List<SkillBuff> buffs = new List<SkillBuff>();
+        //List<SkillBuff> buffs = new List<SkillBuff>();
         private void Start()
         {
             for (int i = 0; i < 10; i++)
@@ -51,7 +46,6 @@ namespace Assets.AreaServer.Entity
         }
         public virtual void Update()
         {
-            ApplyBuffEffects();
         }
         public void ApplyCD(int skillID, float cooldown)
         {
@@ -74,18 +68,6 @@ namespace Assets.AreaServer.Entity
         {
 
         }
-        public void ApplySkill(SkillBase skill)
-        {
-
-        }
-        private void ApplyBuffEffects()
-        {
-            foreach (var buff in buffs)
-            {
-                buff.ApplyEffect();
-            }
-        }
-
         internal void ApplyDamage(int dmg)
         {
             EntityHealth -= dmg;

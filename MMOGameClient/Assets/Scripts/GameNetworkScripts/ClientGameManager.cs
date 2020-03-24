@@ -1,39 +1,42 @@
 ﻿using Assets.Scripts.Handlers;
 using Assets.Scripts.LoginScreen;
 using Lidgren.Network;
-using Lidgren.Network.ServerFiles;
-using Lidgren.Network.Wrapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Lidgren.Network.Message;
+using Lidgren.Network.Override;
 using UnityEngine;
 
 namespace Assets.Scripts.GameNetworkScripts
 {
     public class ClientGameManager : NetPeerOverride
     {
-        GameObject[] gameObjects;
         public new GameMessageHandler messageHandler;
-        private MenuController menu;
+        private UIManager menu;
+
+        private NetIncomingMessage msgIn;
+        private MessageType msgType;
         public override void Initialize(string PEER_NAME, int PEER_PORT = 0, bool IS_SERVER = false, bool simulateLatency = true)
         {
+            Debug.Log("INITIALIZING");
             base.Initialize(PEER_NAME, PEER_PORT, IS_SERVER, simulateLatency);
 
             messageHandler = new GameMessageHandler(netPeer as NetClient);
-            menu = GameObject.FindObjectOfType<MenuController>();
-            Debug.Log("INITIALIZING");
-            ConnectToGameServer();
+            menu = GameObject.FindObjectOfType<UIManager>();
+            SelectionController selection = GameObject.FindObjectOfType<SelectionController>();
+
+            int id = LoginDataHandler.GetInstance().selectedCharacter.id;
+            string ip = selection.loginDataController.serverIP;
+            int port = selection.loginDataController.serverPort;
+            byte[] authKey = selection.loginDataController.authToken;
+            string publicKey = selection.loginDataController.publicKey;
+
+            GameMessageSender.Instance.ConnectToGameServer(id, authKey, publicKey, ip, port);
+
             Debug.Log("CONNECTED TO AREA SERVER");
         }
+
         public override void ReceiveMessages()
         {
-            if ((netPeer as NetClient).ServerConnection != null)
-                menu.PingText.text = Mathf.RoundToInt((netPeer as NetClient).ServerConnection.AverageRoundtripTime * 1000) + " ms";
-            else menu.PingText.text = "Disconnected";
-            NetIncomingMessage msgIn;
-            MessageType msgType;
+            ShowPing();
             while ((msgIn = netPeer.ReadMessage()) != null)
             {
                 if (msgIn.MessageType == NetIncomingMessageType.Data)
@@ -46,17 +49,16 @@ namespace Assets.Scripts.GameNetworkScripts
                             break;
                         case MessageType.NewCharacter:
                             Debug.Log(msgType);
-                            messageHandler.HandleNewCharacter(msgIn);
+                            messageHandler.EntitySpawn(msgIn);
                             break;
                         case MessageType.CharacterMovement:
-                            messageHandler.HandePositionUpdate(msgIn);
+                            messageHandler.EntityPositionUpdate(msgIn);
                             break;
                         case MessageType.OtherCharacterRemove:
-                            messageHandler.HandleCharacterRemove(msgIn);
+                            messageHandler.EntityDespawn(msgIn);
                             break;
-
                         case MessageType.AdminChatMessage:
-                            messageHandler.HandleAdminCommand(msgIn);
+                            messageHandler.AdminCommand(msgIn);
                             break;
                         case MessageType.PrivateChatMessage:
                             messageHandler.HandleChatMessage(msgIn, "PM");
@@ -65,17 +67,16 @@ namespace Assets.Scripts.GameNetworkScripts
                             messageHandler.HandleChatMessage(msgIn);
                             break;
                         case MessageType.NewMobAreaData:
-                            Debug.Log(msgType);
-                            messageHandler.HandleMobAreaData(msgIn);
+                            messageHandler.MobSpawn(msgIn);
                             break;
                         case MessageType.MobInformation:
-                            messageHandler.MobInformationUpdate(msgIn);
+                            messageHandler.MobPositionUpdate(msgIn);
                             break;
                         case MessageType.SkillCasted:
                             messageHandler.SkillCasted(msgIn);
                             break;
                         case MessageType.EntityUpdate:
-                            messageHandler.EntityUpdate(msgIn);
+                            messageHandler.EntityHealthUpdate(msgIn);
                             break;
                     }
                 }
@@ -85,7 +86,7 @@ namespace Assets.Scripts.GameNetworkScripts
                     switch (msgStat)
                     {
                         case NetConnectionStatus.Connected:
-                            messageHandler.SendClientReady();
+                            GameMessageSender.Instance.SendClientReady();
                             Debug.Log("Connected to GameServer");
                             break;
                         case NetConnectionStatus.Disconnected:
@@ -95,32 +96,16 @@ namespace Assets.Scripts.GameNetworkScripts
                 }
             }
         }
-
-        private void ConnectToGameServer()
-        {
-            NetOutgoingMessage msgOut = netPeer.CreateMessage();
-            msgOut.Write((byte)MessageType.ClientAuthentication);
-            SelectionController selection = GameObject.FindObjectOfType<SelectionController>();
-            Debug.Log(selection.loginDataController.authToken);
-            Debug.Log(selection.loginDataController.publicKey);
-            Debug.Log(selection.loginDataController.serverIP);
-            Debug.Log(selection.loginDataController.serverPort);
-            Debug.Log(selection.loginDataController.characterName);
-            PacketHandler.WriteEncryptedByteArray(msgOut, selection.loginDataController.authToken, selection.loginDataController.publicKey);
-            msgOut.Write(LoginDataHandler.GetInstance().selectedCharacter.id,16);
-            netPeer.Connect(selection.loginDataController.serverIP, selection.loginDataController.serverPort, msgOut);
-            Debug.Log("CONNECTING TO AREA SERVER");
-        }
         public override void Update()
         {
             ReceiveMessages();
-            messageHandler.SendPositionUpdate();
+            GameMessageSender.Instance.SendPositionUpdate();
         }
-        public void HideNameTags()
+        private void ShowPing()
         {
-            NetOutgoingMessage msgOut = netPeer.CreateMessage();
-            msgOut.Write((byte)MessageType.HideNames);
-            (netPeer as NetClient).ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+            if ((netPeer as NetClient).ServerConnection != null)
+                menu.Ping(Mathf.RoundToInt((netPeer as NetClient).ServerConnection.AverageRoundtripTime * 1000) + " ms");
+            else menu.Ping("Disconnected");
         }
     }
 }

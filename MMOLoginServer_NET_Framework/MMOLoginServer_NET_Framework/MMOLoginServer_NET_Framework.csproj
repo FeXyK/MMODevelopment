@@ -44,7 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Debug.cs" />
-    <Compile Include="LoginServer\DatabaseSelection.cs" />
     <Compile Include="LoginServer\DataHandler.cs" />
     <Compile Include="LoginServer\LoginServerCore.cs" />
     <Compile Include="LoginServer\MessageCreater.cs" />

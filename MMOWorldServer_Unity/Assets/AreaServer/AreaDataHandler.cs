@@ -1,11 +1,8 @@
 ﻿using Assets.AreaServer.Entity;
-using Lidgren.Network;
-using Lidgren.Network.ServerFiles;
-using Lidgren.Network.ServerFiles.Data;
-using MMOLoginServer.ServerData;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using Lidgren.Network;
+using Lidgren.Network.ServerFiles.Data;
 using UnityEngine;
 
 namespace MMOGameServer
@@ -13,30 +10,65 @@ namespace MMOGameServer
     public class AreaDataHandler
     {
         public string serverName = "Europe";
-        public Dictionary<int, CharacterData> characters = new Dictionary<int, CharacterData>();
-        public Dictionary<int, Entity> entities = new Dictionary<int, Entity>();
-        public List<NetConnection> netConnections = new List<NetConnection>();
-        public List<CharacterData> connections = new List<CharacterData>();
+
+        public List<CharacterData> waitingForAuth = new List<CharacterData>();
+
+        public Dictionary<int, Entity> entitiesByID = new Dictionary<int, Entity>();
+        public Dictionary<NetConnection, Entity> entitiesByConnection = new Dictionary<NetConnection, Entity>();
+
         public List<MobAreaSpawner> mobAreas = new List<MobAreaSpawner>();
 
         public AreaDataHandler()
         {
 
         }
-        public CharacterData GetCharacter(NetIncomingMessage msgIn)
+        public void AddEntity(Entity newEntity, NetConnection connection)
         {
-            foreach (var character in characters)
+            if (entitiesByID.ContainsKey(newEntity.EntityID))
             {
-                if (msgIn.SenderConnection == character.Value.connection)
-                {
-                    return character.Value;
-                }
+                entitiesByID.Remove(newEntity.EntityID);
             }
-            return null;
+            entitiesByID.Add(newEntity.EntityID, newEntity);
+
+            if (entitiesByConnection.ContainsKey(connection))
+            {
+                entitiesByConnection.Remove(connection);
+            }
+            entitiesByConnection.Add(connection, newEntity);
         }
+        public void RemoveEntity(Entity newEntity, NetConnection connection)
+        {
+            if (entitiesByID.ContainsKey(newEntity.EntityID))
+            {
+                entitiesByID.Remove(newEntity.EntityID);
+            }
+            if (entitiesByConnection.ContainsKey(connection))
+            {
+                entitiesByConnection.Remove(connection);
+            }
+        }
+        public Entity GetEntity(NetConnection connection)
+        {
+            return entitiesByConnection[connection];
+        }
+        public Entity GetEntity(int entityID)
+        {
+            return entitiesByID[entityID];
+        }
+        //public CharacterData GetCharacter(NetIncomingMessage msgIn)
+        //{
+        //    foreach (var character in characters)
+        //    {
+        //        if (msgIn.SenderConnection == character.Value.connection)
+        //        {
+        //            return character.Value;
+        //        }
+        //    }
+        //    return null;
+        //}
         public bool CheckLoginToken(byte[] clientLoginToken, int characterId)
         {
-            foreach (var character in connections)
+            foreach (var character in waitingForAuth)
             {
                 Console.WriteLine("AUTH TOKENS: ");
                 Console.WriteLine(BitConverter.ToString(character.authToken));
@@ -52,31 +84,6 @@ namespace MMOGameServer
             }
             return false;
         }
-        public ConnectionData FindConnection(NetConnection senderConnection)
-        {
-            foreach (var connection in connections)
-            {
-                if (connection.connection == senderConnection)
-                {
-                    return connection;
-                }
-            }
-            return null;
-        }
-        //public void RemoveExpiredLoginTokens()
-        //{
-        //    AuthenticationTokenData remove = null;
-        //    foreach (var token in loginTokens)
-        //    {
-        //        if (DateTime.Parse(token.expireDate) < DateTime.Now)
-        //        {
-        //            remove = token;
-        //            break;
-        //        }
-        //    }
-        //    if (remove != null)
-        //        loginTokens.Remove(remove);
-        //}
 
         [System.Runtime.InteropServices.DllImport("msvcrt.dll", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         static extern int memcmp(byte[] b1, byte[] b2, long count);
@@ -94,8 +101,8 @@ namespace MMOGameServer
             {
                 if(mobArea.MobID == mobID)
                 {
-                    return mobArea.SpawnedMobs[targetID];
                     Debug.Log("MOBID: " + mobID);
+                    return mobArea.SpawnedMobs[targetID];
                 }
             }
             return null;

@@ -1,14 +1,11 @@
 ﻿using Lidgren.Network.Message;
-using Lidgren.Network.ServerFiles;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.IO;
+using Lidgren.Network.ServerFiles.Data;
 
-namespace Lidgren.Network.Wrapper
+namespace Lidgren.Network.Override
 {
     public class NetPeerOverride
     {

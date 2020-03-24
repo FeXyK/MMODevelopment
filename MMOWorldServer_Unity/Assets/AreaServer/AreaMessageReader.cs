@@ -1,7 +1,6 @@
 ﻿using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using Lidgren.Network.ServerFiles.Data;
-using MMOLoginServer.ServerData;
 
 namespace MMOGameServer
 {

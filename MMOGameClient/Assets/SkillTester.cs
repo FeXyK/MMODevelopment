@@ -1,6 +1,4 @@
 ﻿using Assets.Scripts.SkillSystem;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SkillTester : MonoBehaviour
@@ -20,9 +18,5 @@ public class SkillTester : MonoBehaviour
         {
             Instantiate(SkillList.Instance.skill[0], target);
         }
-        //if (Input.GetKeyDown(KeyCode.Alpha3))
-        //{
-        //    Instantiate(SkillList.Instance.skill[1]).GetComponent<Skill_FireballScript>().Set(this.transform, target);
-        //}
     }
 }

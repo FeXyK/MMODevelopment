@@ -1,7 +1,5 @@
 ﻿using Assets.Scripts.Handlers;
 using Assets.Scripts.SkillSystem;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SkillSystem : MonoBehaviour

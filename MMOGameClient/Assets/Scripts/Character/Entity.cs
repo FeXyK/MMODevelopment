@@ -1,7 +1,5 @@
 ﻿using Assets.Scripts.Character;
-using MMOLoginServer.ServerData;
-using System.Collections;
-using System.Collections.Generic;
+using Lidgren.Network.ServerFiles.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,10 +33,7 @@ public class Entity : MonoBehaviour
     }
     public CharacterApperance characterType;
     public int gold;
-    public float posX;
-    public float posY;
-    public float posZ;
-    public float rot;
+    public Vector3 position;
     public Transform character;
     public TMPro.TMP_Text NameText;
     public Slider HealthBar;
@@ -78,8 +73,8 @@ public class Entity : MonoBehaviour
         tickRate = (1000f / 20f) * Time.deltaTime;
         if (this.gameObject.tag != "PlayerCharacter")
         {
-            character.position = Vector3.Lerp(character.position, new Vector3(posX, posY, posZ), tickRate);
-            character.LookAt(new Vector3(posX, character.position.y, posZ));// new Vector3(0, rot, 0);
+            character.position = Vector3.Lerp(character.position, position, tickRate);
+            character.LookAt(new Vector3(position.x, character.position.y, position.y));
         }
     }
 }

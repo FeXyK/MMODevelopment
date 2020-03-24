@@ -1,12 +1,8 @@
 ﻿using Assets.Scripts.Character;
 using Assets.Scripts.SkillSystem;
 using Lidgren.Network;
+using Lidgren.Network.Message;
 using Lidgren.Network.ServerFiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Handlers
@@ -15,15 +11,17 @@ namespace Assets.Scripts.Handlers
     {
         NetClient netClient;
         public GameDataHandler dataHandler;
-        LoginMessageCreater messageCreater;
-        LoginMessageReader messageReader;
         GameMessageSender messageSender;
         MenuController menuController;
-        GameObject[] hiddenNameTags;
-        bool hideNames = false;
 
-        GameObject FireShock;
+        public GameMessageHandler(NetClient client)
+        {
+            netClient = client;
+            dataHandler = new GameDataHandler();
+            menuController = GameObject.FindObjectOfType<MenuController>();
 
+            messageSender = new GameMessageSender(netClient, dataHandler);
+        }
         public string ChatMessage
         {
             set
@@ -32,112 +30,52 @@ namespace Assets.Scripts.Handlers
                 {
                     if (value.StartsWith("/admin "))
                     {
-                        SendAdminChatMessage(value.Remove(0, 7));
+                        messageSender.SendAdminChatMessage(value.Remove(0, 7));
                         Debug.Log(value.Remove(0, 7));
                     }
                     if (value.StartsWith("/w "))
                     {
                         string[] msg = value.Remove(0, 3).Split(' ');
                         Debug.Log(value.Remove(0, 3));
-                        SendPrivateChatMessage(msg);
+                        messageSender.SendPrivateChatMessage(msg);
                     }
                     if (!value.StartsWith("/"))
                     {
-                        SendChatMessage(value);
+                        messageSender.SendChatMessage(value);
                     }
                 }
             }
         }
-        public GameMessageHandler(NetClient client)
-        {
-            netClient = client;
-            messageSender = new GameMessageSender(netClient);
-            dataHandler = new GameDataHandler();
-            messageCreater = new LoginMessageCreater(netClient);
-            messageReader = new LoginMessageReader();
-            menuController = GameObject.FindObjectOfType<MenuController>();
-        }
-
-        private void SendPrivateChatMessage(string[] msg)
-        {
-            NetOutgoingMessage msgOut = netClient.CreateMessage();
-            msgOut.Write((byte)MessageType.PrivateChatMessage);
-            msgOut.Write(dataHandler.myCharacter.characterName);
-            msgOut.Write(msg[0]);
-            msgOut.Write(msg[1]);
-            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
-        }
-
-        public void SendChatMessage(string msg)
-        {
-            NetOutgoingMessage msgOut = netClient.CreateMessage();
-            msgOut.Write((byte)MessageType.PublicChatMessage);
-            msgOut.Write(dataHandler.myCharacter.characterName);
-            msgOut.Write(msg);
-            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
-        }
-        public void SendAdminChatMessage(string msg)
-        {
-            NetOutgoingMessage msgOut = netClient.CreateMessage();
-            msgOut.Write((byte)MessageType.AdminChatMessage);
-            msgOut.Write(msg);
-            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
-        }
-
-        internal void HandleAdminCommand(NetIncomingMessage msgIn)
+      
+      
+        internal void AdminCommand(NetIncomingMessage msgIn)
         {
             MessageType msgType = (MessageType)msgIn.ReadByte();
             switch (msgType)
             {
-                case MessageType.HideNames:
-                    HideNameTags();
-                    break;
-                case MessageType.ShowNames:
-                    ShowNameTags();
-                    break;
                 case MessageType.AdminChatMessage:
                     HandleChatMessage(msgIn, "A");
                     break;
             }
         }
 
-        internal void EntityUpdate(NetIncomingMessage msgIn)
+        internal void EntityHealthUpdate(NetIncomingMessage msgIn)
         {
 
             int targetID = msgIn.ReadInt16();
-            Entity target;
-            if (targetID == dataHandler.myCharacter.id)
-                target = dataHandler.myCharacter;
-            else
-                target = dataHandler.otherCharacters[targetID];
+            Entity target = dataHandler.GetEntity(targetID);
 
             target.Health = msgIn.ReadInt16();
         }
-
         internal void SkillCasted(NetIncomingMessage msgIn)
         {
             int sourceID = msgIn.ReadInt16();
             int targetID = msgIn.ReadInt16();
             int skillID = msgIn.ReadInt16();
 
-            Debug.Log("SOURCE ID: " + sourceID);
-            Debug.Log("TARGET ID: " + targetID);
-            Debug.Log("Characters count : " + dataHandler.otherCharacters.Count);
+            Entity target = dataHandler.GetEntity(targetID);
+            Entity source = dataHandler.GetEntity(sourceID);
 
-            foreach (var ch in dataHandler.otherCharacters)
-            {
-                Debug.Log("CHARACTERS: " + ch.Key);
-            }
-            Entity target;
-            if (targetID != dataHandler.myCharacter.id)
-                target = dataHandler.otherCharacters[targetID];
-            else target = dataHandler.myCharacter;
-
-
-            Entity source;
-            if (sourceID != dataHandler.myCharacter.id)
-                source = dataHandler.otherCharacters[sourceID];
-            else source = dataHandler.myCharacter;
             switch (skillID)
             {
                 case 1:
@@ -149,32 +87,8 @@ namespace Assets.Scripts.Handlers
                 default:
                     break;
             }
-
-            //target.Health = msgIn.ReadInt16();
         }
 
-        public void ShowNameTags()
-        {
-            hideNames = false;
-            foreach (var item in hiddenNameTags)
-            {
-                item.SetActive(true);
-            }
-        }
-        public void HideNameTags()
-        {
-            hideNames = true;
-            if (hiddenNameTags != null)
-                foreach (var item in hiddenNameTags)
-                {
-                    item.SetActive(true);
-                }
-            hiddenNameTags = GameObject.FindGameObjectsWithTag("NameTag");
-            foreach (var item in hiddenNameTags)
-            {
-                item.SetActive(false);
-            }
-        }
         public void HandleChatMessage(NetIncomingMessage msgIn, string t = "G")
         {
             string from = msgIn.ReadString();
@@ -182,11 +96,7 @@ namespace Assets.Scripts.Handlers
             menuController.ChatWindow.text += "\n[" + t + "]" + from + ": " + msg;
         }
 
-        internal void PrintFeedBack(NetIncomingMessage msgIn)
-        {
-            throw new NotImplementedException();
-        }
-        internal void HandleMobAreaData(NetIncomingMessage msgIn)
+        internal void MobSpawn(NetIncomingMessage msgIn)
         {
             int count = msgIn.ReadInt16();
             Debug.Log("MOBCOUNT: " + count);
@@ -210,7 +120,7 @@ namespace Assets.Scripts.Handlers
                 dataHandler.otherCharacters.Add(entityID, newMob);
             }
         }
-        internal void MobInformationUpdate(NetIncomingMessage msgIn)
+        internal void MobPositionUpdate(NetIncomingMessage msgIn)
         {
 
             int count = msgIn.ReadInt16();
@@ -222,13 +132,11 @@ namespace Assets.Scripts.Handlers
                     float posX = msgIn.ReadFloat();
                     float posY = msgIn.ReadFloat();
                     float posZ = msgIn.ReadFloat();
-                    dataHandler.otherCharacters[entityID].posX = posX;
-                    dataHandler.otherCharacters[entityID].posY = posY;
-                    dataHandler.otherCharacters[entityID].posZ = posZ;
+                    dataHandler.otherCharacters[entityID].position = new Vector3(posX, posY, posZ);
                 }
             }
         }
-        internal void HandleNewCharacter(NetIncomingMessage msgIn)
+        internal void EntitySpawn(NetIncomingMessage msgIn)
         {
             int characterID = msgIn.ReadInt16();
             if (characterID == dataHandler.myCharacter.id)
@@ -267,52 +175,32 @@ namespace Assets.Scripts.Handlers
                 dataHandler.otherCharacters.Remove(newCharacter.id);
             }
             dataHandler.otherCharacters.Add(newCharacter.id, newCharacter);
-            if (hideNames)
-                HideNameTags();
         }
-        internal void HandePositionUpdate(NetIncomingMessage msgIn)
+        internal void EntityPositionUpdate(NetIncomingMessage msgIn)
         {
-            int cId = msgIn.ReadInt16();
-            if (cId == dataHandler.myCharacter.id)
+            int entityID = msgIn.ReadInt16();
+            if (entityID == dataHandler.myCharacter.id)
             {
                 return;
             }
-            if (dataHandler.otherCharacters.ContainsKey(cId))
+            if (dataHandler.otherCharacters.ContainsKey(entityID))
             {
                 float posX = msgIn.ReadFloat();
                 float posY = msgIn.ReadFloat();
                 float posZ = msgIn.ReadFloat();
-                dataHandler.otherCharacters[cId].posX = posX;
-                dataHandler.otherCharacters[cId].posY = posY;
-                dataHandler.otherCharacters[cId].posZ = posZ;
+                dataHandler.otherCharacters[entityID].position = new Vector3(posX, posY, posZ);
             }
         }
-        public void SendClientReady()
-        {
-            NetOutgoingMessage msgReady = netClient.CreateMessage();
-            msgReady.Write((byte)MessageType.ClientReady);
-            netClient.SendMessage(msgReady, NetDeliveryMethod.ReliableOrdered);
-        }
-
-        public void HandleCharacterRemove(NetIncomingMessage msgIn)
+        public void EntityDespawn(NetIncomingMessage msgIn)
         {
             int cRemoveId = msgIn.ReadInt16();
             GameObject.Destroy(dataHandler.otherCharacters[cRemoveId].gameObject);
             dataHandler.otherCharacters.Remove(cRemoveId);
         }
-        public void SendPositionUpdate()
+        internal void PrintFeedBack(NetIncomingMessage msgIn)
         {
-            if (netClient.ServerConnection == null)
-                return;
-
-            NetOutgoingMessage msgOut = netClient.CreateMessage();
-            msgOut.Write((byte)MessageType.CharacterMovement);
-            msgOut.Write(dataHandler.myCharacter.id, 16);
-            msgOut.Write(dataHandler.myCharacter.transform.position.x);
-            msgOut.Write(dataHandler.myCharacter.transform.position.y);
-            msgOut.Write(dataHandler.myCharacter.transform.position.z);
-            msgOut.Write(dataHandler.myCharacter.transform.rotation.eulerAngles.y);
-            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+            menuController.ChatWindow.text += msgIn.ReadString();
         }
+
     }
 }

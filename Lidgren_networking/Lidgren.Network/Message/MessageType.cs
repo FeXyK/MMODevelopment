@@ -1,5 +1,5 @@
 ﻿
-namespace Lidgren.Network.ServerFiles
+namespace Lidgren.Network.Message
 {
     public enum MessageType
     {

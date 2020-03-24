@@ -1,10 +1,8 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Text;
+using System.Collections.Generic;
 using Utility_dotNET_Framework.Models;
-using System.Security.Permissions;
 
 namespace Utility_dotNET_Framework
 {
@@ -115,18 +113,19 @@ namespace Utility_dotNET_Framework
             Console.WriteLine("UsernameDB:\t!{0}!", account.Username);
             Console.WriteLine("UsernameUs:\t!{0}!", username);
             Console.WriteLine("PasswordDB:\t!{0}!\nPasswordUs:\t!{1}!", account.Password, hexHashedPasswordSalted);
-            if (username.ToLower().Equals(account.Username.ToLower()) && hexHashedPasswordSalted.Equals(account.Password))
-            {
-                Console.WriteLine("Password OK");
-                return account.Id;
-            }
+            if (account != null)
+                if (username.ToLower().Equals(account.Username.ToLower()) && hexHashedPasswordSalted.Equals(account.Password))
+                {
+                    Console.WriteLine("Password OK");
+                    return account.Id;
+                }
             Console.WriteLine("Password NOT OK");
             return -1;
         }
 
         private Account SQLGetAccount(string username)
         {
-            Account account = new Account();
+            Account account = null;
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 Console.WriteLine(username);
@@ -137,12 +136,15 @@ namespace Utility_dotNET_Framework
                         cmd.Parameters.AddWithValue("username", username);
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            reader.Read();
-                            account.Id = reader.GetInt32("id_account");
-                            account.Username = reader.GetString("username");
-                            account.Email = reader.GetString("email");
-                            account.Password = reader.GetString("password");
-                            account.Salt = reader.GetString("salt");
+                            if (reader.Read())
+                            {
+                                account = new Account();
+                                account.Id = reader.GetInt32("id_account");
+                                account.Username = reader.GetString("username");
+                                account.Email = reader.GetString("email");
+                                account.Password = reader.GetString("password");
+                                account.Salt = reader.GetString("salt");
+                            }
                         }
                     }
                 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -9,7 +8,6 @@ public class GameOptions : MonoBehaviour
     public SliderWithValue SliderMouseX;
     public SliderWithValue SliderMouseY;
     public SliderWithValue SliderVolume;
-    public GameObject GameOpt;
 
     [SerializeField]
     private float mouseX = 1;
@@ -48,8 +46,11 @@ public class GameOptions : MonoBehaviour
             audioVolume = value;
             if (aSource == null)
                 aSource = FindObjectOfType<AudioSource>();
-            aSource.volume = audioVolume;
-            OnChange();
+            if (aSource != null)
+            {
+                aSource.volume = audioVolume;
+                OnChange();
+            }
         }
     }
 
@@ -99,7 +100,6 @@ public class GameOptions : MonoBehaviour
             }
             File.WriteAllLines(path, content);
         }
-        GameOpt.SetActive(false);
     }
     void OnChange()
     {

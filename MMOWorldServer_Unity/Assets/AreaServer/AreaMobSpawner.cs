@@ -25,7 +25,7 @@ namespace MMOGameServer
                 gameObject.transform.position = RandomVector(-SpawnRadius / 2, SpawnRadius / 2);
 
                 mob = gameObject.AddComponent<MobBase>();
-                mob.Set(MobID, MobID + i, MobBehaviour.Passive, this);
+                mob.Set(MobID, MobID + i, MobBehaviour.Passive);
                 mob.EntityName = "Mob_" + MobID + i;
                 SpawnedMobs.Add(mob.EntityID,mob);
             }

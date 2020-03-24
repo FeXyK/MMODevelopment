@@ -1,42 +1,41 @@
 ﻿using Assets.AreaServer.Entity;
 using Lidgren.Network;
-using Lidgren.Network.ServerFiles;
-using MMOLoginServer.ServerData;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Lidgren.Network.Message;
+using UnityEngine;
 
 namespace MMOGameServer
 {
     public class AreaMessageCreater: Lidgren.Network.Message.MessageHandler
     {
         NetServer netServer;
-        public AreaMessageCreater(NetServer _netServer)
+        AreaDataHandler dataHandler;
+        public AreaMessageCreater(NetServer netServer, AreaDataHandler dataHandler)
         {
-            netServer = _netServer;
+            this.dataHandler = dataHandler;
+            this.netServer = netServer;
         }
 
-        public NetOutgoingMessage MovementMessage(CharacterData character)
+        public NetOutgoingMessage MovementMessage(Entity character)
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
             msgOut = netServer.CreateMessage();
             msgOut.Write((byte)MessageType.CharacterMovement);
-            msgOut.Write(character.id, 16);
-            msgOut.Write(character.positionX);
-            msgOut.Write(character.positionY);
-            msgOut.Write(character.positionZ);
+            msgOut.Write(character.EntityID, 16);
+            msgOut.Write(character.transform.position.x);
+            msgOut.Write(character.transform.position.y);
+            msgOut.Write(character.transform.position.z);
             return msgOut;
         }
-        public NetOutgoingMessage CreateNewCharacterMessage(CharacterData character)
+        public NetOutgoingMessage CreateNewEntityMessage(Character character)
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
             msgOut.Write((byte)MessageType.NewCharacter);
-            msgOut.Write(character.id, 16);
-            msgOut.Write(character.level, 16);
-            msgOut.Write(character.currentHealth, 16);
-            msgOut.Write(character.maxHealth, 16);
-            msgOut.Write(character.characterType, 16);
-            msgOut.Write(character.name);
+            msgOut.Write(character.EntityID, 16);
+            msgOut.Write(character.EntityLevel, 16);
+            msgOut.Write(character.EntityHealth, 16);
+            msgOut.Write(character.EntityMaxHealth, 16);
+            msgOut.Write((int)character.CharacterType, 16);
+            msgOut.Write(character.EntityName);
             return msgOut;
         }
 
@@ -45,6 +44,38 @@ namespace MMOGameServer
             NetOutgoingMessage msgOut = netServer.CreateMessage();
             msgOut.Write((byte)MessageType.OtherCharacterRemove);
             msgOut.Write(id, 16);
+            return msgOut;
+        }
+        public NetOutgoingMessage CreateNewMobMessage(NetConnection connection)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.NewMobAreaData);
+            Debug.Log(connection.ToString() + " SENDING NEW MOBINFO: " + dataHandler.mobAreas.Count);
+            foreach (var mobArea in dataHandler.mobAreas)
+            {
+                msgOut.Write(mobArea.SpawnedMobs.Count, 16);
+                foreach (var mob in mobArea.SpawnedMobs.Values)
+                {
+                    msgOut.Write(mob.EntityName);
+                    msgOut.Write(mob.EntityID, 16);
+                    msgOut.Write(mob.EntityLevel, 16);
+                    msgOut.Write(mob.transform.position.x);
+                    msgOut.Write(mob.transform.position.y);
+                    msgOut.Write(mob.transform.position.z);
+                    msgOut.Write(mob.EntityHealth, 16);
+                    msgOut.Write(mob.EntityMaxHealth, 16);
+                }
+            }
+
+            return msgOut;
+        }
+        public NetOutgoingMessage SkillCasted(int sourceID, int targetID, int skillID)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.SkillCasted);
+            msgOut.Write(sourceID, 16);
+            msgOut.Write(targetID, 16);
+            msgOut.Write(skillID, 16);
             return msgOut;
         }
     }

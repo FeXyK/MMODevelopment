@@ -1,14 +1,18 @@
 ﻿using Assets.Scripts.Handlers;
 using Assets.Scripts.LoginNetworkScripts;
 using Assets.Scripts.WorldServerNetworkScripts;
+using Lidgren.Network;
 using System;
-using System.Data;
+using System.Collections;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LoginScreenHandler : MonoBehaviour
 {
+    static string configFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.cfg";
+
     public GameObject SwitchForm;
     public GameObject LoginForm;
     public GameObject RegisterForm;
@@ -16,23 +20,16 @@ public class LoginScreenHandler : MonoBehaviour
     public GameObject CharacterSelectForm;
     public GameObject CharacterCreateForm;
 
-    public Button LoginButton;
-    public Button RegisterButton;
-    public Button SwitchFormsButton;
-    public Button LoginWorldServerButton;
-    public Button PlayCharacterButton;
-
-
     LoginMessageHandler loginMessageHandler;
     WorldServerMessageHandler worldMessageHandler;
     LoginClientManager loginClient;
     WorldServerNetwork worldServerClient;
-    bool flag = false;
 
-    static string configFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.cfg";
-    string SERVER_IP = "127.0.0.1";
-    int SERVER_PORT = 52221;
+    Thread connectingThread;
+
+    bool flag = false;
     float tickTime;
+
     private void Start()
     {
         worldServerClient = new WorldServerNetwork();
@@ -46,6 +43,24 @@ public class LoginScreenHandler : MonoBehaviour
     }
     private void Update()
     {
+        if (LoginForm != null)
+        {
+            if (connectingThread != null)
+            {
+                LoginForm.GetComponent<FormHandler>().SetInteractable(!connectingThread.IsAlive);
+            }
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                if (LoginForm.activeSelf)
+                    Login();
+                if (RegisterForm.activeSelf)
+                    Register();
+                if (CharacterSelectForm.activeSelf)
+                    PlayCharacter();
+                if (ServerSelectForm.activeSelf)
+                    LoginWorldServer();
+            }
+        }
         if (loginClient != null)
             loginClient.ReceiveMessages();
         if (worldServerClient != null)
@@ -65,46 +80,63 @@ public class LoginScreenHandler : MonoBehaviour
             worldMessageHandler.SendAlive();
             tickTime = 0;
         }
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            if (LoginForm.activeSelf)
-                Login();
-            if (RegisterForm.activeSelf)
-                Register();
-            if (CharacterSelectForm.activeSelf)
-                PlayCharacter();
-            if (ServerSelectForm.activeSelf)
-                LoginWorldServer();
-        }
     }
     public void LoginWorldServer()
     {
-        LoginWorldServerButton.interactable = false;
-        loginMessageHandler.WorldServerAuthenticationTokenRequest();
-        LoginWorldServerButton.interactable = true;
 
+        loginMessageHandler.WorldServerAuthenticationTokenRequest();
+    }
+    private void LoginThread()
+    {
+        loginMessageHandler.SetupConnection();
+        loginMessageHandler.Login();
     }
     public void Login()
     {
-        LoginButton.interactable = false;
-        loginMessageHandler.SetupConnection(SERVER_IP, SERVER_PORT);
-        loginMessageHandler.Login();
-        LoginButton.interactable = true;
+        if (connectingThread != null && !connectingThread.IsAlive)
+        {
+            connectingThread.Abort();
+            connectingThread = null;
+        }
+        if (connectingThread == null)
+        {
+            connectingThread = new Thread(new ThreadStart(LoginThread));
+
+            //loginMessageHandler.SetupConnection(SERVER_IP, SERVER_PORT);
+            //loginMessageHandler.Login();
+            connectingThread.IsBackground = true;
+            connectingThread.Start();
+        }
     }
+    private void RegisterThread()
+    {
+        loginMessageHandler.SetupConnection();
+        loginMessageHandler.Register();
+    }
+
     public void Register()
     {
-        RegisterButton.interactable = false;
-        loginMessageHandler.SetupConnection(SERVER_IP, SERVER_PORT);
-        loginMessageHandler.Register();
         SwitchForms();
-        RegisterButton.interactable = true;
+        if (connectingThread != null && !connectingThread.IsAlive)
+        {
+            connectingThread.Abort();
+            connectingThread = null;
+        }
+        if (connectingThread == null)
+        {
+            connectingThread = new Thread(new ThreadStart(RegisterThread));
+
+            //loginMessageHandler.SetupConnection(SERVER_IP, SERVER_PORT);
+            //loginMessageHandler.Login();
+            connectingThread.IsBackground = true;
+            connectingThread.Start();
+        }
     }
     public void ClearCharacterSelection()
     {
     }
     public void SwitchForms()
     {
-        SwitchFormsButton.interactable = false;
         LoginForm.SetActive(!LoginForm.activeSelf);
         RegisterForm.SetActive(!RegisterForm.activeSelf);
 
@@ -112,13 +144,10 @@ public class LoginScreenHandler : MonoBehaviour
             SwitchForm.GetComponentInChildren<TMP_Text>().text = "Login";
         else
             SwitchForm.GetComponentInChildren<TMP_Text>().text = "Registration";
-        SwitchFormsButton.interactable = true;
     }
     public void PlayCharacter()
     {
-        PlayCharacterButton.interactable = false;
         worldMessageHandler.PlayCharacter();
-        PlayCharacterButton.interactable = true;
     }
     public void ShowCharacterCreation()
     {

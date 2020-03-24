@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
 namespace Assets.Scripts.SkillSystem
 {
     public class SkillTreeController : MonoBehaviour
@@ -16,6 +11,7 @@ namespace Assets.Scripts.SkillSystem
 
         private void Start()
         {
+
             arrows = this.GetComponent<UIArrow>();
 
             TextAsset skillsText = (TextAsset)Resources.Load("SkillDetails/SkillTreeInfo", typeof(TextAsset));

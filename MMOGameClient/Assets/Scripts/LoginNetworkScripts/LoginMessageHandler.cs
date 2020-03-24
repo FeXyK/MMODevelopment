@@ -1,4 +1,5 @@
 ﻿using Lidgren.Network;
+using Lidgren.Network.Message;
 using Lidgren.Network.ServerFiles;
 using System;
 using System.IO;
@@ -111,8 +112,13 @@ namespace Assets.Scripts.Handlers
             loginScreenHandler.CharacterSelectForm.SetActive(false);
             loginScreenHandler.ServerSelectForm.SetActive(true);
         }
-        public void SetupConnection(string SERVER_IP = "123123123", int SERVER_PORT = 2)
+        public void SetupConnection()
         {
+            string SERVER_IP="";
+            int SERVER_PORT = 0;
+            if (netClient.ServerConnection != null) 
+                return;
+
             string[] lines = File.ReadAllLines(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.cfg");
             string[] data;
             foreach (var line in lines)
@@ -127,8 +133,6 @@ namespace Assets.Scripts.Handlers
                         break;
                 }
             }
-            if (netClient.ServerConnection != null)
-                return;
             NetOutgoingMessage msgLogin = netClient.CreateMessage();
 
             msgLogin.Write((byte)MessageType.KeyExchange);

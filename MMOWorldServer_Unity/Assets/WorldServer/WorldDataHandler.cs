@@ -1,9 +1,7 @@
 ﻿using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using Lidgren.Network.ServerFiles.Data;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MMOGameServer.WorldServer
 {

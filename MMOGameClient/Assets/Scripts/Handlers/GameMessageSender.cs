@@ -1,11 +1,6 @@
 ﻿using Assets.Scripts.SkillSystem;
 using Lidgren.Network;
-using Lidgren.Network.ServerFiles;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Handlers
@@ -14,11 +9,14 @@ namespace Assets.Scripts.Handlers
     {
         private static GameMessageSender instance = null;
         private NetClient netClient;
-
-        public GameMessageSender(NetClient netClient)
+        private GameDataHandler dataHandler;
+        GameMessageCreater messageCreater;
+        public GameMessageSender(NetClient netClient, GameDataHandler dataHandler)
         {
             if (instance == null)
             {
+                messageCreater = new GameMessageCreater(netClient);
+                this.dataHandler = dataHandler;
                 this.netClient = netClient;
                 instance = this;
             }
@@ -38,12 +36,49 @@ namespace Assets.Scripts.Handlers
         {
             if (target != null)
             {
-                NetOutgoingMessage msgOut = netClient.CreateMessage();
-                msgOut.Write((byte)MessageType.StartSkillCast);
-                msgOut.Write(target.id,16);
-                msgOut.Write(skill.SkillID, 16);
-
+                NetOutgoingMessage msgOut = messageCreater.CreateSkillCast(skill, target);
                 netClient.SendMessage(msgOut, NetDeliveryMethod.Unreliable);
+            }
+        }
+        public void SendClientReady()
+        {
+            NetOutgoingMessage msgReady = messageCreater.ClientReady();
+            netClient.SendMessage(msgReady, NetDeliveryMethod.ReliableOrdered);
+        }
+        public void SendPositionUpdate()
+        {
+            if (netClient.ServerConnection == null)
+                return;
+            NetOutgoingMessage msgOut = messageCreater.PositionUpdate(dataHandler.myCharacter.id, dataHandler.myCharacter.transform.position);
+            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+        }
+        public void SendPrivateChatMessage(string[] msg)
+        {
+            NetOutgoingMessage msgOut = messageCreater.PrivateChatMessage(dataHandler.myCharacter.characterName, msg);
+            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+        }
+        public void SendChatMessage(string msg)
+        {
+            NetOutgoingMessage msgOut = messageCreater.ChatMessage(dataHandler.myCharacter.characterName, msg);
+            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+        }
+        public void SendAdminChatMessage(string msg)
+        {
+            NetOutgoingMessage msgOut =messageCreater. AdminChatMessage(msg);
+            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+        }
+        public void ConnectToGameServer(int id, byte[] authToken, string publicKey, string ip, int port)
+        {
+            NetOutgoingMessage msgOut = messageCreater.ConnectingMessage(id, authToken, publicKey);
+            netClient.Connect(ip, port, msgOut);
+            Debug.Log("CONNECTING TO AREA SERVER");
+        }
+
+        internal void SendDisconnect()
+        {
+            if(netClient .ServerConnection != null)
+            {
+                netClient.Disconnect("Exiting");
             }
         }
     }

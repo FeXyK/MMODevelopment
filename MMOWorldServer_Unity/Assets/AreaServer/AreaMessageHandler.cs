@@ -2,26 +2,25 @@
 using Assets.AreaServer.SkillSystem;
 using Assets.Scripts.Handlers;
 using Lidgren.Network;
+using Lidgren.Network.Message;
 using Lidgren.Network.ServerFiles;
-using MMOLoginServer.ServerData;
+using Lidgren.Network.ServerFiles.Data;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace MMOGameServer
 {
     public class AreaMessageHandler
     {
+        ConcurrentQueue<CharacterData> newConnectionsQue;
+
         NetServer netServer;
 
         AreaDataHandler dataHandler;
         AreaMessageReader messageReader;
-        AreaMessageCreater messageCreate;
-        ConcurrentQueue<CharacterData> newConnectionsQue;
+        AreaMessageCreater messageCreater;
         AreaMessageSender messageSender;
-        Dictionary<NetConnection, Character> onlineCharacters = new Dictionary<NetConnection, Character>();
-        List<NetConnection> onlineConnections = new List<NetConnection>();
 
         GameObject characterEntity;
 
@@ -31,7 +30,7 @@ namespace MMOGameServer
             netServer = server;
             newConnectionsQue = newConnections;
             dataHandler = new AreaDataHandler();
-            messageCreate = new AreaMessageCreater(netServer);
+            messageCreater = new AreaMessageCreater(netServer, dataHandler);
             messageReader = new AreaMessageReader();
             messageSender = new AreaMessageSender(netServer);
             {
@@ -46,46 +45,24 @@ namespace MMOGameServer
         {
             if (newConnectionsQue.Count > 0)
             {
-                CharacterData character = new CharacterData();
-                newConnectionsQue.TryDequeue(out character);
-                if (character != null)
+                CharacterData characterData = new CharacterData();
+                newConnectionsQue.TryDequeue(out characterData);
+                if (characterData != null)
                 {
-                    dataHandler.connections.Add(character);
+                    dataHandler.waitingForAuth.Add(characterData);
 
-                    //Character newCharacter = LoadCharacterFrom(character);
-
-                    //onlineCharacters.Add(character.connection, newCharacter);
-                    //onlineConnections.Add(character.connection);
-
-                    Debug.Log(character.name + " added to characters");
+                    Debug.Log(characterData.name + " added to characters");
                 }
             }
         }
-        private Character LoadCharacterFrom(CharacterData data)
-        {
-            Character character = GameObject.Instantiate(characterEntity).GetComponent<Character>();
-            character.name = data.name;
-            character.EntityID = data.id;
-            character.AccountID = data.accountID;
-            character.EntityName = data.name;
-            character.EntityGold = data.gold;
-            character.EntityHealth = data.currentHealth;
-            character.EntityMaxHealth = data.maxHealth;
-            character.EntityMana = data.currentMana;
-            character.EntityLevel = data.level;
-            character.EntityBaseArmor = 60;
-            character.EntityBaseMagicResist = 60;
-            character.CharacterType = (CharacterApperance)data.characterType;
 
-            return character;
-        }
 
         internal void StartSkillCast(NetIncomingMessage msgIn)
         {
             int sourceID;//= msgIn.ReadInt16();
             int targetID = msgIn.ReadInt16();
             int skillID = msgIn.ReadInt16();
-            sourceID = dataHandler.GetCharacter(msgIn).id;
+            sourceID = dataHandler.GetEntity(msgIn.SenderConnection).EntityID;
 
             Entity target = null;
             if (targetID < 10000)
@@ -94,9 +71,9 @@ namespace MMOGameServer
             }
             else
             {
-                target = dataHandler.entities[targetID] as Character;
+                target = dataHandler.entitiesByID[targetID] as Character;
             }
-            Character source = dataHandler.entities[sourceID] as Character;
+            Character source = dataHandler.entitiesByID[sourceID] as Character;
             Debug.Log(source.EntityName + "SKILLID: " + skillID);
 
             if (source.SkillReady(skillID))
@@ -111,27 +88,9 @@ namespace MMOGameServer
                     source.ApplyCD(skillID, 2);
                     target.ApplyDamage(24);
                 }
-                NetOutgoingMessage msgOut = netServer.CreateMessage();
-                msgOut.Write((byte)MessageType.SkillCasted);
-                msgOut.Write(sourceID, 16);
-                msgOut.Write(targetID, 16);
-                msgOut.Write(skillID, 16);
-                //msgOut.Write(target.EntityHealth, 16);
+                NetOutgoingMessage msgOut = messageCreater.SkillCasted(sourceID, targetID, skillID);
                 netServer.SendToAll(msgOut, NetDeliveryMethod.Unreliable);
             }
-
-
-            //if (source.SkillReady(skillID))
-            //{
-            //    Character target = dataHandler.entities[targetID] as Character;
-            //    NetOutgoingMessage msgOut = netServer.CreateMessage();
-            //    msgOut.Write((byte)MessageType.SkillCasted);
-            //    msgOut.Write(skillID, 16);
-            //    SendInRange(msgOut);
-
-            //    target.ApplyDamage(50);
-            //}
-
         }
 
         private void SendInRange(NetOutgoingMessage msgOut)
@@ -141,23 +100,21 @@ namespace MMOGameServer
 
         public void ClientReady(NetIncomingMessage msgIn)
         {
-            CharacterData characterData = dataHandler.GetCharacter(msgIn);
+            Character characterData = dataHandler.GetEntity(msgIn.SenderConnection) as Character;
 
             //To already ingame players
-            NetOutgoingMessage msgOut = messageCreate.CreateNewCharacterMessage(characterData);
-            netServer.SendMessage(msgOut, dataHandler.netConnections, NetDeliveryMethod.ReliableOrdered, 1);
+            NetOutgoingMessage msgOut = messageCreater.CreateNewEntityMessage(characterData);
+            netServer.SendToAll(msgOut, msgIn.SenderConnection, NetDeliveryMethod.ReliableOrdered, 1);
 
             //To new connected player
-            foreach (var character in dataHandler.characters)
+            foreach (var character in dataHandler.entitiesByConnection)
             {
-                if (character.Value.connection != msgIn.SenderConnection)
+                if (character.Key != msgIn.SenderConnection)
                 {
-                    msgOut = messageCreate.CreateNewCharacterMessage(character.Value);
+                    msgOut = messageCreater.CreateNewEntityMessage((Character)character.Value);
                     msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
                 }
             }
-            //msgOut = CreateHideNamesMessage();
-            //msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
             ClientMobSpawn(msgIn.SenderConnection);
         }
 
@@ -180,35 +137,8 @@ namespace MMOGameServer
         }
         public void ClientMobSpawn(NetConnection connection)
         {
-            NetOutgoingMessage msgOut = netServer.CreateMessage();
-            msgOut.Write((byte)MessageType.NewMobAreaData);
-            Debug.Log(connection.ToString() + " SENDING NEW MOBINFO: " + dataHandler.mobAreas.Count);
-            foreach (var mobArea in dataHandler.mobAreas)
-            {
-                msgOut.Write(mobArea.SpawnedMobs.Count, 16);
-                foreach (var mob in mobArea.SpawnedMobs.Values)
-                {
-                    msgOut.Write(mob.EntityName);
-                    msgOut.Write(mob.EntityID, 16);
-                    msgOut.Write(mob.EntityLevel, 16);
-                    msgOut.Write(mob.transform.position.x);
-                    msgOut.Write(mob.transform.position.y);
-                    msgOut.Write(mob.transform.position.z);
-                    msgOut.Write(mob.EntityHealth, 16);
-                    msgOut.Write(mob.EntityMaxHealth, 16);
-                }
-                connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
-            }
-        }
-
-        public NetOutgoingMessage CreateHideNamesMessage()
-        {
-            NetOutgoingMessage msgOut = netServer.CreateMessage();
-            if (hideNames)
-                msgOut.Write((byte)MessageType.HideNames);
-            else
-                msgOut.Write((byte)MessageType.ShowNames);
-            return msgOut;
+            NetOutgoingMessage msgOut = messageCreater.CreateNewMobMessage(connection);
+            connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
         }
         internal void SendPrivateChatMessage(NetIncomingMessage msgIn)
         {
@@ -220,11 +150,11 @@ namespace MMOGameServer
             msgOut.Write((byte)MessageType.PrivateChatMessage);
             msgOut.Write(from);
             msgOut.Write(msg);
-            foreach (var character in dataHandler.characters.Values)
+            foreach (var character in dataHandler.entitiesByConnection)
             {
-                if (character.name.ToLower() == to.ToLower())
+                if (character.Value.EntityName.ToLower() == to.ToLower())
                 {
-                    character.connection.SendMessage(msgOut, NetDeliveryMethod.ReliableUnordered, 0);
+                    character.Key.SendMessage(msgOut, NetDeliveryMethod.ReliableUnordered, 0);
                 }
             }
         }
@@ -238,7 +168,6 @@ namespace MMOGameServer
             msgOut.Write(msg);
             netServer.SendToAll(msgOut, NetDeliveryMethod.Unreliable);
         }
-
         internal void HandleAdminMessage(NetIncomingMessage msgIn)
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
@@ -264,46 +193,22 @@ namespace MMOGameServer
             }
             netServer.SendToAll(msgOut, NetDeliveryMethod.ReliableOrdered);
         }
-
         public void ClientAuthentication(NetIncomingMessage msgIn)
         {
             byte[] clientLoginToken = PacketHandler.ReadEncryptedByteArray(msgIn);
             int characterId = msgIn.ReadInt16();
-            CharacterData characterData = dataHandler.connections.Find(x => x.id == characterId);
 
-            Console.WriteLine("Token length: " + clientLoginToken.Length);
-            Console.WriteLine(BitConverter.ToString(clientLoginToken));
-            Console.WriteLine(BitConverter.ToString(characterData.authToken));
+            CharacterData characterData = dataHandler.waitingForAuth.Find(x => x.id == characterId);
+
             if (dataHandler.CheckLoginToken(clientLoginToken, characterId))
             {
                 msgIn.SenderConnection.Approve();
-
-                characterData.connection = msgIn.SenderConnection;
-                //characterData.id = validToken.characterData.id;
-                //characterData.name = validToken.characterData.name;
-                characterData.currentHealth = 100;
-                characterData.positionX = 0;//new System.Numerics.Vector3(0, 0, 0);
-                characterData.positionY = 0;//new System.Numerics.Vector3(0, 0, 0);
-                characterData.positionZ = 0;//new System.Numerics.Vector3(0, 0, 0);
-                characterData.rotation = 0;
-                if (dataHandler.characters.ContainsKey(characterData.id))
-                    dataHandler.characters.Remove(characterData.id);
-                dataHandler.characters.Add(characterData.id, characterData);
-                dataHandler.netConnections.Add(msgIn.SenderConnection);
-
-                //Character newCharacter = new Character(characterData);
-                Character newCharacter = LoadCharacterFrom(characterData);
-                if (dataHandler.entities.ContainsKey(newCharacter.EntityID))
-                {
-                    dataHandler.entities.Remove(newCharacter.EntityID);
-                }
-                dataHandler.entities.Add(characterData.id, newCharacter);
-
-                foreach (var item in dataHandler.characters.Values)
-                {
-                    Console.WriteLine("CHARACTER: " + item.ToString());
-                }
                 Console.WriteLine("Authenticated!");
+
+                Character newCharacter = LoadCharacterFrom(characterData);
+                dataHandler.AddEntity(newCharacter, msgIn.SenderConnection);
+
+                dataHandler.waitingForAuth.Remove(characterData);
             }
             else
             {
@@ -316,27 +221,24 @@ namespace MMOGameServer
             float x = msgIn.ReadFloat();
             float y = msgIn.ReadFloat();
             float z = msgIn.ReadFloat();
-            dataHandler.characters[id].positionX = x;
-            dataHandler.characters[id].positionY = y;
-            dataHandler.characters[id].positionZ = z;
-            dataHandler.entities[id].transform.position = new Vector3(x, y, z);
+            dataHandler.entitiesByID[id].transform.position = new Vector3(x, y, z);
         }
         public void SendMovementMessages()
         {
             NetOutgoingMessage msgOut;
-            foreach (var character in dataHandler.characters)
+            foreach (var character in dataHandler.entitiesByID.Values)
             {
-                msgOut = messageCreate.MovementMessage(character.Value);
-                if (dataHandler.netConnections.Count > 0)
-                    netServer.SendMessage(msgOut, dataHandler.netConnections, NetDeliveryMethod.UnreliableSequenced, 1);
+                msgOut = messageCreater.MovementMessage(character);
+                //if (dataHandler.entitiesByID.Count > 0)
+                    netServer.SendToAll(msgOut, NetDeliveryMethod.UnreliableSequenced, 1);
             }
         }
         public void SendLogoutMessages(int id)
         {
             NetOutgoingMessage msgOut;
-            msgOut = messageCreate.LogoutMessage(id);
-            if (dataHandler.netConnections.Count > 0)
-                netServer.SendMessage(msgOut, dataHandler.netConnections, NetDeliveryMethod.UnreliableSequenced, 1);
+            msgOut = messageCreater.LogoutMessage(id);
+            //if (dataHandler.entitiesByID.Count > 0)
+                netServer.SendToAll(msgOut, NetDeliveryMethod.UnreliableSequenced, 1);
         }
         public void ClearConnections()
         {
@@ -369,6 +271,24 @@ namespace MMOGameServer
             //    SendLogoutMessages(key);
             //    dataHandler.characters.Remove(key);
             //}
+        }
+        private Character LoadCharacterFrom(CharacterData data)
+        {
+            Character character = GameObject.Instantiate(characterEntity).GetComponent<Character>();
+            character.name = data.name;
+            character.EntityID = data.id;
+            character.AccountID = data.accountID;
+            character.EntityName = data.name;
+            character.EntityGold = data.gold;
+            character.EntityHealth = data.currentHealth;
+            character.EntityMaxHealth = data.maxHealth;
+            character.EntityMana = data.currentMana;
+            character.EntityLevel = data.level;
+            character.EntityBaseArmor = 60;
+            character.EntityBaseMagicResist = 60;
+            character.CharacterType = (CharacterApperance)data.characterType;
+
+            return character;
         }
     }
 }

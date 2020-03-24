@@ -2,10 +2,6 @@ using MMOGameServer;
 using System;
 using System.Threading;
 using UnityEngine;
-using System.Data;
-using System.IO;
-using System.Diagnostics.PerformanceData;
-using System.Text;
 
 public class WorldServerManager : MonoBehaviour
 {
@@ -16,7 +12,8 @@ public class WorldServerManager : MonoBehaviour
     string areaServerConfigFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\AreaServerConfig.txt";
     void Start()
     {
-        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;  // VSync must be disabled
+        Application.targetFrameRate = 45;
         {
             worldServer = new WorldServerCore();
             worldServer.areaServer = new AreaServerCore();

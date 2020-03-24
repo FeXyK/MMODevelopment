@@ -1,10 +1,4 @@
-﻿using Assets.Scripts.LoginScreen;
-using MMOLoginServer.ServerData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Handlers
@@ -17,7 +11,15 @@ namespace Assets.Scripts.Handlers
         {
             myCharacter = GameObject.FindObjectOfType<Entity>();
             myCharacter.Set(LoginDataHandler.GetInstance().selectedCharacter);
-            myCharacter.Health = 100;
+            myCharacter.Health = myCharacter.MaxHealth;
+        }
+        public Entity GetEntity(int entityID)
+        {
+            if (entityID == myCharacter.id)
+                return myCharacter;
+            else
+                return otherCharacters[entityID];
+
         }
     }
 }
