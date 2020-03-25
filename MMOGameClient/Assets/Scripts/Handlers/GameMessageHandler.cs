@@ -13,14 +13,14 @@ namespace Assets.Scripts.Handlers
         NetClient netClient;
         public GameDataHandler dataHandler;
         GameMessageSender messageSender;
-        MenuController menuController;
+        UIManager uiManager;
 
         SkillTreeController skillController;
         public GameMessageHandler(NetClient client)
         {
             netClient = client;
             dataHandler = new GameDataHandler();
-            menuController = GameObject.FindObjectOfType<MenuController>();
+            uiManager = GameObject.FindObjectOfType<UIManager>();
 
             messageSender = new GameMessageSender(netClient, dataHandler);
         }
@@ -95,7 +95,7 @@ namespace Assets.Scripts.Handlers
         {
             string from = msgIn.ReadString();
             string msg = msgIn.ReadString();
-            menuController.ChatWindow.text += "\n[" + t + "]" + from + ": " + msg;
+            uiManager.wChat.WriteLine("[" + t + "]" + from + ": " + msg);
         }
 
         internal void MobSpawn(NetIncomingMessage msgIn)
@@ -132,10 +132,10 @@ namespace Assets.Scripts.Handlers
             {
                 skillID = msgIn.ReadInt16();
                 level = msgIn.ReadInt16();
-                
+
                 foreach (var skill in skillController.skills)
                 {
-                    if(skill.SkillID == skillID)
+                    if (skill.SkillID == skillID)
                     {
                         skill.SetLevel((SkillRank)level);
                     }
@@ -219,10 +219,9 @@ namespace Assets.Scripts.Handlers
             GameObject.Destroy(dataHandler.otherCharacters[cRemoveId].gameObject);
             dataHandler.otherCharacters.Remove(cRemoveId);
         }
-        internal void PrintFeedBack(NetIncomingMessage msgIn)
+        internal void Notification(NetIncomingMessage msgIn)
         {
-            menuController.ChatWindow.text += msgIn.ReadString();
+            uiManager.wChat.WriteLine(msgIn.ReadString());
         }
-
     }
 }

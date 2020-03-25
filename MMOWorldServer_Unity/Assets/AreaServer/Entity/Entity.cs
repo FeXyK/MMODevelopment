@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Handlers;
+﻿using Assets.AreaServer.SkillSystem;
+using Assets.Scripts.Handlers;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,27 +35,24 @@ namespace Assets.AreaServer.Entity
         public float EntityBaseArmor;
         public float EntityBaseMagicResist;
 
-        public Dictionary<int, float> skillCooldown = new Dictionary<int, float>();
+        public Dictionary<int, SkillItem> skills = new Dictionary<int, SkillItem>();
 
         //List<SkillBuff> buffs = new List<SkillBuff>();
         private void Start()
         {
             for (int i = 0; i < 10; i++)
             {
-                skillCooldown.Add(i, Time.time);
+                skills.Add(i, new SkillItem(i, 21, 4, i));
             }
         }
-        public virtual void Update()
+        public void ApplyCD(int skillID)
         {
-        }
-        public void ApplyCD(int skillID, float cooldown)
-        {
-            skillCooldown[skillID] = Time.time + cooldown;
-            Debug.Log("COOLDOWN: " + Time.time + "       Time: " + skillCooldown[skillID]);
+            skills[skillID].SetCooldown();// = Time.time + cooldown;
+            Debug.Log("COOLDOWN: " + skills[skillID].GetCooldown());
         }
         public bool SkillReady(int skillID)
         {
-            if (skillCooldown[skillID] < Time.time)
+            if (skills[skillID].IsReady())
             {
                 return true;
             }
@@ -68,9 +66,13 @@ namespace Assets.AreaServer.Entity
         {
 
         }
-        internal void ApplyDamage(int dmg)
+        public void ApplyDamage(int dmg)
         {
             EntityHealth -= dmg;
+        }
+        public int GetDamage(int skillID)
+        {
+            return skills[skillID].GetDamage();
         }
     }
 }

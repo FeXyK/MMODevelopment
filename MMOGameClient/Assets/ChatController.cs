@@ -49,7 +49,7 @@ public class ChatController : MonoBehaviour
     }
     void Update()
     {
-        
+
     }
     public string GetMessage()
     {
@@ -75,5 +75,15 @@ public class ChatController : MonoBehaviour
             ChatInput.interactable = false;
             this.transform.SetAsFirstSibling();
         }
+    }
+
+    internal void WriteLine(string msg)
+    {
+        ChatWindow.text += msg + "\n";
+    }
+
+    internal void Write(string msg)
+    {
+        ChatWindow.text += msg;
     }
 }

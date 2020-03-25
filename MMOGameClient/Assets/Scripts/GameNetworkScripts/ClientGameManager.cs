@@ -45,7 +45,7 @@ namespace Assets.Scripts.GameNetworkScripts
                     switch (msgType)
                     {
                         case MessageType.Notification:
-                            messageHandler.PrintFeedBack(msgIn);
+                            messageHandler.Notification(msgIn);
                             break;
                         case MessageType.NewCharacter:
                             Debug.Log(msgType);

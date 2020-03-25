@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace Assets.AreaServer.Entity
 {
   public class Character : Entity
@@ -7,9 +9,10 @@ namespace Assets.AreaServer.Entity
         public CharacterApperance CharacterType;
         public Gear CharacterGear;
 
-        public override void Update()
+        public  void Update()
         {
-            base.Update();
+            //base.Update();
         }
+
     }
 }

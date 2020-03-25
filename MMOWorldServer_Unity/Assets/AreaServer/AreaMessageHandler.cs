@@ -59,10 +59,9 @@ namespace MMOGameServer
 
         internal void StartSkillCast(NetIncomingMessage msgIn)
         {
-            int sourceID;//= msgIn.ReadInt16();
             int targetID = msgIn.ReadInt16();
             int skillID = msgIn.ReadInt16();
-            sourceID = dataHandler.GetEntity(msgIn.SenderConnection).EntityID;
+            Character source = dataHandler.GetEntity(msgIn.SenderConnection) as Character;
 
             Entity target = null;
             if (targetID < 10000)
@@ -73,24 +72,43 @@ namespace MMOGameServer
             {
                 target = dataHandler.entitiesByID[targetID] as Character;
             }
-            Character source = dataHandler.entitiesByID[sourceID] as Character;
+            //Character source = dataHandler.entitiesByID[sourceID] as Character;
             Debug.Log(source.EntityName + "SKILLID: " + skillID);
 
             if (source.SkillReady(skillID))
             {
                 if (skillID == 1)
                 {
-                    source.ApplyCD(skillID, 5);
-                    GameObject.Instantiate(SkillList.Instance.Projectile).GetComponent<SkillProjectile>().Set(source.transform, target);
+                    source.ApplyCD(skillID);
+                    GameObject.Instantiate(SkillList.Instance.Projectile).GetComponent<SkillProjectile>().Set(source.transform, target, source.GetDamage(skillID));
                 }
                 else if (skillID == 4)
                 {
-                    source.ApplyCD(skillID, 2);
-                    target.ApplyDamage(24);
+                    source.ApplyCD(skillID);
+                    target.ApplyDamage(source.GetDamage(skillID));
                 }
-                NetOutgoingMessage msgOut = messageCreater.SkillCasted(sourceID, targetID, skillID);
+                NetOutgoingMessage msgOut = messageCreater.SkillCasted(source.EntityID, targetID, skillID);
                 netServer.SendToAll(msgOut, NetDeliveryMethod.Unreliable);
             }
+            else
+            {
+                NetOutgoingMessage msgOut = messageCreater.CreateNotification("Skill not ready! CD: " + source.skills[skillID].GetCooldown());
+                msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.Unreliable, 0);
+            }
+        }
+
+        internal void SkillLeveled(NetIncomingMessage msgIn)
+        {
+            Character source = dataHandler.GetEntity(msgIn.SenderConnection) as Character;
+            int skillID = msgIn.ReadInt16();
+            if (source.skills[skillID].IsMaxLevel())
+            {
+                NetOutgoingMessage msgOut = messageCreater.CreateNotification("Skill already max! Level: " + source.skills[skillID].GetLevel());
+                msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.Unreliable, 0);
+            }
+            else
+                source.skills[skillID].LevelUp();
+
         }
 
         private void SendInRange(NetOutgoingMessage msgOut)
@@ -230,7 +248,7 @@ namespace MMOGameServer
             {
                 msgOut = messageCreater.MovementMessage(character);
                 //if (dataHandler.entitiesByID.Count > 0)
-                    netServer.SendToAll(msgOut, NetDeliveryMethod.UnreliableSequenced, 1);
+                netServer.SendToAll(msgOut, NetDeliveryMethod.UnreliableSequenced, 1);
             }
         }
         public void SendLogoutMessages(int id)
@@ -238,7 +256,7 @@ namespace MMOGameServer
             NetOutgoingMessage msgOut;
             msgOut = messageCreater.LogoutMessage(id);
             //if (dataHandler.entitiesByID.Count > 0)
-                netServer.SendToAll(msgOut, NetDeliveryMethod.UnreliableSequenced, 1);
+            netServer.SendToAll(msgOut, NetDeliveryMethod.UnreliableSequenced, 1);
         }
         public void ClearConnections()
         {

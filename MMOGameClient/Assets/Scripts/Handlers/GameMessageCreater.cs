@@ -2,6 +2,7 @@
 using Lidgren.Network;
 using Lidgren.Network.Message;
 using Lidgren.Network.ServerFiles;
+using System;
 using UnityEngine;
 
 namespace Assets.Scripts.Handlers
@@ -40,7 +41,7 @@ namespace Assets.Scripts.Handlers
             //msgOut.Write(dataHandler.myCharacter.transform.rotation.eulerAngles.y);
             return msgOut;
         }
-        public NetOutgoingMessage PrivateChatMessage(string characterName,string[] msg)
+        public NetOutgoingMessage PrivateChatMessage(string characterName, string[] msg)
         {
             NetOutgoingMessage msgOut = netClient.CreateMessage();
             msgOut.Write((byte)MessageType.PrivateChatMessage);
@@ -49,7 +50,7 @@ namespace Assets.Scripts.Handlers
             msgOut.Write(msg[1]);
             return msgOut;
         }
-        public NetOutgoingMessage ChatMessage(string characterName,string msg)
+        public NetOutgoingMessage ChatMessage(string characterName, string msg)
         {
             NetOutgoingMessage msgOut = netClient.CreateMessage();
             msgOut.Write((byte)MessageType.PublicChatMessage);
@@ -73,5 +74,13 @@ namespace Assets.Scripts.Handlers
             return msgOut;
         }
 
+        internal NetOutgoingMessage LevelUpSkill(int skillID, int level)
+        {
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            msgOut.Write((byte)MessageType.SkillLeveled);
+            msgOut.Write(skillID, 16);
+            msgOut.Write(level, 16);
+            return msgOut;
+        }
     }
 }

@@ -191,12 +191,10 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetPath)" "D:\Github\MMODevelopment\MMOGameClient\Assets\Include\$(TargetFileName)"
-copy /Y "$(TargetPath)" "D:\Github\MMODevelopment\MMOWorldServer_Unity\Assets\Include\$(TargetFileName)"
-copy /Y "$(TargetPath)" "D:\Github\MMODevelopment\MMOGameServer\MMOGameServer\bin\Debug\netcoreapp3.1\$(TargetFileName)"
-copy /Y "$(TargetDir)$(TargetName).pdb" "D:\Github\MMODevelopment\MMOGameClient\Assets\Include\$(TargetName).pdb"
-copy /Y "$(TargetDir)$(TargetName).pdb" "D:\Github\MMODevelopment\MMOWorldServer_Unity\Assets\Include\$(TargetName).pdb"
-copy /Y "$(TargetDir)$(TargetName).pdb" "D:\Github\MMODevelopment\MMOGameServer\MMOGameServer\bin\Debug\netcoreapp3.1\$(TargetName).pdb"</PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(TargetPath)" "F:\Github\MMODevelopment\MMOGameClient\Assets\Include\$(TargetFileName)"
+copy /Y "$(TargetPath)" "F:\Github\MMODevelopment\MMOWorldServer_Unity\Assets\Include\$(TargetFileName)"
+copy /Y "$(TargetDir)$(TargetName).pdb" "F:\Github\MMODevelopment\MMOGameClient\Assets\Include\$(TargetName).pdb"
+copy /Y "$(TargetDir)$(TargetName).pdb" "F:\Github\MMODevelopment\MMOWorldServer_Unity\Assets\Include\$(TargetName).pdb"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

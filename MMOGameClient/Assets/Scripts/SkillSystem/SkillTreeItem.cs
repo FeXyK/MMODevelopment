@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.Handlers;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -16,7 +17,7 @@ namespace Assets.Scripts.SkillSystem
         public Image Art;
         public Image Border;
         public Tooltip Tooltip;
-
+        int level = 0;
         public List<Image> levels = new List<Image>();
 
         SkillItemDrag skillItem;
@@ -89,6 +90,9 @@ namespace Assets.Scripts.SkillSystem
             if ((int)Rank < 4)
                 Rank = Rank + 1;
             SetLevel(Rank);
+            if (level <= 4)
+                GameMessageSender.Instance.LevelUpSkill(skillItem.skill.SkillID, level++);
+            //GameMessageSender.Instance.LevelUpSkill(skillItem.skill.Level);
         }
         public void OnPointerEnter(PointerEventData eventData)
         {

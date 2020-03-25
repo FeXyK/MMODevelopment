@@ -26,11 +26,11 @@ namespace Assets.AreaServer.Entity
             rigi = this.gameObject.GetComponent<Rigidbody>();
             MoveTimerDefault = UnityEngine.Random.Range(2, 10);
         }
-        public override void Update()
+        public /*override*/ void Update()
         {
             if (Alive)
             {
-                base.Update();
+                //base.Update();
                 MoveTimer -= Time.deltaTime;
                 if (MoveTimer < 0)
                 {

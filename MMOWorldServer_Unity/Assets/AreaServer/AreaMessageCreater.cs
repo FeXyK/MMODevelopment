@@ -1,6 +1,7 @@
 ﻿using Assets.AreaServer.Entity;
 using Lidgren.Network;
 using Lidgren.Network.Message;
+using System;
 using UnityEngine;
 
 namespace MMOGameServer
@@ -76,6 +77,14 @@ namespace MMOGameServer
             msgOut.Write(sourceID, 16);
             msgOut.Write(targetID, 16);
             msgOut.Write(skillID, 16);
+            return msgOut;
+        }
+
+        internal NetOutgoingMessage CreateNotification(string msg)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.Notification);
+            msgOut.Write(msg);
             return msgOut;
         }
     }

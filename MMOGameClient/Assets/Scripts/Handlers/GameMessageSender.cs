@@ -74,6 +74,12 @@ namespace Assets.Scripts.Handlers
             Debug.Log("CONNECTING TO AREA SERVER");
         }
 
+        internal void LevelUpSkill(int skillID, int level)
+        {
+            NetOutgoingMessage msgOut = messageCreater.LevelUpSkill(skillID,level);
+            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+        }
+
         internal void SendDisconnect()
         {
             if(netClient .ServerConnection != null)

@@ -57,10 +57,12 @@ namespace MMOGameServer
                             Console.WriteLine((MessageType)msgType);
                             messageHandler.ClientReady(msgIn);
                             break;
+                        case MessageType.SkillLeveled:
+                            messageHandler.SkillLeveled(msgIn);
+                            break;
                         case MessageType.StartSkillCast:
                             messageHandler.StartSkillCast(msgIn);
                             break;
-
                     }
                 }
                 netPeer.Recycle(msgIn);

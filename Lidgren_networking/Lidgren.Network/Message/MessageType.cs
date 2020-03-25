@@ -50,6 +50,7 @@ namespace Lidgren.Network.Message
         StartSkillCast,
         EndSkillCast,
         SkillCasted,
+        SkillLeveled,
         EntityUpdate,
 
         Client,
