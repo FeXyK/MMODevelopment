@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Lidgren.Network;
 using Lidgren.Network.ServerFiles.Data;
 using UnityEngine;
+using Assets;
 
 namespace MMOGameServer
 {
@@ -11,7 +12,7 @@ namespace MMOGameServer
     {
         public string serverName = "Europe";
 
-        public List<CharacterData> waitingForAuth = new List<CharacterData>();
+        public List<CharacterWrapper> waitingForAuth = new List<CharacterWrapper>();
 
         public Dictionary<int, Entity> entitiesByID = new Dictionary<int, Entity>();
         public Dictionary<NetConnection, Entity> entitiesByConnection = new Dictionary<NetConnection, Entity>();
@@ -73,10 +74,10 @@ namespace MMOGameServer
                 Console.WriteLine("AUTH TOKENS: ");
                 Console.WriteLine(BitConverter.ToString(character.authToken));
                 Console.WriteLine(BitConverter.ToString(clientLoginToken));
-                Console.WriteLine(character.name + " END");
+                Console.WriteLine(character.character.EntityName + " END");
                 Console.WriteLine("---------------------");
 
-                if (ByteArrayCompare(character.authToken, clientLoginToken) && characterId == character.id)
+                if (ByteArrayCompare(character.authToken, clientLoginToken) && characterId == character.character.EntityID)
                 {
                     Console.WriteLine("ClientAuthenticated");
                     return true;
@@ -99,7 +100,7 @@ namespace MMOGameServer
             int mobID = (int)((float)targetID / 100);
             foreach (var mobArea in mobAreas)
             {
-                if(mobArea.MobID == mobID)
+                if (mobArea.MobID == mobID)
                 {
                     Debug.Log("MOBID: " + mobID);
                     return mobArea.SpawnedMobs[targetID];

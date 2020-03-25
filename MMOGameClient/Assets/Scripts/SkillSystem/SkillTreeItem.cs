@@ -37,6 +37,8 @@ namespace Assets.Scripts.SkillSystem
 
         public void SetLevel(SkillRank rank)
         {
+            Debug.LogWarning("INCREASED TO: " + (int)rank);
+            Rank = rank;
             switch (rank)
             {
                 case SkillRank.NotAvailable:
@@ -86,11 +88,11 @@ namespace Assets.Scripts.SkillSystem
         }
         public void OnDoubleClick()
         {
-            if (skillItem.skill.Level < 4)
+            if ((int)Rank < 4)
             {
                 Rank = Rank + 1;
                 SetLevel(Rank);
-                skillItem.skill.IncreaseLevel();
+                skillItem.skill.IncreaseLevel((int)Rank);
                 GameMessageSender.Instance.LevelUpSkill(skillItem.skill.SkillID, skillItem.skill.Level);
                 Debug.Log(skillItem.skill.Level);
             }

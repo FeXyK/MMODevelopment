@@ -210,8 +210,8 @@ namespace Utility_dotNET_Framework
         private Character LoadCharacter(MySqlDataReader reader)
         {
             Character character = new Character();
-            character = new Character();
             character.CharacterID = reader.GetInt32("id_character");
+            character.AccountID = reader.GetInt32("id_account");
             character.AccountID = reader.GetInt32("id_account");
             character.Name = reader.GetString("name");
             character.CharType = reader.GetInt32("type");
@@ -224,7 +224,100 @@ namespace Utility_dotNET_Framework
             character.PosY = reader.GetFloat("y_position");
             character.PosZ = reader.GetFloat("z_position");
 
+            character.Skills = GetCharacterSkills(character.CharacterID);
+
             return character;
+        }
+        public List<Skill> GetSkillsData()
+        {
+            List<Skill> skills = new List<Skill>();
+            List<Effect> effects;
+            effects = GetEffectsData();
+            Skill skill;
+
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM mmo.skill", conn))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            skill = new Skill();
+                            skill.SkillID = reader.GetInt16("id_skill");
+                            skill.Name = reader.GetString("skill_name");
+                            for (int i = 0; i < 7; i++)
+                            {
+                                int id = reader.GetInt16("skill_stat_" + i);
+                                if (id != 0)
+                                {
+                                    int value = reader.GetInt16("skill_stat_" + i + "_value");
+                                    skill.Effects.Add(id, new Effect(id, value));
+                                }
+                            }
+                            skills.Add(skill);
+                        }
+                    }
+                }
+            }
+
+            return skills;
+        }
+
+        private List<Effect> GetEffectsData()
+        {
+            List<Effect> effects = new List<Effect>();
+            Effect effect;
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM mmo.stat", conn))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            effect = LoadEffect(reader);
+                            effects.Add(effect);
+                        }
+                    }
+                }
+            }
+            return effects;
+        }
+        private Effect LoadEffect(MySqlDataReader reader)
+        {
+            Effect effect = new Effect();
+            effect.EffectID = reader.GetInt16("id_stat");
+            effect.Name = reader.GetString("name");
+
+            return effect;
+        }
+
+        private List<Skill> GetCharacterSkills(int characterID)
+        {
+            List<Skill> skills = new List<Skill>();
+            Skill skill;
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM mmo.character_skill WHERE id_character = @characterID", conn))
+                {
+                    cmd.Parameters.AddWithValue("characterID", characterID);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            skill = new Skill();
+                            skill.Level = reader.GetInt16("level");
+                            skill.SkillID = reader.GetInt16("id_skill");
+                            skills.Add(skill);
+                        }
+                    }
+                }
+            }
+            return skills;
         }
     }
 }

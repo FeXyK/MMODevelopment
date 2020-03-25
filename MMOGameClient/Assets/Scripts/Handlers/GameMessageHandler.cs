@@ -15,12 +15,13 @@ namespace Assets.Scripts.Handlers
         GameMessageSender messageSender;
         UIManager uiManager;
 
-        SkillTreeController skillController;
         public GameMessageHandler(NetClient client)
         {
             netClient = client;
             dataHandler = new GameDataHandler();
             uiManager = GameObject.FindObjectOfType<UIManager>();
+
+
 
             messageSender = new GameMessageSender(netClient, dataHandler);
         }
@@ -128,18 +129,23 @@ namespace Assets.Scripts.Handlers
             int count = msgIn.ReadInt16();
             int skillID;
             int level;
+                uiManager.wSkill.SetActive(true);
+            GameObject.FindObjectOfType<SkillTreeController>().Initialize();
             for (int i = 0; i < count; i++)
             {
                 skillID = msgIn.ReadInt16();
                 level = msgIn.ReadInt16();
-
-                foreach (var skill in skillController.skills)
+                Debug.LogWarning("SKILLID: " + skillID);
+                Debug.LogWarning("level: " + level);
+                foreach (var skill in GameObject.FindObjectOfType<SkillTreeController>().skills)
                 {
+                Debug.LogWarning("skill: " + skill.SkillID);
                     if (skill.SkillID == skillID)
                     {
                         skill.SetLevel((SkillRank)level);
                     }
                 }
+                //skillController.gameObject.SetActive(true);
             }
         }
         internal void MobPositionUpdate(NetIncomingMessage msgIn)

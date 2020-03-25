@@ -17,7 +17,6 @@ namespace Assets.AreaServer.Entity
 
         public int EntityMaxHealth;
         private int entityHealth;
-
         public int EntityHealth
         {
             get { return entityHealth; }
@@ -35,24 +34,24 @@ namespace Assets.AreaServer.Entity
         public float EntityBaseArmor;
         public float EntityBaseMagicResist;
 
-        public Dictionary<int, SkillItem> skills = new Dictionary<int, SkillItem>();
+        public Dictionary<int, SkillItem> Skills = new Dictionary<int, SkillItem>();
 
         //List<SkillBuff> buffs = new List<SkillBuff>();
         private void Start()
         {
-            for (int i = 0; i < 10; i++)
-            {
-                skills.Add(i, new SkillItem(i, 21, 4, i));
-            }
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    Skills.Add(i, new SkillItem(i, 21, 4, i));
+            //}
         }
         public void ApplyCD(int skillID)
         {
-            skills[skillID].SetCooldown();// = Time.time + cooldown;
-            Debug.Log("COOLDOWN: " + skills[skillID].GetCooldown());
+            Skills[skillID].SetCooldown();// = Time.time + cooldown;
+            Debug.Log("COOLDOWN: " + Skills[skillID].GetCooldown());
         }
         public bool SkillReady(int skillID)
         {
-            if (skills[skillID].IsReady())
+            if (Skills[skillID].IsReady())
             {
                 return true;
             }
@@ -72,7 +71,7 @@ namespace Assets.AreaServer.Entity
         }
         public int GetDamage(int skillID)
         {
-            return skills[skillID].GetDamage();
+            return Skills[skillID].GetDamage();
         }
     }
 }

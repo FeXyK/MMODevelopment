@@ -1,7 +1,9 @@
 ﻿using Assets.AreaServer.Entity;
+using Assets.AreaServer.SkillSystem;
 using Lidgren.Network;
 using Lidgren.Network.Message;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MMOGameServer
@@ -85,6 +87,19 @@ namespace MMOGameServer
             NetOutgoingMessage msgOut = netServer.CreateMessage();
             msgOut.Write((byte)MessageType.Notification);
             msgOut.Write(msg);
+            return msgOut;
+        }
+
+        internal NetOutgoingMessage SkillInformation(Dictionary<int, SkillItem> skills)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.SkillListInformation);
+            msgOut.Write(skills.Count, 16);
+            foreach (var skill in skills)
+            {
+                msgOut.Write(skill.Key,16);
+                msgOut.Write(skill.Value.GetLevel(),16);
+            }
             return msgOut;
         }
     }

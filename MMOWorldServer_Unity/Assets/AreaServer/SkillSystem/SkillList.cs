@@ -1,11 +1,15 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using Utility_dotNET_Framework.Models;
 
 namespace Assets.AreaServer.SkillSystem
 {
-    class SkillList
+    public class SkillList
     {
+        public List<Skill> Skills = new List<Skill>();
         public GameObject Projectile;
         public GameObject AoE;
+
         private static SkillList instance;
         public static SkillList Instance
         {

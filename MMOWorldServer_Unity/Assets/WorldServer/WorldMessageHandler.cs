@@ -5,9 +5,11 @@ using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using Lidgren.Network.ServerFiles.Data;
 using Utility_dotNET_Framework;
-using Utility_dotNET_Framework.Models;
 using UnityEngine;
 using Lidgren.Network.Message;
+using Assets;
+using Assets.AreaServer.Entity;
+using Assets.AreaServer.SkillSystem;
 
 namespace MMOGameServer.WorldServer
 {
@@ -19,7 +21,11 @@ namespace MMOGameServer.WorldServer
         WorldMessageCreater messageCreater;
         WorldDataHandler dataHandler;
         Selection selection;
-        const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMODevelopment\MMOLoginServer\MMOGameServer\MMODB.mdf;Integrated Security=True";
+
+        //const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMODevelopment\MMOLoginServer\MMOGameServer\MMODB.mdf;Integrated Security=True";
+        const int cooldownID = 130;
+        const int spellDamageID = 40;
+
 
         public WorldMessageHandler(NetServer server, WorldDataHandler handler)
         {
@@ -29,6 +35,8 @@ namespace MMOGameServer.WorldServer
             messageCreater = new WorldMessageCreater();
             messageCreater = new WorldMessageCreater();
             selection = new Selection("192.168.0.24", "mmo", 3306, "fexyk", "asdqwe123");
+            SkillList.Instance.Skills = selection.GetSkillsData();
+            //ItemList.Instance.Items = selection.GetItemsData();
         }
         internal void KeyExchange(NetIncomingMessage msgIn)
         {
@@ -56,7 +64,6 @@ namespace MMOGameServer.WorldServer
             Selection.instance.DeleteCharacter(account.id, characterName);
             SendCharacterList(msgIn);
         }
-
         internal void CreateCharacter(NetIncomingMessage msgIn)
         {
             ConnectionData account;
@@ -90,35 +97,49 @@ namespace MMOGameServer.WorldServer
             if (username == account.name && account.authenticated)
             {
                 account.authToken = Util.GenerateRandomSequence(40);
-                CharacterData character = new CharacterData();
-                Character temp = selection.GetCharacterData(account.id, characterId, characterName);
-
+                CharacterWrapper data = new CharacterWrapper();
+                Utility_dotNET_Framework.Models.Character temp = selection.GetCharacterData(account.id, characterId, characterName);
                 {
-                    character.name = temp.Name;
-                    character.id = temp.CharacterID;
-                    character.accountID = temp.AccountID;
-                    character.positionX = (float)temp.PosX.Value;
-                    character.positionY = (float)temp.PosY.Value;
-                    character.positionZ = (float)temp.PosZ.Value;
-                    //character.rotation = (float)temp.Rotation.Value;
-                    character.currentHealth = temp.Health.Value;
-                    character.maxHealth = temp.Health.Value;
-                    character.currentMana = temp.Mana.Value;
-                    character.level = temp.Level.Value;
-                    character.currentExp = temp.Exp.Value;
-                    character.characterType = temp.CharType.Value;
-                    //character.= temp.CharSkills.Value;
-                    character.gold = temp.Gold.Value;
+                    data.character.EntityName = temp.Name;
+                    data.character.EntityID = temp.CharacterID;
+                    data.character.AccountID = temp.AccountID;
+                    data.character.EntityHealth = temp.Health.Value;
+                    data.character.EntityMaxHealth = temp.Health.Value;
+                    data.character.EntityMana = temp.Mana.Value;
+                    data.character.EntityMaxMana = temp.Mana.Value;
+                    data.character.EntityLevel = temp.Level.Value;
+                    data.character.EntityExp = temp.Exp.Value;
+                    data.character.CharacterType = (CharacterApperance)temp.CharType.Value;
+                    data.character.EntityGold = temp.Gold.Value;
+
+                    int damage;//= SkillList.Instance.Skills();
+                    float cooldown;// = SkillList.Instance.Skills.GetCooldown();
+
+                    foreach (var skill in temp.Skills)
+                    {
+                        foreach (var skillItem in SkillList.Instance.Skills)
+                        {
+                            if (skill.SkillID == skillItem.SkillID)
+                            {
+                                damage = skillItem.Effects[spellDamageID].Value;
+                                cooldown = skillItem.Effects[cooldownID].Value;
+                                data.character.Skills.Add(skill.SkillID, new SkillItem(skill.SkillID, damage, cooldown, skill.Level));
+
+                            }
+                        }
+                    }
                 }
 
-                character.authToken = account.authToken;
-                character.admin = account.admin;
-                character.authenticated = false;
-                character.accountID = account.id;
-                character.publicKey = account.publicKey;
-                Console.WriteLine("AIUODEHUSADASJKNADSJNDSA:::::::    " + character.id);
+                data.position = new Vector3((float)temp.PosX.Value, (float)temp.PosY.Value, (float)temp.PosZ.Value);
+                data.authToken = account.authToken;
+                data.admin = account.admin;
+                data.authenticated = false;
+                data.accountID = account.id;
+                data.publicKey = account.publicKey;
 
-                areaServer.newConnections.Enqueue(character);
+
+
+                areaServer.newConnections.Enqueue(data);
 
                 NetOutgoingMessage msgOut = netServer.CreateMessage();
                 msgOut.Write((byte)MessageType.NewAuthenticationToken);
@@ -246,7 +267,7 @@ namespace MMOGameServer.WorldServer
         internal void UpdateAccountCharacterList(ClientData account)
         {
             account.characters.Clear();
-            List<Character> charactersTemp = Selection.instance.GetCharactersData(account.id);
+            List<Utility_dotNET_Framework.Models.Character> charactersTemp = Selection.instance.GetCharactersData(account.id);
             CharacterData character;
             foreach (var temp in charactersTemp)
             {
@@ -262,6 +283,7 @@ namespace MMOGameServer.WorldServer
                 character.level = temp.Level.Value;
                 character.currentExp = temp.Exp.Value;
                 character.characterType = temp.CharType.Value;
+
                 Debug.Log("CHTYPE: " + character.characterType);
                 //character.= temp.CharSkills.Value;
                 character.gold = temp.Gold.Value;

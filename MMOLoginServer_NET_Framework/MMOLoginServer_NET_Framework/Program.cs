@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using Lidgren.Network.ServerFiles.Data;
+using Utility_dotNET_Framework;
 
 namespace MMOLoginServer
 {
@@ -16,7 +17,12 @@ namespace MMOLoginServer
         static List<ConnectionData> gameServers;
         static void Main(string[] args)
         {
+            //Selection dbSelection = new Selection("192.168.0.24", "mmo", 3306, "fexyk", "asdqwe123");
 
+            //foreach (var skill in dbSelection.GetSkillsData())
+            //{
+            //    Console.WriteLine(skill);
+            //}
             gameServers = new List<ConnectionData>();
             Debug.enable = DEBUG_ENABLED;
             ConnectionData gameServerData = new ConnectionData();
@@ -50,6 +56,7 @@ namespace MMOLoginServer
 
             loginMaster.Initialize(LOGIN_SERVER_NAME, LOGIN_SERVER_PORT);
             loginMaster.StartServer(LOGIN_SERVER_FRAMERATE);
+            Console.ReadLine();
         }
     }
 }

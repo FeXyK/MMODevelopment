@@ -81,6 +81,7 @@
     <Compile Include="Assets\AreaServer\SkillSystem\SkillItem.cs" />
     <Compile Include="Assets\AreaServer\SkillSystem\SkillList.cs" />
     <Compile Include="Assets\AreaServer\SkillSystem\SkillProjectile.cs" />
+    <Compile Include="Assets\CharacterWrapper.cs" />
     <Compile Include="Assets\WorldServer\WorldDataHandler.cs" />
     <Compile Include="Assets\WorldServer\WorldMessageCreater.cs" />
     <Compile Include="Assets\WorldServer\WorldMessageHandler.cs" />

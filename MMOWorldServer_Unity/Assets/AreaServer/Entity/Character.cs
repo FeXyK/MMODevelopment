@@ -9,6 +9,8 @@ namespace Assets.AreaServer.Entity
         public CharacterApperance CharacterType;
         public Gear CharacterGear;
 
+        public int EntityExp { get; internal set; }
+
         public  void Update()
         {
             //base.Update();

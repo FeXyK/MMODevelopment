@@ -1,4 +1,5 @@
-﻿using Lidgren.Network;
+﻿using Assets;
+using Lidgren.Network;
 using Lidgren.Network.Message;
 using Lidgren.Network.Override;
 using Lidgren.Network.ServerFiles.Data;
@@ -10,7 +11,7 @@ namespace MMOGameServer
     class AreaServerCore : NetPeerOverride
     {
         new AreaMessageHandler messageHandler = null;
-        public ConcurrentQueue<CharacterData> newConnections = new ConcurrentQueue<CharacterData>();
+        public ConcurrentQueue<CharacterWrapper> newConnections = new ConcurrentQueue<CharacterWrapper>();
         int tickCount = 0;
 
         public override void Initialize(string source)

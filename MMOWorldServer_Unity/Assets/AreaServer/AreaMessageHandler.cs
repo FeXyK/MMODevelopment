@@ -1,19 +1,20 @@
-﻿using Assets.AreaServer.Entity;
+﻿using Assets;
+using Assets.AreaServer.Entity;
 using Assets.AreaServer.SkillSystem;
 using Assets.Scripts.Handlers;
 using Lidgren.Network;
 using Lidgren.Network.Message;
 using Lidgren.Network.ServerFiles;
-using Lidgren.Network.ServerFiles.Data;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MMOGameServer
 {
     public class AreaMessageHandler
     {
-        ConcurrentQueue<CharacterData> newConnectionsQue;
+        ConcurrentQueue<CharacterWrapper> newConnectionsQue;
 
         NetServer netServer;
 
@@ -25,7 +26,7 @@ namespace MMOGameServer
         GameObject characterEntity;
 
         public bool hideNames = false;
-        public AreaMessageHandler(NetServer server, ConcurrentQueue<CharacterData> newConnections)
+        public AreaMessageHandler(NetServer server, ConcurrentQueue<CharacterWrapper> newConnections)
         {
             netServer = server;
             newConnectionsQue = newConnections;
@@ -45,18 +46,16 @@ namespace MMOGameServer
         {
             if (newConnectionsQue.Count > 0)
             {
-                CharacterData characterData = new CharacterData();
+                CharacterWrapper characterData = new CharacterWrapper();
                 newConnectionsQue.TryDequeue(out characterData);
                 if (characterData != null)
                 {
                     dataHandler.waitingForAuth.Add(characterData);
 
-                    Debug.Log(characterData.name + " added to characters");
+                    Debug.Log(characterData.character.EntityName + " added to characters");
                 }
             }
         }
-
-
         internal void StartSkillCast(NetIncomingMessage msgIn)
         {
             int targetID = msgIn.ReadInt16();
@@ -72,7 +71,6 @@ namespace MMOGameServer
             {
                 target = dataHandler.entitiesByID[targetID] as Character;
             }
-            //Character source = dataHandler.entitiesByID[sourceID] as Character;
             Debug.Log(source.EntityName + "SKILLID: " + skillID);
 
             if (source.SkillReady(skillID))
@@ -92,7 +90,7 @@ namespace MMOGameServer
             }
             else
             {
-                NetOutgoingMessage msgOut = messageCreater.CreateNotification("Skill not ready! CD: " + source.skills[skillID].GetCooldown());
+                NetOutgoingMessage msgOut = messageCreater.CreateNotification("Skill not ready! CD: " + source.Skills[skillID].GetCooldown());
                 msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.Unreliable, 0);
             }
         }
@@ -100,22 +98,25 @@ namespace MMOGameServer
         internal void SkillLeveled(NetIncomingMessage msgIn)
         {
             Character source = dataHandler.GetEntity(msgIn.SenderConnection) as Character;
-            int skillID = msgIn.ReadInt16();
-            if (source.skills[skillID].IsMaxLevel())
+
+                Debug.LogWarning("IDIDIDIDIDID: NEXTLINE");
+            foreach (var skill in source.Skills)
             {
-                NetOutgoingMessage msgOut = messageCreater.CreateNotification("Skill already max! Level: " + source.skills[skillID].GetLevel());
+                Debug.LogWarning("IDIDIDIDIDID: " + skill.Key);
+            }
+            int skillID = msgIn.ReadInt16();
+            if (source.Skills[skillID].IsMaxLevel())
+            {
+                NetOutgoingMessage msgOut = messageCreater.CreateNotification("Skill already max! Level: " + source.Skills[skillID].GetLevel());
                 msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.Unreliable, 0);
             }
             else
-                source.skills[skillID].LevelUp();
-
+                source.Skills[skillID].LevelUp();
         }
-
         private void SendInRange(NetOutgoingMessage msgOut)
         {
             throw new NotImplementedException();
         }
-
         public void ClientReady(NetIncomingMessage msgIn)
         {
             Character characterData = dataHandler.GetEntity(msgIn.SenderConnection) as Character;
@@ -134,6 +135,13 @@ namespace MMOGameServer
                 }
             }
             ClientMobSpawn(msgIn.SenderConnection);
+            ClientSkillInformation(msgIn.SenderConnection, characterData.Skills);
+        }
+
+        private void ClientSkillInformation(NetConnection senderConnection, Dictionary<int, SkillItem> skills)
+        {
+            NetOutgoingMessage msgOut = messageCreater.SkillInformation(skills);
+            senderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
         }
 
         internal void SendMobPositions()
@@ -216,17 +224,17 @@ namespace MMOGameServer
             byte[] clientLoginToken = PacketHandler.ReadEncryptedByteArray(msgIn);
             int characterId = msgIn.ReadInt16();
 
-            CharacterData characterData = dataHandler.waitingForAuth.Find(x => x.id == characterId);
+            CharacterWrapper data = dataHandler.waitingForAuth.Find(x => x.character.EntityID == characterId);
 
             if (dataHandler.CheckLoginToken(clientLoginToken, characterId))
             {
                 msgIn.SenderConnection.Approve();
                 Console.WriteLine("Authenticated!");
 
-                Character newCharacter = LoadCharacterFrom(characterData);
+                Character newCharacter = LoadCharacterFrom(data);
                 dataHandler.AddEntity(newCharacter, msgIn.SenderConnection);
 
-                dataHandler.waitingForAuth.Remove(characterData);
+                dataHandler.waitingForAuth.Remove(data);
             }
             else
             {
@@ -290,21 +298,24 @@ namespace MMOGameServer
             //    dataHandler.characters.Remove(key);
             //}
         }
-        private Character LoadCharacterFrom(CharacterData data)
+        private Character LoadCharacterFrom(CharacterWrapper data)
         {
             Character character = GameObject.Instantiate(characterEntity).GetComponent<Character>();
-            character.name = data.name;
-            character.EntityID = data.id;
-            character.AccountID = data.accountID;
-            character.EntityName = data.name;
-            character.EntityGold = data.gold;
-            character.EntityHealth = data.currentHealth;
-            character.EntityMaxHealth = data.maxHealth;
-            character.EntityMana = data.currentMana;
-            character.EntityLevel = data.level;
+            character.name = data.character.EntityName;
+            character.EntityName = data.character.EntityName;
+            character.EntityID = data.character.EntityID;
+            character.AccountID = data.character.AccountID;
+            character.EntityGold = data.character.EntityGold;
+            character.EntityHealth = data.character.EntityHealth;
+            character.EntityMaxHealth = data.character.EntityMaxHealth;
+            character.EntityMana = data.character.EntityMana;
+            character.EntityLevel = data.character.EntityLevel;
+            character.CharacterType = data.character.CharacterType;
+            character.transform.position = data.position;
             character.EntityBaseArmor = 60;
             character.EntityBaseMagicResist = 60;
-            character.CharacterType = (CharacterApperance)data.characterType;
+
+            character.Skills = data.character.Skills;
 
             return character;
         }

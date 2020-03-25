@@ -36,5 +36,10 @@ namespace Assets.Scripts.SkillSystem
         {
             level = level + 1;
         }
+
+        internal void IncreaseLevel(int rank)
+        {
+            level = rank;//level + 1;
+        }
     }
 }

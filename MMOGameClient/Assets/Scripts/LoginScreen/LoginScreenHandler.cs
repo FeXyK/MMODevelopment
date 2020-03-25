@@ -32,6 +32,8 @@ public class LoginScreenHandler : MonoBehaviour
 
     private void Start()
     {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 60;
         worldServerClient = new WorldServerNetwork();
         loginClient = new LoginClientManager();
 
