@@ -7,6 +7,8 @@ namespace Assets.Scripts.SkillSystem
     {
         [SerializeField] int skillID;
         public int SkillID { get => skillID; }
+        [SerializeField] int level = 0;
+        public int Level { get => level; }
         [SerializeField] float cooldownTime;
         public float CooldownTime { get => cooldownTime; }
         [SerializeField] float cooldownTimeDefault;
@@ -23,6 +25,7 @@ namespace Assets.Scripts.SkillSystem
         internal void Set(SkillItem skill)
         {
             skillID = skill.SkillID;
+            level = skill.Level;
             cooldownTime = skill.CooldownTime;
             cooldownTimeDefault = skill.CooldownTimeDefault;
             artSprite = skill.ArtSprite;

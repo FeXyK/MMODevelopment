@@ -78,6 +78,9 @@ namespace Assets.Scripts.GameNetworkScripts
                         case MessageType.EntityUpdate:
                             messageHandler.EntityHealthUpdate(msgIn);
                             break;
+                        case MessageType.SkillListInformation:
+                            messageHandler.SkillListInformation(msgIn);
+                            break;
                     }
                 }
                 if (msgIn.MessageType == NetIncomingMessageType.StatusChanged)

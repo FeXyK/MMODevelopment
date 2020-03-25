@@ -16,7 +16,11 @@ namespace Assets.Scripts.SkillSystem
         public Image Art;
         public Image Border;
         public Tooltip Tooltip;
+
+        public List<Image> levels = new List<Image>();
+
         SkillItemDrag skillItem;
+
         void Start()
         {
             skillItem = GetComponent<SkillItemDrag>();
@@ -31,6 +35,41 @@ namespace Assets.Scripts.SkillSystem
         float clicktime = 0;
         float clickdelay = 0.5f;
 
+        public void SetLevel(SkillRank rank)
+        {
+            switch (rank)
+            {
+                case SkillRank.NotAvailable:
+                    ActivateLevels(0, 0);
+                    break;
+                case SkillRank.Available:
+                    ActivateLevels(1, 1);
+                    break;
+                case SkillRank.Apprentice:
+                    ActivateLevels(2, 2);
+                    break;
+                case SkillRank.Advanced:
+                    ActivateLevels(2, 3);
+                    break;
+                case SkillRank.Master:
+                    ActivateLevels(2, 4);
+                    break;
+            }
+        }
+        private void ActivateLevels(int r1, int r2)
+        {
+            for (int i = 0; i < levels.Count; i++)
+            {
+                if (i >= r1 && i <= r2)
+                {
+                    levels[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    levels[i].gameObject.SetActive(false);
+                }
+            }
+        }
         public void OnPointerDown(PointerEventData data)
         {
             clicked++;
@@ -41,11 +80,16 @@ namespace Assets.Scripts.SkillSystem
                 clicked = 0;
                 clicktime = 0;
                 Debug.Log("Double CLick: " + this.GetComponent<RectTransform>().name);
-
+                OnDoubleClick();
             }
             else if (clicked > 2 || Time.time - clicktime > 1) clicked = 0;
         }
-
+        public void OnDoubleClick()
+        {
+            if ((int)Rank < 4)
+                Rank = Rank + 1;
+            SetLevel(Rank);
+        }
         public void OnPointerEnter(PointerEventData eventData)
         {
             Border.gameObject.SetActive(true);

@@ -11,7 +11,6 @@ namespace Assets.Scripts.SkillSystem
 
         private void Start()
         {
-
             arrows = this.GetComponent<UIArrow>();
 
             TextAsset skillsText = (TextAsset)Resources.Load("SkillDetails/SkillTreeInfo", typeof(TextAsset));

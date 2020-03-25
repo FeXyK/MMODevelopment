@@ -3,6 +3,7 @@ using Assets.Scripts.SkillSystem;
 using Lidgren.Network;
 using Lidgren.Network.Message;
 using Lidgren.Network.ServerFiles;
+using System;
 using UnityEngine;
 
 namespace Assets.Scripts.Handlers
@@ -14,6 +15,7 @@ namespace Assets.Scripts.Handlers
         GameMessageSender messageSender;
         MenuController menuController;
 
+        SkillTreeController skillController;
         public GameMessageHandler(NetClient client)
         {
             netClient = client;
@@ -46,8 +48,8 @@ namespace Assets.Scripts.Handlers
                 }
             }
         }
-      
-      
+
+
         internal void AdminCommand(NetIncomingMessage msgIn)
         {
             MessageType msgType = (MessageType)msgIn.ReadByte();
@@ -118,6 +120,26 @@ namespace Assets.Scripts.Handlers
                 Entity newMob = newMobObj.GetComponent<Entity>();
                 newMob.Set(entityID, entityLevel, health, 0, entityName, maxHealth);
                 dataHandler.otherCharacters.Add(entityID, newMob);
+            }
+        }
+
+        internal void SkillListInformation(NetIncomingMessage msgIn)
+        {
+            int count = msgIn.ReadInt16();
+            int skillID;
+            int level;
+            for (int i = 0; i < count; i++)
+            {
+                skillID = msgIn.ReadInt16();
+                level = msgIn.ReadInt16();
+                
+                foreach (var skill in skillController.skills)
+                {
+                    if(skill.SkillID == skillID)
+                    {
+                        skill.SetLevel((SkillRank)level);
+                    }
+                }
             }
         }
         internal void MobPositionUpdate(NetIncomingMessage msgIn)

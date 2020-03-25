@@ -45,7 +45,8 @@ namespace Lidgren.Network.Message
         AdminChatMessage,
         PublicChatMessage,
         PrivateChatMessage,
-        
+
+        SkillListInformation,
         StartSkillCast,
         EndSkillCast,
         SkillCasted,
