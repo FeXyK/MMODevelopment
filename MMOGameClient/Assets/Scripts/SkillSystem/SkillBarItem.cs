@@ -8,7 +8,8 @@ namespace Assets.Scripts.SkillSystem
 {
     public class SkillBarItem : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        float cooldown;
+        public float cooldown = 10;
+        public float cooldownDefault = 10;
         public string hotkey = "1";
         public Image artImage;
         public Image cooldownArtImage;
@@ -19,12 +20,14 @@ namespace Assets.Scripts.SkillSystem
         public Image MouseOverImage;
 
         SkillBarController skillController;
-        SkillItemDrag skillItem;
+        public SkillItemDrag skillItem;
         public Tooltip Tooltip;
         internal void Drop(SkillItem value)
         {
+            Debug.Log("Level after drop: "+value.Level);
             this.skillItem.skill = value;
             this.skillItem.name = value.name;
+            Debug.Log("Level after drop2: "+this.skillItem.skill.Level);
             RefreshUI();
         }
         private void Start()
@@ -43,7 +46,10 @@ namespace Assets.Scripts.SkillSystem
 
             artImage.sprite = skillItem.skill.ArtSprite;
             cooldownArtImage.sprite = skillItem.skill.ArtSprite;
-            cooldownArtImage.color = new Color(87 / 255, 87 / 255, 87 / 255, 87 / 255);
+            cooldownArtImage.color = new Color(0, 0, 0, 0.7f);
+            cooldownArtImage.type = Image.Type.Filled;
+            cooldownArtImage.fillMethod = Image.FillMethod.Radial360;
+
             Tooltip = FindObjectOfType<Tooltip>();
             Tooltip.Set(skillItem);
         }
@@ -54,6 +60,7 @@ namespace Assets.Scripts.SkillSystem
                 cooldownArtImage.gameObject.SetActive(true);
                 cooldown -= Time.deltaTime;
                 cooldownText.text = Math.Round(cooldown, 1).ToString();
+                cooldownArtImage.fillAmount = cooldown / cooldownDefault;
             }
             else
             {
@@ -64,7 +71,7 @@ namespace Assets.Scripts.SkillSystem
         {
             Drop(eventData.pointerDrag.GetComponent<SkillItemDrag>().skill);
             skillController = FindObjectOfType<SkillBarController>();
-            skillController.Set(skillItem.skill, hotkey);
+            skillController.Set(this, hotkey);
         }
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -77,6 +84,16 @@ namespace Assets.Scripts.SkillSystem
         {
             MouseOverImage.gameObject.SetActive(false);
             Tooltip.Hide();
+        }
+        public bool SetCooldown()
+        {
+            if (cooldown < 0)
+            {
+                cooldown = (skillItem.skill.CooldownTimeDefault / skillItem.skill.Level) - 1;
+                cooldownDefault = cooldown;
+                return true;
+            }
+            return false;
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Assets.Scripts.SkillSystem
 {
@@ -29,6 +30,11 @@ namespace Assets.Scripts.SkillSystem
             cooldownTime = skill.CooldownTime;
             cooldownTimeDefault = skill.CooldownTimeDefault;
             artSprite = skill.ArtSprite;
+        }
+
+        internal void IncreaseLevel()
+        {
+            level = level + 1;
         }
     }
 }

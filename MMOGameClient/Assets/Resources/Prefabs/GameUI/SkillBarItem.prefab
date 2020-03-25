@@ -831,7 +831,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.09433961, g: 0.09433961, b: 0.09433961, a: 0.6666667}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.6666667}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -865,6 +865,7 @@ MonoBehaviour:
   costText: {fileID: 7199905463326844070}
   hotkeyText: {fileID: 2452449827834715649}
   MouseOverImage: {fileID: 6242705078939464664}
+  skillItem: {fileID: 0}
   Tooltip: {fileID: 0}
 --- !u!225 &4996495146123141359
 CanvasGroup:

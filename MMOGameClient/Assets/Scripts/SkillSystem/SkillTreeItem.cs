@@ -17,7 +17,6 @@ namespace Assets.Scripts.SkillSystem
         public Image Art;
         public Image Border;
         public Tooltip Tooltip;
-        int level = 0;
         public List<Image> levels = new List<Image>();
 
         SkillItemDrag skillItem;
@@ -87,11 +86,14 @@ namespace Assets.Scripts.SkillSystem
         }
         public void OnDoubleClick()
         {
-            if ((int)Rank < 4)
+            if (skillItem.skill.Level < 4)
+            {
                 Rank = Rank + 1;
-            SetLevel(Rank);
-            if (level <= 4)
-                GameMessageSender.Instance.LevelUpSkill(skillItem.skill.SkillID, level++);
+                SetLevel(Rank);
+                skillItem.skill.IncreaseLevel();
+                GameMessageSender.Instance.LevelUpSkill(skillItem.skill.SkillID, skillItem.skill.Level);
+                Debug.Log(skillItem.skill.Level);
+            }
             //GameMessageSender.Instance.LevelUpSkill(skillItem.skill.Level);
         }
         public void OnPointerEnter(PointerEventData eventData)

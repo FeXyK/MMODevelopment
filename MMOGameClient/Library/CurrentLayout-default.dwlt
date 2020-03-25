@@ -115,7 +115,7 @@ MonoBehaviour:
   m_MinSize: {x: 678, y: 492}
   m_MaxSize: {x: 14002, y: 14042}
   vertical: 0
-  controlID: 102
+  controlID: 132
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -140,7 +140,7 @@ MonoBehaviour:
   m_MinSize: {x: 402, y: 492}
   m_MaxSize: {x: 10001, y: 14042}
   vertical: 1
-  controlID: 103
+  controlID: 61
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -165,7 +165,7 @@ MonoBehaviour:
   m_MinSize: {x: 402, y: 221}
   m_MaxSize: {x: 8002, y: 4021}
   vertical: 0
-  controlID: 104
+  controlID: 62
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -218,7 +218,7 @@ MonoBehaviour:
   - {fileID: 16}
   - {fileID: 14}
   m_Selected: 1
-  m_LastSelected: 1
+  m_LastSelected: 0
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -269,7 +269,7 @@ MonoBehaviour:
   m_MinSize: {x: 276, y: 192}
   m_MaxSize: {x: 4001, y: 8042}
   vertical: 1
-  controlID: 98
+  controlID: 133
 --- !u!114 &12
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -359,9 +359,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 0, y: 0, z: 0}
+    m_Target: {x: 529.546, y: 296.4152, z: -2.7454834}
     speed: 2
-    m_Value: {x: 0.0000012598306, y: -0.00000062384026, z: -0.0000010896367}
+    m_Value: {x: 529.546, y: 296.4152, z: -2.7454834}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -407,13 +407,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.072893806, y: 0.8946883, z: -0.15860611, w: 0.41118446}
+    m_Target: {x: 0.0359433, y: 0.010493873, z: -0.00037719935, w: 0.9993037}
     speed: 2
-    m_Value: {x: 0.071425654, y: 0.8957721, z: -0.15602794, w: 0.4100562}
+    m_Value: {x: 0.03594312, y: 0.0104938205, z: -0.00037719746, w: 0.9992987}
   m_Size:
-    m_Target: 22
+    m_Target: 487.5421
     speed: 2
-    m_Value: 22
+    m_Value: 487.5421
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -467,9 +467,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
+      m_SelectedIDs: 02480000
       m_LastClickedID: 0
-      m_ExpandedIDs: 00c3ffff56d3ffff5af3ffff76f3ffffe6f7ffff04f8ffff72fbffffa08b0000
+      m_ExpandedIDs: 1074fefff278feff7e79feff8279feffe2b0feff6eb1feff72b1feff5ec6feff08cafeffa2cdfeff2ecefeff32cefeff080affff460effffd20effffd60effffc242ffff62fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -621,20 +621,20 @@ MonoBehaviour:
     m_SkipHidden: 1
     m_SearchArea: 1
     m_Folders:
-    - Assets/VFX
+    - Assets/Resources/SkillItems
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/VFX
+  - Assets/Resources/SkillItems
   m_LastFoldersGridSize: 16
   m_LastProjectPath: F:\Github\MMODevelopment\MMOGameClient
   m_LockTracker:
     m_IsLocked: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 138}
-    m_SelectedIDs: 86390000
-    m_LastClickedID: 14726
-    m_ExpandedIDs: 000000001e39000020390000263900008639000000ca9a3b
+    scrollPos: {x: 0, y: 79}
+    m_SelectedIDs: 3e490000
+    m_LastClickedID: 18750
+    m_ExpandedIDs: 00000000aa420000fe48000000490000324900004a49000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -662,7 +662,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000001e3900002039000022390000243900002639000028390000
+    m_ExpandedIDs: 00000000aa420000fe48000000490000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -693,15 +693,15 @@ MonoBehaviour:
     m_ExpandedInstanceIDs: c62300000000000000230200
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: SelectionIndicator
-      m_OriginalName: SelectionIndicator
+      m_Name: SkillBarItem
+      m_OriginalName: SkillBarItem
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 18466
+      m_UserData: 18576
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
       m_OriginalEventType: 0

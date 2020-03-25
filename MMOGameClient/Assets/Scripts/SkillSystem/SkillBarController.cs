@@ -5,7 +5,7 @@ using UnityEngine;
 public class SkillBarController : MonoBehaviour
 {
     private const float positionConstant = 0.5f;
-    Dictionary<string, SkillItem> skills = new Dictionary<string, SkillItem>();
+    Dictionary<string, SkillBarItem> skills = new Dictionary<string, SkillBarItem>();
     GameObject skillBarItem;
     public int skillBarLength = 12;
     public float skillBarSize = 47;
@@ -13,10 +13,10 @@ public class SkillBarController : MonoBehaviour
     public SkillItem GetSkillOnHotkey(KeyCode key)
     {
         string intKey = ((int)key - 48).ToString();
-        if (skills.ContainsKey(((int)key - 48).ToString()))
+        if (skills.ContainsKey(intKey))
         {
-            if (skills[intKey].SkillID != -1)
-                return skills[((int)key - 48).ToString()];
+            if (skills[intKey].skillItem.skill.SkillID != -1 && skills[intKey].SetCooldown())
+                return skills[intKey].skillItem.skill;
         }
         return null;
     }
@@ -28,7 +28,7 @@ public class SkillBarController : MonoBehaviour
     {
         GenerateSkillBarItems();
     }
-    public void Set(SkillItem skill, string hotkey)
+    public void Set(SkillBarItem skill, string hotkey)
     {
         if (skills.ContainsKey(hotkey))
             skills.Remove(hotkey);
