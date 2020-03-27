@@ -247,6 +247,7 @@ namespace Utility_dotNET_Framework
                             skill = new Skill();
                             skill.SkillID = reader.GetInt16("id_skill");
                             skill.Name = reader.GetString("skill_name");
+                            skill.SkillType = reader.GetInt16("skill_type");
                             for (int i = 0; i < 7; i++)
                             {
                                 int id = reader.GetInt16("skill_stat_" + i);

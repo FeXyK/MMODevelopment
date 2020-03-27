@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Fireclaw
   m_EditorClassIdentifier: 
   skillID: 2
+  level: 0
   cooldownTime: 5
   cooldownTimeDefault: 5
   cost: 32

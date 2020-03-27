@@ -24,10 +24,23 @@ namespace Assets.Scripts.SkillSystem
         public Tooltip Tooltip;
         internal void Drop(SkillItem value)
         {
-            Debug.Log("Level after drop: "+value.Level);
-            this.skillItem.skill = value;
+            Debug.Log("Level after drop: "+ value.Level);
+            this.skillItem.skill.Set(value);
             this.skillItem.name = value.name;
+
+            foreach(var bar in FindObjectsOfType<SkillBarItem>())
+            {
+                if(bar != this 
+                    && bar.skillItem.skill.SkillID == this.skillItem.skill.SkillID)
+                {
+                    bar.skillItem.skill = this.skillItem.skill;
+                }
+            }
+
             Debug.Log("Level after drop2: "+this.skillItem.skill.Level);
+            Debug.Log("CD: "+this.skillItem.skill.CooldownTime);
+            Debug.Log("CDDEF: "+this.skillItem.skill.CooldownTimeDefault);
+            Debug.Log("ID: " + this.skillItem.skill.SkillID);
             RefreshUI();
         }
         private void Start()
@@ -37,6 +50,7 @@ namespace Assets.Scripts.SkillSystem
         private void Awake()
         {
             skillItem = this.GetComponent<SkillItemDrag>();
+            skillItem.skill = Instantiate(skillItem.skill);
         }
         public void RefreshUI()
         {
@@ -87,12 +101,13 @@ namespace Assets.Scripts.SkillSystem
         }
         public bool SetCooldown()
         {
-            if (cooldown < 0)
+            if (cooldown <= 0)
             {
                 cooldown = (skillItem.skill.CooldownTimeDefault / skillItem.skill.Level) - 1;
                 cooldownDefault = cooldown;
                 return true;
             }
+            Debug.Log("cd: " + cooldown);
             return false;
         }
 

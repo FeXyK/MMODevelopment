@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Singularity
   m_EditorClassIdentifier: 
   skillID: 8
+  level: 0
   cooldownTime: 5
-  cooldownTimeDefault: 5
+  cooldownTimeDefault: 40
   cost: 32
   artSprite: {fileID: 21300000, guid: ee34195976181ef4b83f98f5034ab668, type: 3}

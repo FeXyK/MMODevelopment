@@ -15,6 +15,6 @@ MonoBehaviour:
   skillID: 1
   level: 0
   cooldownTime: 4
-  cooldownTimeDefault: 4
+  cooldownTimeDefault: 15
   cost: 32
   artSprite: {fileID: 21300000, guid: 2d0997ac1b1fd664e98202450e7ea2d7, type: 3}

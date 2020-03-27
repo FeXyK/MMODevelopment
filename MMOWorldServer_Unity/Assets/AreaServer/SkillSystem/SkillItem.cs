@@ -15,15 +15,17 @@ namespace Assets.AreaServer.SkillSystem
         float cooldownByDefault;
         float cooldownByLevel;
         int damage;
-        int baseDamage = 21;
+        int baseDamage ;
         int level;
+       public int skillType;
         //Effects effects;
 
-        public SkillItem(int skillID, int baseDamage, float cooldownByDefault, int level)
+        public SkillItem(int skillID, int baseDamage, float cooldownByDefault, int level, int skillType)
         {
             this.skillID = skillID;
             this.baseDamage = baseDamage;
             this.cooldownByDefault = cooldownByDefault;
+            this.skillType = skillType;
             SetLevel(level);
         }
         public void SetLevel(int level)

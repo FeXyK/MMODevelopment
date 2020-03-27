@@ -7,6 +7,7 @@ namespace Assets.Scripts.SkillSystem
     {
         public  Dictionary<int, GameObject> skill = new Dictionary<int, GameObject>();
         public List<Sprite> skillLevels = new List<Sprite>();
+        //public List<SkillItem> skillBarItems = new List<SkillItem>();
 
         private static SkillList instance;
         public static SkillList Instance

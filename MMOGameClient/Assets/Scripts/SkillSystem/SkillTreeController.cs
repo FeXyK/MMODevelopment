@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Handlers;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 namespace Assets.Scripts.SkillSystem
@@ -11,7 +12,8 @@ namespace Assets.Scripts.SkillSystem
 
         private void Start()
         {
-          
+            Initialize();
+            GameMessageSender.Instance.GetSkillInformation();
         }
         private void Recursive(int depth, float parentPosition, int childCount, int count, SkillTreeItem skillItem)
         {

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Shockwave
   m_EditorClassIdentifier: 
   skillID: 7
+  level: 0
   cooldownTime: 5
-  cooldownTimeDefault: 5
+  cooldownTimeDefault: 6
   cost: 32
   artSprite: {fileID: 21300000, guid: d70dd1b9c6ae54448923db5c4924edd5, type: 3}

@@ -75,15 +75,18 @@ namespace MMOGameServer
 
             if (source.SkillReady(skillID))
             {
-                if (skillID == 1)
+                switch (source.Skills[skillID].skillType)
                 {
-                    source.ApplyCD(skillID);
-                    GameObject.Instantiate(SkillList.Instance.Projectile).GetComponent<SkillProjectile>().Set(source.transform, target, source.GetDamage(skillID));
-                }
-                else if (skillID == 4)
-                {
-                    source.ApplyCD(skillID);
-                    target.ApplyDamage(source.GetDamage(skillID));
+                    case 0:
+                        source.ApplyCD(skillID);
+                        target.ApplyDamage(source.GetDamage(skillID));
+                        break;
+                    case 1:
+                        source.ApplyCD(skillID);
+                        GameObject.Instantiate(SkillList.Instance.Projectile).GetComponent<SkillProjectile>().Set(source.transform, target, source.GetDamage(skillID));
+                        break;
+                    case 2: 
+                        break;
                 }
                 NetOutgoingMessage msgOut = messageCreater.SkillCasted(source.EntityID, targetID, skillID);
                 netServer.SendToAll(msgOut, NetDeliveryMethod.Unreliable);
@@ -99,19 +102,22 @@ namespace MMOGameServer
         {
             Character source = dataHandler.GetEntity(msgIn.SenderConnection) as Character;
 
-                Debug.LogWarning("IDIDIDIDIDID: NEXTLINE");
-            foreach (var skill in source.Skills)
-            {
-                Debug.LogWarning("IDIDIDIDIDID: " + skill.Key);
-            }
             int skillID = msgIn.ReadInt16();
-            if (source.Skills[skillID].IsMaxLevel())
-            {
-                NetOutgoingMessage msgOut = messageCreater.CreateNotification("Skill already max! Level: " + source.Skills[skillID].GetLevel());
-                msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.Unreliable, 0);
-            }
+            if (source.Skills.ContainsKey(skillID))
+                if (source.Skills[skillID].IsMaxLevel())
+                {
+                    NetOutgoingMessage msgOut = messageCreater.CreateNotification("Skill already max! Level: " + source.Skills[skillID].GetLevel());
+                    msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.Unreliable, 0);
+                }
+                else
+                    source.Skills[skillID].LevelUp();
             else
-                source.Skills[skillID].LevelUp();
+            {
+                int baseDamage = SkillList.Instance.Skills[skillID].SpellDamage(); //.Effects[40].Value;
+                int cooldown = SkillList.Instance.Skills[skillID].CooldownGet();   //.Effects[130].Value;
+                int skillType = SkillList.Instance.Skills[skillID].CooldownGet();   //.Effects[130].Value;
+                source.Skills.Add(skillID, new SkillItem(skillID, baseDamage, cooldown, 1, skillType));
+            }
         }
         private void SendInRange(NetOutgoingMessage msgOut)
         {
@@ -135,13 +141,13 @@ namespace MMOGameServer
                 }
             }
             ClientMobSpawn(msgIn.SenderConnection);
-            ClientSkillInformation(msgIn.SenderConnection, characterData.Skills);
         }
 
-        private void ClientSkillInformation(NetConnection senderConnection, Dictionary<int, SkillItem> skills)
+        public void ClientSkillInformation(NetIncomingMessage msgIn)
         {
-            NetOutgoingMessage msgOut = messageCreater.SkillInformation(skills);
-            senderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+            Character characterData = dataHandler.GetEntity(msgIn.SenderConnection) as Character;
+            NetOutgoingMessage msgOut = messageCreater.SkillInformation(characterData.Skills);
+            msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
         }
 
         internal void SendMobPositions()

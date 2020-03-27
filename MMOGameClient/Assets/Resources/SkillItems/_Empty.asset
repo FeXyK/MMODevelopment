@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a421327b4fa627e44b73eb1a1a1dd4b5, type: 3}
   m_Name: _Empty
   m_EditorClassIdentifier: 
-  skillID: -1
-  cooldownTime: 5
-  cooldownTimeDefault: 5
+  skillID: 1
+  level: 0
+  cooldownTime: 4
+  cooldownTimeDefault: 4
   cost: 0
   artSprite: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}

@@ -16,7 +16,9 @@ public class SkillBarController : MonoBehaviour
         if (skills.ContainsKey(intKey))
         {
             if (skills[intKey].skillItem.skill.SkillID != -1 && skills[intKey].SetCooldown())
+            {
                 return skills[intKey].skillItem.skill;
+            }
         }
         return null;
     }

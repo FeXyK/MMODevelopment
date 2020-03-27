@@ -129,8 +129,7 @@ namespace Assets.Scripts.Handlers
             int count = msgIn.ReadInt16();
             int skillID;
             int level;
-                uiManager.wSkill.SetActive(true);
-            GameObject.FindObjectOfType<SkillTreeController>().Initialize();
+                //uiManager.wSkill.SetActive(true);
             for (int i = 0; i < count; i++)
             {
                 skillID = msgIn.ReadInt16();
@@ -139,7 +138,7 @@ namespace Assets.Scripts.Handlers
                 Debug.LogWarning("level: " + level);
                 foreach (var skill in GameObject.FindObjectOfType<SkillTreeController>().skills)
                 {
-                Debug.LogWarning("skill: " + skill.SkillID);
+                    Debug.LogWarning("skill: " + skill.SkillID);
                     if (skill.SkillID == skillID)
                     {
                         skill.SetLevel((SkillRank)level);

@@ -35,7 +35,11 @@ namespace MMOGameServer.WorldServer
             messageCreater = new WorldMessageCreater();
             messageCreater = new WorldMessageCreater();
             selection = new Selection("192.168.0.24", "mmo", 3306, "fexyk", "asdqwe123");
-            SkillList.Instance.Skills = selection.GetSkillsData();
+            foreach (var skill in selection.GetSkillsData())
+            {
+                SkillList.Instance.Skills.Add(skill.SkillID, skill);
+
+            }
             //ItemList.Instance.Items = selection.GetItemsData();
         }
         internal void KeyExchange(NetIncomingMessage msgIn)
@@ -113,17 +117,18 @@ namespace MMOGameServer.WorldServer
                     data.character.EntityGold = temp.Gold.Value;
 
                     int damage;//= SkillList.Instance.Skills();
+                    int skillType;
                     float cooldown;// = SkillList.Instance.Skills.GetCooldown();
-
                     foreach (var skill in temp.Skills)
                     {
                         foreach (var skillItem in SkillList.Instance.Skills)
                         {
-                            if (skill.SkillID == skillItem.SkillID)
+                            if (skill.SkillID == skillItem.Key)
                             {
-                                damage = skillItem.Effects[spellDamageID].Value;
-                                cooldown = skillItem.Effects[cooldownID].Value;
-                                data.character.Skills.Add(skill.SkillID, new SkillItem(skill.SkillID, damage, cooldown, skill.Level));
+                                damage = skillItem.Value.SpellDamage();//[spellDamageID].Value;
+                                cooldown = skillItem.Value.CooldownGet();// Effects[cooldownID].Value;
+                                skillType = skillItem.Value.SkillType;// Effects[cooldownID].Value;
+                                data.character.Skills.Add(skill.SkillID, new SkillItem(skill.SkillID, damage, cooldown, skill.Level, skillType));
 
                             }
                         }

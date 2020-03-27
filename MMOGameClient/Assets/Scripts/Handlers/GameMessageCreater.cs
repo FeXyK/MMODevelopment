@@ -30,6 +30,14 @@ namespace Assets.Scripts.Handlers
             msgReady.Write((byte)MessageType.ClientReady);
             return msgReady;
         }
+
+        internal NetOutgoingMessage SkillInformation()
+        {
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            msgOut.Write((byte)MessageType.SkillListInformation);
+            return msgOut;
+        }
+
         public NetOutgoingMessage PositionUpdate(int id, Vector3 position)
         {
             NetOutgoingMessage msgOut = netClient.CreateMessage();

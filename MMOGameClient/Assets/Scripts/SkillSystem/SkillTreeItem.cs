@@ -27,8 +27,10 @@ namespace Assets.Scripts.SkillSystem
             SkillItem skillRef = Resources.Load<SkillItem>("SkillItems/" + Name);
             skillItem.skill = Instantiate(skillRef);
             skillItem.skill.name = skillRef.name;
+
             Tooltip = FindObjectOfType<Tooltip>();
             Tooltip.Set(skillItem);
+            SetLevel(Rank);
         }
 
         float clicked = 0;
@@ -38,6 +40,7 @@ namespace Assets.Scripts.SkillSystem
         public void SetLevel(SkillRank rank)
         {
             Debug.LogWarning("INCREASED TO: " + (int)rank);
+            skillItem.skill.IncreaseLevel((int)rank);
             Rank = rank;
             switch (rank)
             {
@@ -74,6 +77,7 @@ namespace Assets.Scripts.SkillSystem
         }
         public void OnPointerDown(PointerEventData data)
         {
+            Debug.Log(skillItem.skill.Level);
             clicked++;
             if (clicked == 1) clicktime = Time.time;
 

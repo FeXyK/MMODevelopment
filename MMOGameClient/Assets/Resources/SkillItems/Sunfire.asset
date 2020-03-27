@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Sunfire
   m_EditorClassIdentifier: 
   skillID: 9
+  level: 0
   cooldownTime: 5
-  cooldownTimeDefault: 5
+  cooldownTimeDefault: 40
   cost: 32
   artSprite: {fileID: 21300000, guid: 42f6c722ead369b4b934a116b4324a4d, type: 3}

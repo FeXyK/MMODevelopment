@@ -51,10 +51,11 @@ namespace Assets.AreaServer.Entity
         }
         public bool SkillReady(int skillID)
         {
-            if (Skills[skillID].IsReady())
-            {
-                return true;
-            }
+            if (Skills.ContainsKey(skillID))
+                if (Skills[skillID].IsReady())
+                {
+                    return true;
+                }
             return false;
         }
         public void BasicAttack(Entity Target)

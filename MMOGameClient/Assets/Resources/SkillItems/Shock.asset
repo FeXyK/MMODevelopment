@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Shock
   m_EditorClassIdentifier: 
   skillID: 6
+  level: 0
   cooldownTime: 5
-  cooldownTimeDefault: 5
+  cooldownTimeDefault: 4
   cost: 32
   artSprite: {fileID: 21300000, guid: 495b165e4f96ef14fb23cd71fa625a47, type: 3}

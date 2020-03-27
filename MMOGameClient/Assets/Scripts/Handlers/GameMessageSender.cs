@@ -21,6 +21,13 @@ namespace Assets.Scripts.Handlers
                 instance = this;
             }
         }
+
+        internal void GetSkillInformation()
+        {
+            NetOutgoingMessage msgOut = messageCreater.SkillInformation();
+            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+        }
+
         public static GameMessageSender Instance
         {
             get

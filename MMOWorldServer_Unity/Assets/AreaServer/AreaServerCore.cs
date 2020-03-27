@@ -64,6 +64,9 @@ namespace MMOGameServer
                         case MessageType.StartSkillCast:
                             messageHandler.StartSkillCast(msgIn);
                             break;
+                        case MessageType.SkillListInformation:
+                            messageHandler.ClientSkillInformation(msgIn);
+                            break;
                     }
                 }
                 netPeer.Recycle(msgIn);

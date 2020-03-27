@@ -858,6 +858,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3487bd0fd4c8bf947873abdb8d3294e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cooldown: 0
+  cooldownDefault: 0
   hotkey: 1
   artImage: {fileID: 7588568388074011127}
   cooldownArtImage: {fileID: 7701384063572502999}

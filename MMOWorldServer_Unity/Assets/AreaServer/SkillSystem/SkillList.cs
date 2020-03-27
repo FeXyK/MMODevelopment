@@ -6,7 +6,7 @@ namespace Assets.AreaServer.SkillSystem
 {
     public class SkillList
     {
-        public List<Skill> Skills = new List<Skill>();
+        public Dictionary<int, Skill> Skills = new Dictionary<int, Skill>();
         public GameObject Projectile;
         public GameObject AoE;
 

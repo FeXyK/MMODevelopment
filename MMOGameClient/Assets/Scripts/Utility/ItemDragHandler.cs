@@ -22,8 +22,11 @@ namespace Assets.Scripts.Utility
             draggedSkill = eventData.pointerDrag.GetComponent<SkillItemDrag>();
             if (draggedSkill != null)
             {
-                if (draggedSkill.skill.SkillID == -1)
+
+                if (draggedSkill.skill.Level < 1 || draggedSkill.skill.SkillID == -1)
+                {
                     eventData.pointerDrag = null;
+                }
                 else
                 {
                     Clone = Instantiate(this.gameObject);
@@ -35,7 +38,12 @@ namespace Assets.Scripts.Utility
                         Clone.GetComponent<SkillItemDrag>().skill = Instantiate(Resources.Load<SkillItem>("SkillItems/_Empty"));
                     }
                     else
-                        Clone.GetComponent<SkillItemDrag>().skill = (this.GetComponent<SkillItemDrag>().skill);
+                    {
+                        Clone.GetComponent<SkillItemDrag>().skill.Set(this.GetComponent<SkillItemDrag>().skill);
+                        Debug.Log("CLONE level: " + Clone.GetComponent<SkillItemDrag>().skill.Level);
+                        Debug.Log("THIS level: " + this.GetComponent<SkillItemDrag>().skill.Level);
+
+                    }
                     this.transform.SetParent(MainGameUICanvas);
                     canvasGroup.blocksRaycasts = false;
                     canvasGroup.ignoreParentGroups = true;
