@@ -9,10 +9,9 @@ public class ResourceBarController : MonoBehaviour
 {
     public TMP_Text ValueText;
     public Slider Slider;
-    private void Start()
+    private void Awake()
     {
         Slider.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
-
     }
 
     private void ValueChangeCheck()

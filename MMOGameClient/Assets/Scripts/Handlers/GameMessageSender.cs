@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.SkillSystem;
+﻿using Assets.Scripts.Character;
+using Assets.Scripts.SkillSystem;
 using Lidgren.Network;
 using System;
 using UnityEngine;
@@ -39,14 +40,14 @@ namespace Assets.Scripts.Handlers
                 return instance;
             }
         }
-        internal void SendSkillCast(SkillItem skill, Entity target)
-        {
-            if (target != null)
-            {
-                NetOutgoingMessage msgOut = messageCreater.CreateSkillCast(skill, target);
-                netClient.SendMessage(msgOut, NetDeliveryMethod.Unreliable);
-            }
-        }
+        //internal void SendSkillCast(SkillAsset skill, EntityContainer target)
+        //{
+        //    if (target != null)
+        //    {
+        //        NetOutgoingMessage msgOut = messageCreater.CreateSkillCast(skill, target);
+        //        netClient.SendMessage(msgOut, NetDeliveryMethod.Unreliable);
+        //    }
+        //}
         public void SendClientReady()
         {
             NetOutgoingMessage msgReady = messageCreater.ClientReady();
@@ -56,17 +57,17 @@ namespace Assets.Scripts.Handlers
         {
             if (netClient.ServerConnection == null)
                 return;
-            NetOutgoingMessage msgOut = messageCreater.PositionUpdate(dataHandler.myCharacter.id, dataHandler.myCharacter.transform.position);
+            NetOutgoingMessage msgOut = messageCreater.PositionUpdate(dataHandler.myCharacter.entity.id, dataHandler.myCharacter.transform.position);
             netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
         }
         public void SendPrivateChatMessage(string[] msg)
         {
-            NetOutgoingMessage msgOut = messageCreater.PrivateChatMessage(dataHandler.myCharacter.characterName, msg);
+            NetOutgoingMessage msgOut = messageCreater.PrivateChatMessage(dataHandler.myCharacter.entity.characterName, msg);
             netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
         }
         public void SendChatMessage(string msg)
         {
-            NetOutgoingMessage msgOut = messageCreater.ChatMessage(dataHandler.myCharacter.characterName, msg);
+            NetOutgoingMessage msgOut = messageCreater.ChatMessage(dataHandler.myCharacter.entity.characterName, msg);
             netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
         }
         public void SendAdminChatMessage(string msg)

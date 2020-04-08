@@ -106,8 +106,8 @@ GameObject:
   - component: {fileID: 1303965956081498468}
   - component: {fileID: 1303965956081498469}
   - component: {fileID: 1303965956081498471}
-  - component: {fileID: 1303965956081498472}
   - component: {fileID: 7898645393086744864}
+  - component: {fileID: 3642691868115228394}
   m_Layer: 0
   m_Name: TypeMale
   m_TagString: Entity
@@ -207,33 +207,6 @@ MonoBehaviour:
   speed: 25
   jumpSpeed: 10
   movementEnabled: 1
---- !u!114 &1303965956081498472
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1303965956081498473}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24ea99254ce3d0147b96a2f16690c518, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterName: 
-  id: 0
-  level: 0
-  exp: 0
-  mana: 0
-  characterType: 0
-  gold: 0
-  posX: 0
-  posY: 0
-  posZ: 0
-  rot: 0
-  character: {fileID: 1303965956081498466}
-  NameText: {fileID: 438327428092475114}
-  HealthBar: {fileID: 438327428944944676}
-  tickRate: 0.1
 --- !u!65 &7898645393086744864
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -247,6 +220,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.5, y: 2, z: 1.5}
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &3642691868115228394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1303965956081498473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a922179bdfc3b75479a8f7404fb18c68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NameText: {fileID: 438327428092475114}
+  HealthBar: {fileID: 438327428944944676}
+  ManaBar: {fileID: 0}
+  tickRate: 0
 --- !u!1 &1303965956678406129
 GameObject:
   m_ObjectHideFlags: 0

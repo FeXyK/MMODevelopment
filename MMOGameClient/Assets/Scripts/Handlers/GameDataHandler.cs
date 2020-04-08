@@ -1,21 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.Character;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Handlers
 {
   public  class GameDataHandler
     {
-        public Dictionary<int, Entity> otherCharacters = new Dictionary<int, Entity>();
-        public Entity myCharacter;
+        public Dictionary<int, EntityContainer> otherCharacters = new Dictionary<int, EntityContainer>();
+        public EntityContainer myCharacter;
         public GameDataHandler()
         {
-            myCharacter = GameObject.FindObjectOfType<Entity>();
-            myCharacter.Set(LoginDataHandler.GetInstance().selectedCharacter);
-            myCharacter.Health = myCharacter.MaxHealth;
+            //myCharacter = GameObject.FindObjectOfType<EntityContainer>();
+
+            //myCharacter.Set(LoginDataHandler.GetInstance().selectedCharacter);
+
+            //myCharacter.Health = myCharacter.MaxHealth;
         }
-        public Entity GetEntity(int entityID)
+        public EntityContainer GetEntity(int entityID)
         {
-            if (entityID == myCharacter.id)
+            if (entityID == myCharacter.entity.id)
                 return myCharacter;
             else
                 return otherCharacters[entityID];

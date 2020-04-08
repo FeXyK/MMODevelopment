@@ -24,16 +24,16 @@ public class Tooltip : MonoBehaviour
         Cost = cost;
         Cooldown = cooldown;
     }
-    public void Set(SkillItemDrag skillDrag)
-    {
-        Art.sprite = skillDrag.skill.ArtSprite;
-        Name = skillDrag.skill.name;
-        //Details = skill.details
-        Cost = skillDrag.skill.Cost;
-        Cooldown = skillDrag.skill.CooldownTimeDefault;
-        this.transform.position = skillDrag.transform.position;
-        Refresh();
-    }
+    //public void Set(SkillItemDrag skillDrag)
+    //{
+    //    Art.sprite = skillDrag.skill.ArtSprite;
+    //    Name = skillDrag.skill.name;
+    //    //Details = skill.details
+    //    Cost = skillDrag.skill.Cost;
+    //    Cooldown = skillDrag.skill.CooldownTimeDefault;
+    //    this.transform.position = skillDrag.transform.position;
+    //    Refresh();
+    //}
     private void Refresh()
     {
         NameText.text = Name;

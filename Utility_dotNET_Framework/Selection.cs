@@ -245,16 +245,38 @@ namespace Utility_dotNET_Framework
                         while (reader.Read())
                         {
                             skill = new Skill();
-                            skill.SkillID = reader.GetInt16("id_skill");
+                            skill.SkillID = reader.GetInt32("id_skill");
                             skill.Name = reader.GetString("skill_name");
-                            skill.SkillType = reader.GetInt16("skill_type");
+                            skill.SkillType = reader.GetInt32("skill_type");
+                            skill.Cost = reader.GetFloat("use_cost");
+                            skill.CostMultiplier = reader.GetFloat("use_cost_multiplier");
+                            skill.LevelingCost = reader.GetFloat("leveling_cost");
+                            skill.LevelingCostMultiplier = reader.GetFloat("leveling_cost_multiplier");
+                            skill.Range = reader.GetFloat("range");
+                            skill.RangeMultiplier = reader.GetFloat("range_multiplier");
+
+                            skill.RequiredLevel1 = reader.GetInt32("rq_level1");
+                            skill.RequiredLevel2 = reader.GetInt32("rq_level2");
+                            skill.RequiredLevel3 = reader.GetInt32("rq_level3");
+                            skill.RequiredSkillID = reader.GetInt32("rq_id_skill");
+
+                            string name;
+                            int id;
+                            int value;
+                            int minLevel;
+                            float multiplier;
                             for (int i = 0; i < 7; i++)
                             {
-                                int id = reader.GetInt16("skill_stat_" + i);
+                                id = reader.GetInt32("skill_stat_" + i);
                                 if (id != 0)
                                 {
-                                    int value = reader.GetInt16("skill_stat_" + i + "_value");
-                                    skill.Effects.Add(id, new Effect(id, value));
+                                    //name = reader.GetString("stat_name");
+                                    name = "name";
+                                    value = reader.GetInt32("skill_stat_" + i + "_value");
+                                    minLevel = reader.GetInt32("skill_stat_" + i + "_min_level");
+                                    multiplier = reader.GetFloat("skill_stat_" + i + "_multiplier");
+
+                                    skill.Effects.Add(id, new Effect(name, id, value, minLevel, multiplier));
                                 }
                             }
                             skills.Add(skill);
@@ -296,10 +318,9 @@ namespace Utility_dotNET_Framework
             return effect;
         }
 
-        private List<Skill> GetCharacterSkills(int characterID)
+        private Dictionary<int, int> GetCharacterSkills(int characterID)
         {
-            List<Skill> skills = new List<Skill>();
-            Skill skill;
+            Dictionary<int, int> skills = new Dictionary<int, int>();
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 conn.Open();
@@ -310,10 +331,9 @@ namespace Utility_dotNET_Framework
                     {
                         while (reader.Read())
                         {
-                            skill = new Skill();
-                            skill.Level = reader.GetInt16("level");
-                            skill.SkillID = reader.GetInt16("id_skill");
-                            skills.Add(skill);
+                            int id = reader.GetInt16("id_skill");
+                            int level = reader.GetInt16("level");
+                            skills.Add(id, level);
                         }
                     }
                 }

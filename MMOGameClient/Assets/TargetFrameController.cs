@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Character;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 
 public class TargetFrameController : MonoBehaviour
 {
-    public Entity target;
+    public EntityContainer target;
     public Slider HealthBar;
     public TMP_Text NameBar;
     private void Update()
@@ -17,11 +18,11 @@ public class TargetFrameController : MonoBehaviour
             HealthBar.maxValue = target.MaxHealth;
         }
 }
-    public void Set(Entity target)
+    public void Set(EntityContainer target)
     {
         this.target = target;
         HealthBar.value = target.Health;
 
-        NameBar.text = target.characterName;
+        NameBar.text = target.entity.characterName;
     }
 }

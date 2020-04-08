@@ -83,7 +83,7 @@ namespace MMOGameServer
                         break;
                     case 1:
                         source.ApplyCD(skillID);
-                        GameObject.Instantiate(SkillList.Instance.Projectile).GetComponent<SkillProjectile>().Set(source.transform, target, source.GetDamage(skillID));
+                        GameObject.Instantiate(SkillLibrary.Instance.Projectile).GetComponent<SkillProjectile>().Set(source.transform, target, source.GetDamage(skillID));
                         break;
                     case 2: 
                         break;
@@ -113,9 +113,9 @@ namespace MMOGameServer
                     source.Skills[skillID].LevelUp();
             else
             {
-                int baseDamage = SkillList.Instance.Skills[skillID].SpellDamage(); //.Effects[40].Value;
-                int cooldown = SkillList.Instance.Skills[skillID].CooldownGet();   //.Effects[130].Value;
-                int skillType = SkillList.Instance.Skills[skillID].CooldownGet();   //.Effects[130].Value;
+                int baseDamage = SkillLibrary.Instance.Skills[skillID].SpellDamage(); //.Effects[40].Value;
+                int cooldown = SkillLibrary.Instance.Skills[skillID].CooldownGet();   //.Effects[130].Value;
+                int skillType = SkillLibrary.Instance.Skills[skillID].SkillType;   //.Effects[130].Value;
                 source.Skills.Add(skillID, new SkillItem(skillID, baseDamage, cooldown, 1, skillType));
             }
         }

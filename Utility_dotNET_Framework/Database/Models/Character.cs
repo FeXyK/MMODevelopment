@@ -19,7 +19,7 @@ namespace Utility_dotNET_Framework.Models
         public int? CharSkills { get; set; }
         public int? CharType { get; set; }
         public int? Gold { get; set; }
-        public List<Skill> Skills = new List<Skill>();
+        public Dictionary<int, int> Skills = new Dictionary<int, int>();
         public override string ToString()
         {
             return CharacterID + " " + AccountID + " " + Name;

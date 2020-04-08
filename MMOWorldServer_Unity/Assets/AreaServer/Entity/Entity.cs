@@ -52,10 +52,13 @@ namespace Assets.AreaServer.Entity
         public bool SkillReady(int skillID)
         {
             if (Skills.ContainsKey(skillID))
+            {
                 if (Skills[skillID].IsReady())
                 {
                     return true;
                 }
+            }
+            else Debug.LogWarning("NOCONTAIN");
             return false;
         }
         public void BasicAttack(Entity Target)

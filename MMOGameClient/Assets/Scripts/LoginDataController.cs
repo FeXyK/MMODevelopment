@@ -9,5 +9,5 @@ public class LoginDataController
     public string serverIP;
     public int serverPort;
 
-    public CharacterData characterData;
+    public Entity selectedCharacter;
 }

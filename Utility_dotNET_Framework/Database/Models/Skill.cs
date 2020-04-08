@@ -28,6 +28,17 @@ namespace Utility_dotNET_Framework.Models
         public int Level { get; set; }
         public int SkillID { get; set; }
         public float Cooldown { get; set; }
+        public float Cost { get; set; }
+        public float CostMultiplier { get; set; }
+        public float LevelingCost { get; set; }
+        public float LevelingCostMultiplier { get; set; }
+        public float Range { get; set; }
+        public float RangeMultiplier { get; set; }
+        public int RequiredSkillID { get; internal set; }
+
+        public int RequiredLevel1;
+        public int RequiredLevel2;
+        public int RequiredLevel3;
 
         public Dictionary<int, Effect> Effects = new Dictionary<int, Effect>();
         public override string ToString()

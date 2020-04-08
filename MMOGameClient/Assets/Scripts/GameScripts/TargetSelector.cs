@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.Character;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -30,13 +31,13 @@ public class TargetSelector : MonoBehaviour
                 if (hit.transform.tag == "Entity")
                 {
                     selectedTarget = hit.transform.gameObject;
-                    targetFrameController.Set(hit.transform.GetComponent<Entity>());
+                    targetFrameController.Set(hit.transform.GetComponent<EntityContainer>());
                     targetCircle.SetActive(true);
                     targetCircle.transform.SetParent(hit.transform);
                     targetCircle.transform.localPosition = Vector3.zero;
 
                     uiManager.TargetFrame.SetActive(true);
-                    targetFrameController.Set(hit.transform.GetComponent<Entity>());
+                    targetFrameController.Set(hit.transform.GetComponent<EntityContainer>());
                 }
             }
         }
@@ -73,7 +74,7 @@ public class TargetSelector : MonoBehaviour
                 targetCircle.transform.localPosition = Vector3.zero;
 
                 uiManager.TargetFrame.SetActive(true);
-                targetFrameController.Set(selectedTarget.GetComponent<Entity>());
+                targetFrameController.Set(selectedTarget.GetComponent<EntityContainer>());
             }
             Debug.Log(targets.Count);
         }

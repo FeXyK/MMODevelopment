@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Handlers;
+﻿using Assets.Scripts.Character;
+using Assets.Scripts.Handlers;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -31,7 +32,7 @@ public class UIManager : MonoBehaviour
     ResourceBarController healthBarController;
     ResourceBarController manaBarController;
 
-    Entity player;
+    EntityContainer player;
     Movement movement;
     private void Start()
     {
@@ -39,7 +40,7 @@ public class UIManager : MonoBehaviour
         healthBarController = HealthBar.GetComponent<ResourceBarController>();
         manaBarController = ManaBar.GetComponent<ResourceBarController>();
 
-        player = FindObjectOfType<Entity>();
+        player = FindObjectOfType<EntityContainer>();
         if (player != null)
             movement = player.GetComponent<Movement>();
     }
@@ -48,7 +49,7 @@ public class UIManager : MonoBehaviour
         if (player != null)
         {
             HealthBar.value = player.Health;
-            ManaBar.value = player.mana;
+            ManaBar.value = player.entity.mana;
 
             movement.movementEnabled = stack.Count > 0 ? false : true;
         }

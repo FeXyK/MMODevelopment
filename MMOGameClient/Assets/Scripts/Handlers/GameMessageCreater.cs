@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.SkillSystem;
+﻿using Assets.Scripts.Character;
+using Assets.Scripts.SkillSystem;
 using Lidgren.Network;
 using Lidgren.Network.Message;
 using Lidgren.Network.ServerFiles;
@@ -16,14 +17,14 @@ namespace Assets.Scripts.Handlers
         {
             this.netClient = netClient;
         }
-        public NetOutgoingMessage CreateSkillCast(SkillItem skill, Entity target)
-        {
-            NetOutgoingMessage msgOut = netClient.CreateMessage();
-            msgOut.Write((byte)MessageType.StartSkillCast);
-            msgOut.Write(target.id, 16);
-            msgOut.Write(skill.SkillID, 16);
-            return msgOut;
-        }
+        //public NetOutgoingMessage CreateSkillCast(SkillAsset skill, EntityContainer target)
+        //{
+        //    NetOutgoingMessage msgOut = netClient.CreateMessage();
+        //    msgOut.Write((byte)MessageType.StartSkillCast);
+        //    msgOut.Write(target.entity.id, 16);
+        //    msgOut.Write(skill.SkillID, 16);
+        //    return msgOut;
+        //}
         public NetOutgoingMessage ClientReady()
         {
             NetOutgoingMessage msgReady = netClient.CreateMessage();

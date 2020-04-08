@@ -37,8 +37,12 @@ namespace MMOGameServer.WorldServer
             selection = new Selection("192.168.0.24", "mmo", 3306, "fexyk", "asdqwe123");
             foreach (var skill in selection.GetSkillsData())
             {
-                SkillList.Instance.Skills.Add(skill.SkillID, skill);
+                SkillLibrary.Instance.Skills.Add(skill.SkillID, skill);
 
+            }
+            foreach (var skill in SkillLibrary.Instance.Skills)
+            {
+                Debug.Log(skill);
             }
             //ItemList.Instance.Items = selection.GetItemsData();
         }
@@ -84,6 +88,49 @@ namespace MMOGameServer.WorldServer
                 SendNotificationMessage("Invalid Name: Character already exists", msgIn.SenderConnection);
             SendCharacterList(msgIn);
         }
+
+        internal void SendSkillList(NetIncomingMessage msgIn)
+        {
+            //messageCreater.SkillListInformation(msgIn);
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.SkillListInformation);
+
+            msgOut.Write(SkillLibrary.Instance.Skills.Count, 16);
+            foreach (var skill in SkillLibrary.Instance.Skills.Values)
+            {
+                msgOut.Write(skill.SkillID, 16);
+                msgOut.Write(skill.Name);
+                msgOut.Write(skill.SkillType, 16);
+
+                msgOut.Write(skill.Range);
+                msgOut.Write(skill.RangeMultiplier);
+
+                msgOut.Write(skill.Cost);
+                msgOut.Write(skill.CostMultiplier);
+
+                msgOut.Write(skill.LevelingCost);
+                msgOut.Write(skill.LevelingCostMultiplier);
+
+                msgOut.Write(skill.RequiredLevel1, 16);
+                msgOut.Write(skill.RequiredLevel2, 16);
+                msgOut.Write(skill.RequiredLevel3, 16);
+                msgOut.Write(skill.RequiredSkillID, 16);
+
+                msgOut.Write(skill.Effects.Count, 16);
+                Debug.Log("Effects count: " + skill.Effects.Count);
+                foreach (var effect in skill.Effects.Values)
+                {
+                    msgOut.Write(effect.Name);
+                    msgOut.Write(effect.EffectID, 16);
+                    msgOut.Write(effect.MinLevel, 16);
+                    msgOut.Write(effect.Value, 16);
+                    msgOut.Write(effect.Multiplier);
+                }
+            }
+            Debug.Log("Effects count: " + msgOut.LengthBytes);
+            netServer.SendMessage(msgOut, msgIn.SenderConnection, NetDeliveryMethod.ReliableOrdered);
+        }
+
         internal void PlayCharacter(NetIncomingMessage msgIn, AreaServerCore areaServer)
         {
             ConnectionData account = dataHandler.GetAuthenticatedUser(msgIn.SenderConnection);
@@ -121,14 +168,14 @@ namespace MMOGameServer.WorldServer
                     float cooldown;// = SkillList.Instance.Skills.GetCooldown();
                     foreach (var skill in temp.Skills)
                     {
-                        foreach (var skillItem in SkillList.Instance.Skills)
+                        foreach (var skillItem in SkillLibrary.Instance.Skills)
                         {
-                            if (skill.SkillID == skillItem.Key)
+                            if (skill.Key == skillItem.Key)
                             {
                                 damage = skillItem.Value.SpellDamage();//[spellDamageID].Value;
                                 cooldown = skillItem.Value.CooldownGet();// Effects[cooldownID].Value;
                                 skillType = skillItem.Value.SkillType;// Effects[cooldownID].Value;
-                                data.character.Skills.Add(skill.SkillID, new SkillItem(skill.SkillID, damage, cooldown, skill.Level, skillType));
+                                data.character.Skills.Add(skill.Key, new SkillItem(skill.Key, damage, cooldown, skill.Value, skillType));
 
                             }
                         }
@@ -222,13 +269,18 @@ namespace MMOGameServer.WorldServer
                     {
                         connection.authenticated = true;
                         connection.id = authToken.id;
+                        SendSkillList(msgIn);
                         NetOutgoingMessage msgOut = netServer.CreateMessage();
                         msgOut.Write((byte)MessageType.ClientAuthenticated);
 
                         dataHandler.authenticatedConnections.Add(new ClientData(connection));
 
                         Console.WriteLine((NetSendResult)msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1));
+
+
+
                         Debug.Log("Successfull authentication");
+
                     }
                     else
                     {
@@ -261,9 +313,26 @@ namespace MMOGameServer.WorldServer
                     msgOut.Write(character.name);
                     msgOut.Write(character.id, 32);
                     msgOut.Write(character.accountID, 32);
+                    msgOut.Write(character.currentExp, 32);
                     msgOut.Write(character.level, 32);
                     msgOut.Write(character.gold, 32);
                     msgOut.Write(character.characterType, 32);
+
+                    msgOut.Write(character.currentHealth, 32);
+                    msgOut.Write(character.maxHealth, 32);
+                    msgOut.Write(character.currentMana, 32);
+                    msgOut.Write(character.maxMana, 32);
+
+                    msgOut.Write(character.positionX);
+                    msgOut.Write(character.positionY);
+                    msgOut.Write(character.positionZ);
+
+                    msgOut.Write(character.skills.Count, 16);
+                    foreach (var skill in character.skills)
+                    {
+                        msgOut.Write(skill.Key, 16);
+                        msgOut.Write(skill.Value, 16);
+                    }
                 }
                 account.connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 2);
                 Console.WriteLine("CharacterList Sent");
@@ -289,7 +358,14 @@ namespace MMOGameServer.WorldServer
                 character.currentExp = temp.Exp.Value;
                 character.characterType = temp.CharType.Value;
 
-                Debug.Log("CHTYPE: " + character.characterType);
+                character.skills = temp.Skills;
+                Debug.LogWarning(" WRITING " );
+
+                foreach (var skill in temp.Skills)
+                {
+                    Debug.LogWarning(skill.Key + " WWWWWWWWWW " + skill.Value);
+                }
+
                 //character.= temp.CharSkills.Value;
                 character.gold = temp.Gold.Value;
                 account.characters.Add(character);

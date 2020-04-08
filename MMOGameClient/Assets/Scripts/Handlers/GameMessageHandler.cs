@@ -66,9 +66,9 @@ namespace Assets.Scripts.Handlers
         {
 
             int targetID = msgIn.ReadInt16();
-            Entity target = dataHandler.GetEntity(targetID);
-
+            EntityContainer target = dataHandler.GetEntity(targetID);
             target.Health = msgIn.ReadInt16();
+            Debug.LogWarning(target.Health);
         }
         internal void SkillCasted(NetIncomingMessage msgIn)
         {
@@ -76,16 +76,16 @@ namespace Assets.Scripts.Handlers
             int targetID = msgIn.ReadInt16();
             int skillID = msgIn.ReadInt16();
 
-            Entity target = dataHandler.GetEntity(targetID);
-            Entity source = dataHandler.GetEntity(sourceID);
+            EntityContainer target = dataHandler.GetEntity(targetID);
+            EntityContainer source = dataHandler.GetEntity(sourceID);
 
             switch (skillID)
             {
                 case 1:
-                    GameObject.Instantiate(SkillList.Instance.skill[skillID]).GetComponent<Skill_FireballScript>().Set(source.transform, target.transform);
+                    //GameObject.Instantiate(SkillList.Instance.skill[skillID]).GetComponent<Skill_FireballScript>().Set(source.transform, target.transform);
                     break;
                 case 4:
-                    GameObject.Instantiate(SkillList.Instance.skill[skillID], target.transform);
+                    //GameObject.Instantiate(SkillList.Instance.skill[skillID], target.transform);
                     break;
                 default:
                     break;
@@ -102,7 +102,7 @@ namespace Assets.Scripts.Handlers
         internal void MobSpawn(NetIncomingMessage msgIn)
         {
             int count = msgIn.ReadInt16();
-            Debug.Log("MOBCOUNT: " + count);
+            //Debug.Log("MOBCOUNT: " + count);
             for (int i = 0; i < count; i++)
             {
                 GameObject newMobObj = GameObject.Instantiate(Resources.Load<GameObject>("Mob"));
@@ -115,10 +115,10 @@ namespace Assets.Scripts.Handlers
                 float z = msgIn.ReadFloat();
                 int health = msgIn.ReadInt16();
                 int maxHealth = msgIn.ReadInt16();
-                Debug.Log("Adding MOB: " + entityName);
+                //Debug.Log("Adding MOB: " + entityName);
 
                 newMobObj.transform.position = new Vector3(x, y, z);
-                Entity newMob = newMobObj.GetComponent<Entity>();
+                EntityContainer newMob = newMobObj.GetComponent<EntityContainer>();
                 newMob.Set(entityID, entityLevel, health, 0, entityName, maxHealth);
                 dataHandler.otherCharacters.Add(entityID, newMob);
             }
@@ -129,21 +129,21 @@ namespace Assets.Scripts.Handlers
             int count = msgIn.ReadInt16();
             int skillID;
             int level;
-                //uiManager.wSkill.SetActive(true);
+            //uiManager.wSkill.SetActive(true);
             for (int i = 0; i < count; i++)
             {
                 skillID = msgIn.ReadInt16();
                 level = msgIn.ReadInt16();
                 Debug.LogWarning("SKILLID: " + skillID);
                 Debug.LogWarning("level: " + level);
-                foreach (var skill in GameObject.FindObjectOfType<SkillTreeController>().skills)
-                {
-                    Debug.LogWarning("skill: " + skill.SkillID);
-                    if (skill.SkillID == skillID)
-                    {
-                        skill.SetLevel((SkillRank)level);
-                    }
-                }
+                //foreach (var skill in GameObject.FindObjectOfType<SkillTreeController>().skills)
+                //{
+                //    Debug.LogWarning("skill: " + skill.SkillID);
+                //    if (skill.SkillID == skillID)
+                //    {
+                //        skill.SetLevel((SkillRank)level);
+                //    }
+                //}
                 //skillController.gameObject.SetActive(true);
             }
         }
@@ -159,14 +159,14 @@ namespace Assets.Scripts.Handlers
                     float posX = msgIn.ReadFloat();
                     float posY = msgIn.ReadFloat();
                     float posZ = msgIn.ReadFloat();
-                    dataHandler.otherCharacters[entityID].position = new Vector3(posX, posY, posZ);
+                    dataHandler.otherCharacters[entityID].entity.position = new Vector3(posX, posY, posZ);
                 }
             }
         }
         internal void EntitySpawn(NetIncomingMessage msgIn)
         {
             int characterID = msgIn.ReadInt16();
-            if (characterID == dataHandler.myCharacter.id)
+            if (characterID == dataHandler.myCharacter.entity.id)
             {
                 return;
             }
@@ -193,29 +193,29 @@ namespace Assets.Scripts.Handlers
                     newCharacterObj = GameObject.Instantiate(Resources.Load<GameObject>("TypeMale"));
                     break;
             }
-            Entity newCharacter = newCharacterObj.GetComponent<Entity>();
+            EntityContainer newCharacter = newCharacterObj.GetComponent<EntityContainer>();
 
             newCharacter.Set(characterID, characterLevel, characterHealth, characterType, characterName, characterMaxHealth);
-            if (dataHandler.otherCharacters.ContainsKey(newCharacter.id))
+            if (dataHandler.otherCharacters.ContainsKey(newCharacter.entity.id))
             {
-                GameObject.Destroy(dataHandler.otherCharacters[newCharacter.id].character.gameObject);
-                dataHandler.otherCharacters.Remove(newCharacter.id);
+                GameObject.Destroy(dataHandler.otherCharacters[newCharacter.entity.id].gameObject);
+                dataHandler.otherCharacters.Remove(newCharacter.entity.id);
             }
-            dataHandler.otherCharacters.Add(newCharacter.id, newCharacter);
+            dataHandler.otherCharacters.Add(newCharacter.entity.id, newCharacter);
         }
         internal void EntityPositionUpdate(NetIncomingMessage msgIn)
         {
             int entityID = msgIn.ReadInt16();
-            if (entityID == dataHandler.myCharacter.id)
-            {
-                return;
-            }
+                if (entityID == dataHandler.myCharacter.entity.id)
+                {
+                    return;
+                }
             if (dataHandler.otherCharacters.ContainsKey(entityID))
             {
                 float posX = msgIn.ReadFloat();
                 float posY = msgIn.ReadFloat();
                 float posZ = msgIn.ReadFloat();
-                dataHandler.otherCharacters[entityID].position = new Vector3(posX, posY, posZ);
+                dataHandler.otherCharacters[entityID].entity.position = new Vector3(posX, posY, posZ);
             }
         }
         public void EntityDespawn(NetIncomingMessage msgIn)

@@ -71,14 +71,14 @@ namespace Assets.Scripts.LoginScreen
             selectionController.SelectedCharacter = characterID;
         }
 
-        public void Load(CharacterData characterData)
+        public void Load(Entity entity)
         {
-            Name = characterData.name;
-            CharacterID = characterData.id;
-            AccountID = characterData.accountID;
-            CharacterType = characterData.characterType;
-            Gold = characterData.gold;
-            Level = characterData.level;
+            Name = entity.characterName;
+            CharacterID = entity.id;
+            AccountID = 0;
+            CharacterType = (int)entity.characterType;
+            Gold = entity.gold;
+            Level = entity.level;
         }
         public void OnPointerDown(PointerEventData eventData)
         {

@@ -46,6 +46,9 @@ namespace Assets.Scripts.LoginNetworkScripts
                         case MessageType.ClientAuthenticated:
                             messageHandler.ClientAuthenticated(msgIn);
                             break;
+                        case MessageType.SkillListInformation:
+                            messageHandler.HandlerSkillData(msgIn);
+                            break;
                     }
                 }
             }

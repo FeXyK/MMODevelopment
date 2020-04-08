@@ -78,6 +78,9 @@ namespace MMOGameServer
                         case MessageType.Alive:
                             messageHandler.Alive(msgIn);
                             break;
+                        case MessageType.SkillListInformation:
+                            messageHandler.SendSkillList(msgIn);
+                            break;
                     }
                 }
             }

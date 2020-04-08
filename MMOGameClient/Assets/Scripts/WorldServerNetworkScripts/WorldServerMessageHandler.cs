@@ -39,6 +39,8 @@ namespace Assets.Scripts.WorldServerNetworkScripts
             dataHandler.selectionController.loginDataController.serverIP = dataHandler.selectedWorldServer.ip;
             dataHandler.selectionController.loginDataController.serverPort = dataHandler.selectedWorldServer.areaServerPort;
 
+            dataHandler.selectionController.loginDataController.selectedCharacter = dataHandler.selectedCharacter;
+
         }
 
         internal void HandleNotification(NetIncomingMessage msgIn)
@@ -60,7 +62,10 @@ namespace Assets.Scripts.WorldServerNetworkScripts
             dataHandler.selectionController.CharacterForm.parent.parent.gameObject.SetActive(true);
             dataHandler.selectionController.ServerForm.gameObject.SetActive(false);
         }
-
+        public void HandlerSkillData(NetIncomingMessage msgIn)
+        {
+            dataHandler.LoadSkillList(msgIn); 
+        }
         internal void SendAuthenticationToken(NetIncomingMessage msgIn)
         {
             NetOutgoingMessage msgOut = netClient.CreateMessage();
@@ -90,7 +95,7 @@ namespace Assets.Scripts.WorldServerNetworkScripts
 
                 msgOut.Write((byte)MessageType.PlayCharacter);
                 PacketHandler.WriteEncryptedByteArray(msgOut, dataHandler.inputData.Username, dataHandler.selectedWorldServer.publicKey);
-                PacketHandler.WriteEncryptedByteArray(msgOut, dataHandler.selectedCharacter.name, dataHandler.selectedWorldServer.publicKey);
+                PacketHandler.WriteEncryptedByteArray(msgOut, dataHandler.selectedCharacter.characterName, dataHandler.selectedWorldServer.publicKey);
                 msgOut.Write(dataHandler.selectedCharacter.id, 16);
                 Debug.Log(dataHandler.selectedCharacter.id);
                 netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
@@ -115,7 +120,7 @@ namespace Assets.Scripts.WorldServerNetworkScripts
 
             msgDelete.Write((byte)MessageType.DeleteCharacter);
 
-            PacketHandler.WriteEncryptedByteArray(msgDelete, dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter].name, dataHandler.selectedWorldServer.publicKey);
+            PacketHandler.WriteEncryptedByteArray(msgDelete, dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter].characterName, dataHandler.selectedWorldServer.publicKey);
             netClient.SendMessage(msgDelete, NetDeliveryMethod.ReliableOrdered);
             loginScreenHandler.ClearCharacterSelection();
         }

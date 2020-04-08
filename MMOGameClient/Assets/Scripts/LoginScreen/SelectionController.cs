@@ -56,7 +56,7 @@ namespace Assets.Scripts.LoginScreen
                 }
             }
         }
-        public void DrawCharacterItems(List<CharacterData> myCharacters)
+        public void DrawCharacterItems(List<Entity> myCharacters)
         {
             ClearSelection();
             Button defaultButton = Resources.Load<Button>("CharacterItemDefault");

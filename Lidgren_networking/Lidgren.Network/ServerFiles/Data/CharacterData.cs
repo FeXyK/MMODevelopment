@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Lidgren.Network.ServerFiles.Data
 {
@@ -19,6 +20,7 @@ namespace Lidgren.Network.ServerFiles.Data
         //  public CharacterSkillTree skillTree;
         public int characterType;
         public int gold;
+        public Dictionary<int, int> skills = new Dictionary<int, int>();
         public CharacterData()
         {
 
