@@ -1,8 +1,5 @@
 ﻿using Assets.Scripts.Character;
-using Assets.Scripts.SkillSystem.SkillSys;
-using Lidgren.Network.ServerFiles.Data;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Entity
 {
@@ -22,7 +19,6 @@ public class Entity
     public CharacterApperance characterType;
 
     public float tickRate = 0;
-    internal SkillTree skillTree;
 
     public void Set(Entity ch)
     {

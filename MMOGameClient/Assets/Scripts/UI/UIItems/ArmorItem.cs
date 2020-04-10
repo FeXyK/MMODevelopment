@@ -17,15 +17,15 @@ namespace Assets.Scripts.UI.UIItems
         public ArmorPiece Piece;
         private void Awake()
         {
-            CallOnAwake();
         }
         public override void CallOnAwake()
         {
             base.CallOnAwake();
-
+            ID = 15001;
             ItemType = UIItemType.Armor;
-            effects.Add(new Effect("Armor", EffectValue.Armor, 20, 0, 1));
+            effects.Add(new Effect(EffectValue.Armor, 20, 0, 1));
             Level = 1;
+            MaxAmount = 1;
             Name = "Cloth";
         }
     }

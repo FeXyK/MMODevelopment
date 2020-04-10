@@ -9,16 +9,14 @@ namespace Assets.Scripts.SkillSystem.SkillSys
     [Serializable]
     public class Effect
     {
-        public string Name;
-        public EffectValue ID;
+        public EffectValue EffectType;
         public int Value;
         public float Multiplier;
         public int MinSkillLevel;
          
-        public Effect(string name, EffectValue id, int value,int minLevel, float multiplier)
+        public Effect(EffectValue id, int value,int minLevel, float multiplier)
         {
-            this.Name = name;
-            this.ID = id;
+            this.EffectType = id;
             this.Value = value;
             this.Multiplier = multiplier;
             this.MinSkillLevel = minLevel;

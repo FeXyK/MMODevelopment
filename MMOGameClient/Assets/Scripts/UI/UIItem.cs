@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Assets.Scripts.UI
 {
     [CreateAssetMenu(fileName = "New Scrap", menuName = "Scrap")]
+    [SerializeField]
     public class UIItem : ScriptableObject
     {
         [SerializeField]
@@ -20,6 +21,8 @@ namespace Assets.Scripts.UI
         [SerializeField]
         public int Value;
         [SerializeField]
+        public int MaxAmount;
+        [SerializeField]
         public UIItemRarity Rarity;
         public List<Effect> effects = new List<Effect>();
         public GameObject Prefab;
@@ -28,11 +31,13 @@ namespace Assets.Scripts.UI
 
         public Sprite GetSprite()
         {
-            return Resources.Load<Sprite>(Name);
+            if (Sprite != null)
+                return Sprite;
+            else
+                return null;
         }
         private void Awake()
         {
-            CallOnAwake();
         }
         public virtual void CallOnAwake()
         {
@@ -41,6 +46,7 @@ namespace Assets.Scripts.UI
             ItemType = UIItemType.Scrap;
             Level = 0;
             Tier = 1;
+            MaxAmount = 100;
         }
     }
 }

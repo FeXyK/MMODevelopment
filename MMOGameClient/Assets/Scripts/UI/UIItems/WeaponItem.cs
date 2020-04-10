@@ -18,16 +18,14 @@ namespace Assets.Scripts.UI.UIItems
     {
         public IWeaponType WeaponType;
 
-        private void Awake()
-        {
-            CallOnAwake();
-        }
         public override void CallOnAwake()
         {
             base.CallOnAwake();
+            ID = 5001;
             WeaponType = IWeaponType.OneHandedSword;
-            effects.Add(new Effect("Damage", EffectValue.AttackDamage, 10, 0, 1));
+            effects.Add(new Effect(EffectValue.AttackDamage, 10, 0, 1));
             Level = 1;
+            MaxAmount = 1;
             Name = "Small Sword";
         }
     }

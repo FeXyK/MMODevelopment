@@ -8,14 +8,13 @@ namespace Assets.Scripts.UI.UIItems
     {
         private void Awake()
         {
-            CallOnAwake();
         }
         public override void CallOnAwake()
         {
             base.CallOnAwake();
-
+            ID = 3001;
             ItemType = UIItemType.Food;
-            effects.Add(new Effect("Heal", EffectValue.RestoreHealth, 20, 0, 1));
+            effects.Add(new Effect(EffectValue.RestoreHealth, 20, 0, 1));
             Name = "Bread";
         }
     }
