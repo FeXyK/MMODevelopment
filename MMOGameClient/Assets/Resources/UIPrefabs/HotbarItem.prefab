@@ -667,6 +667,8 @@ MonoBehaviour:
   canvasGroup: {fileID: 2015607559095166221}
   uiItem: {fileID: 0}
   Item: {fileID: 3062472750632085586}
+  showTooltipTime: 0.2
+  timer: 0
   Amount: 0
   DefaultUISlot: {fileID: 11400000, guid: 79f19b11219e5994b9081752d0573021, type: 2}
 --- !u!1 &6214022331119968358

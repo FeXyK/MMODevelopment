@@ -6,45 +6,56 @@ using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.UI_Window
 {
-    class WindowHotbarItem : WindowItem, IDropHandler, IBeginDragHandler,IEndDragHandler
+    class WindowHotbarItem : WindowItem, IDropHandler
     {
         public int Amount;
-        public UIItem DefaultUISlot;
+        public int ListNumber;
+        public float CooldownTime;
 
-        public void OnBeginDrag(PointerEventData eventData)
+        public UIItem DefaultUISlot;
+        public WindowHotbar Hotbar;
+
+        private void Update()
         {
-            if (!CallOnBeginDrag())
-                eventData.pointerDrag = null;
-        }
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            uiItem = DefaultUISlot;
-            Refresh();
-            CallOnEndDrag();
-        }
-        public override void CallOnEndDrag()
-        {
-            base.CallOnEndDrag();
-        }
-        public override bool CallOnBeginDrag()
-        {
-            if (uiItem.ID != 0)
+            if (CooldownTime > 0)
             {
-                origin = Instantiate(this.gameObject);
-                origin.transform.SetParent(this.transform.parent.parent);
-                origin.transform.SetAsLastSibling();
-                origin.GetComponent<CanvasGroup>().blocksRaycasts = false;
-                return true;
+                CooldownTime -= Time.deltaTime;
+                Item.ItemCooldown.text = CooldownTime.ToString("F1");
             }
             else
-                return false;
+                Item.ItemCooldown.text = "";
+        }
+        public override void CallOnBeginDrag(PointerEventData eventData)
+        {
+            base.CallOnBeginDrag(eventData);
+            if (clone != null)
+            {
+                clone.transform.SetParent(Hotbar.transform);
+                clone.GetComponent<RectTransform>().sizeDelta = this.GetComponent<RectTransform>().sizeDelta;
+            }
+        }
+        public override void CallOnEndDrag(PointerEventData eventData)
+        {
+            if (eventData.pointerDrag != null)
+            {
+                uiItem = DefaultUISlot;
+                Hotbar.Modify(ListNumber, DefaultUISlot);
+            }
+            Refresh();
+            base.CallOnEndDrag(eventData);
         }
         public void OnDrop(PointerEventData eventData)
         {
             WindowItem draggedItem = eventData.pointerDrag.GetComponent<WindowItem>();
             if (draggedItem != null)
             {
+                if (Hotbar == null)
+                    Hotbar = FindObjectOfType<WindowHotbar>();
+
                 uiItem = draggedItem.uiItem;
+                Hotbar.Modify(ListNumber, uiItem);
+                CooldownTime = uiItem.GetCooldown();
+
                 if (draggedItem.uiItem.ItemType != UI.UIItemType.Skill)
                 {
                     if ((draggedItem as WindowInventoryItem) != null)
@@ -52,12 +63,10 @@ namespace Assets.Scripts.UI_Window
                     else
                         Amount = (draggedItem as WindowHotbarItem).Amount;
                 }
-                if (uiItem.ItemType == UI.UIItemType.Skill)
+                if (eventData.pointerDrag == this.gameObject)
                 {
-
-                }
-                else
-                {
+                    eventData.pointerDrag = null;
+                    CallOnEndDrag(eventData);
                 }
                 Refresh();
             }
@@ -72,8 +81,9 @@ namespace Assets.Scripts.UI_Window
             }
             else
             {
-                originColor = new Color(1f,1f,1f,20f/255f);
+                originColor = new Color(1f, 1f, 1f, 20f / 255f);
                 Amount = 0;
+                CooldownTime = 0;
                 Item.ItemAmount.text = "";
                 Item.ItemCooldown.text = "";
                 Item.ItemManaCost.text = "";
@@ -95,7 +105,17 @@ namespace Assets.Scripts.UI_Window
                 Item.ItemManaCost.text = "";
             }
             if (Amount > 1)
+            {
                 Item.ItemAmount.text = Amount.ToString();
+            }
+        }
+        public override void LoadTooltip(UIItem item)
+        {
+            base.LoadTooltip(item);
+            
+            tooltip.ManaCost.text = ((SkillItem)item).ManaCost.ToString();
+            tooltip.Range.text = ((SkillItem)item).Range.ToString();
+            tooltip.NextLevelCost.text = ((SkillItem)item).GoldCost.ToString();
         }
     }
 }

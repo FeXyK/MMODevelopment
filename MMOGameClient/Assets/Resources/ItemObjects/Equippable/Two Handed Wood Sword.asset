@@ -12,17 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4a5e3e059198934ea80c725ea9134e3, type: 3}
   m_Name: Two Handed Wood Sword
   m_EditorClassIdentifier: 
+  ID: 0
   Name: Small Sword
   Level: 1
   Tier: 1
   ItemType: 5
   Value: 0
+  MaxAmount: 0
   Rarity: 1
   effects:
-  - Name: Damage
-    ID: 30
-    Value: 10
+  - EffectType: 10
+    Value: 20
     Multiplier: 1
     MinSkillLevel: 0
   Prefab: {fileID: 0}
+  Sprite: {fileID: 0}
   WeaponType: 1

@@ -21,11 +21,11 @@ MonoBehaviour:
   MaxAmount: 100
   Rarity: 3
   effects:
-  - ID: 20
+  - EffectType: 20
     Value: 200
     Multiplier: 1
     MinSkillLevel: 0
-  - ID: 130
+  - EffectType: 130
     Value: 60
     Multiplier: 1
     MinSkillLevel: 0

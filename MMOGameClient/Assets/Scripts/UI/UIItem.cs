@@ -9,9 +9,12 @@ namespace Assets.Scripts.UI
     public class UIItem : ScriptableObject
     {
         [SerializeField]
-        public int  ID;
+        public int ID;
         [SerializeField]
         public string Name;
+        [SerializeField]
+        [TextArea(3,5)]
+        public string Details;
         [SerializeField]
         public int Level;
         [SerializeField]
@@ -47,6 +50,17 @@ namespace Assets.Scripts.UI
             Level = 0;
             Tier = 1;
             MaxAmount = 100;
+        }
+        public float GetCooldown()
+        {
+            foreach (var effect in effects)
+            {
+                if (effect.EffectType == EffectValue.Cooldown)
+                {
+                    return effect.Value * Mathf.Pow(effect.Multiplier, Level - 1);
+                }
+            }
+            return 0;
         }
     }
 }

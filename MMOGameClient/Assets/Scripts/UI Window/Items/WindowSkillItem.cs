@@ -1,23 +1,21 @@
-﻿
-using Assets.Scripts.UI;
+﻿using Assets.Scripts.UI;
+using Assets.Scripts.UI.UIItems;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.UI_Window
 {
-    class WindowSkillItem : WindowItem, IBeginDragHandler,IEndDragHandler
+    class WindowSkillItem : WindowItem
     {
-        public void OnBeginDrag(PointerEventData eventData)
+
+        public override void CallOnBeginDrag(PointerEventData eventData)
         {
-            if (!CallOnBeginDrag())
+            if (uiItem.Level != 0)
+            {
+                base.CallOnBeginDrag(eventData);
+            }
+            else
                 eventData.pointerDrag = null;
-        }
-        public override void CallOnEndDrag()
-        {
-            base.CallOnEndDrag();
-        }
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            CallOnEndDrag();
         }
         public override void Refresh()
         {
@@ -46,6 +44,18 @@ namespace Assets.Scripts.UI_Window
                     Item.ItemBorder.color = UIRarityColors.Scrap;
                     break;
             }
+        }
+        public override void Use()
+        {
+            Debug.Log("Use skill item");
+        }
+        public override void LoadTooltip(UIItem item)
+        {
+            base.LoadTooltip(item);
+
+            tooltip.ManaCost.text = "Mana: "+((SkillItem)item).ManaCost.ToString();
+            tooltip.Range.text = "Range: " + ((SkillItem)item).Range.ToString();
+            tooltip.NextLevelCost.text = "Gold: " + ((SkillItem)item).GoldCost.ToString();
         }
     }
 }

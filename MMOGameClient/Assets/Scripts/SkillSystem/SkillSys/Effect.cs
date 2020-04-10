@@ -13,8 +13,8 @@ namespace Assets.Scripts.SkillSystem.SkillSys
         public int Value;
         public float Multiplier;
         public int MinSkillLevel;
-         
-        public Effect(EffectValue id, int value,int minLevel, float multiplier)
+
+        public Effect(EffectValue id, int value, int minLevel, float multiplier)
         {
             this.EffectType = id;
             this.Value = value;
@@ -24,6 +24,10 @@ namespace Assets.Scripts.SkillSystem.SkillSys
         public float GetValue()
         {
             return Value * Multiplier;
+        }
+        public override string ToString()
+        {
+            return EffectType + ": " + Value;
         }
     }
 }

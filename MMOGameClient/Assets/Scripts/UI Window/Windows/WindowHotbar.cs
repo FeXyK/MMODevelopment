@@ -19,6 +19,16 @@ namespace Assets.Scripts.UI_Window
         {
             DrawItems();
         }
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                foreach (var item in Hotbar.items)
+                {
+                    Debug.Log(item.Value.ID + " " + item.Value.ItemType);
+                }
+            }
+        }
         public void DrawItems()
         {
             Upload();
@@ -31,11 +41,12 @@ namespace Assets.Scripts.UI_Window
                 else
                 {
                     obj.GetComponent<WindowHotbarItem>().uiItem = item.Value;
+                    obj.GetComponent<WindowHotbarItem>().ListNumber = item.Key;
                     obj.GetComponent<WindowHotbarItem>().Item.ItemHotkey.text = item.Key.ToString();
                     foreach (var effect in item.Value.effects)
                     {
-                        if(effect.EffectType == EffectValue.Cooldown)
-                        obj.GetComponent<WindowHotbarItem>().Item.ItemCooldown.text = effect.Value.ToString();
+                        if (effect.EffectType == EffectValue.Cooldown)
+                            obj.GetComponent<WindowHotbarItem>().Item.ItemCooldown.text = effect.Value.ToString();
                     }
                     if ((item.Value as SkillItem) != null)
                     {
@@ -44,6 +55,10 @@ namespace Assets.Scripts.UI_Window
                 }
                 obj.GetComponent<WindowHotbarItem>().Refresh();
             }
+        }
+        public void Modify(int key, UIItem item)
+        {
+            Hotbar.Modify(key, item);
         }
         public void Upload()
         {

@@ -1,6 +1,4 @@
-﻿using Assets.Scripts.UI.UIItems;
-using Assets.Scripts.UI_Window;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.UI

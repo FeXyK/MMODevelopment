@@ -117,6 +117,7 @@
     <Compile Include="Assets\Scripts\UI Window\Windows\WindowMap.cs" />
     <Compile Include="Assets\Scripts\UI Window\Windows\WindowSkillIventory.cs" />
     <Compile Include="Assets\Scripts\UI Window\Windows\WindowStats.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Windows\WindowTooltip.cs" />
     <Compile Include="Assets\Scripts\UI\UIHotbar.cs" />
     <Compile Include="Assets\Scripts\UI\UIInventory.cs" />
     <Compile Include="Assets\Scripts\UI\UIItem.cs" />

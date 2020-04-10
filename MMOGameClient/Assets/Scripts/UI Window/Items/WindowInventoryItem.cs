@@ -1,13 +1,9 @@
-﻿
-using Assets.Scripts.UI;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using Assets.Scripts.UI;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace Assets.Scripts.UI_Window
 {
-    class WindowInventoryItem : WindowItem, IDropHandler, IBeginDragHandler, IEndDragHandler
+    class WindowInventoryItem : WindowItem, IDropHandler
     {
         public int Amount;
         public UIItem DefaultUISlot;
@@ -41,14 +37,9 @@ namespace Assets.Scripts.UI_Window
                         draggedItem.Amount = Amount;
                         Amount = tempAmount;
                         draggedItem.uiItem = tempItem;
-
                     }
                     draggedItem.Refresh();
                     Refresh();
-                }
-                else
-                {
-                    //TODO
                 }
             }
         }
@@ -90,20 +81,12 @@ namespace Assets.Scripts.UI_Window
                     break;
             }
         }
-
-        public void OnBeginDrag(PointerEventData eventData)
+        public override void LoadTooltip(UIItem item)
         {
-            if (!CallOnBeginDrag())
-                eventData.pointerDrag = null;
-        }
-        public override void CallOnEndDrag()
-        {
-            base.CallOnEndDrag();
-        }
-
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            CallOnEndDrag();
+            base.LoadTooltip(item);
+            tooltip.ManaCost.text = "";
+            tooltip.Range.text = "";
+            tooltip.NextLevelCost.text = "Value: " + item.Value.ToString();
         }
     }
 }

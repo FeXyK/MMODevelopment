@@ -12,17 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eadbe179dada664fbea52c4be96a624, type: 3}
   m_Name: Cloth Boots
   m_EditorClassIdentifier: 
+  ID: 0
   Name: Cloth
   Level: 1
   Tier: 1
   ItemType: 2
   Value: 0
+  MaxAmount: 0
   Rarity: 1
   effects:
-  - Name: Armor
-    ID: 60
+  - EffectType: 60
     Value: 20
     Multiplier: 1
     MinSkillLevel: 0
   Prefab: {fileID: 0}
+  Sprite: {fileID: 0}
   Piece: 4

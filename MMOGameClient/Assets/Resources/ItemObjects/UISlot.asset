@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae1ea1fa0fdef3f43b43b5c36d7b547f, type: 3}
   m_Name: UISlot
   m_EditorClassIdentifier: 
-  ID: 0
+  ID: -1
   Name: UISlot
   Level: 0
   Tier: 1

@@ -321,7 +321,7 @@ GameObject:
   - component: {fileID: 4125534973057611908}
   - component: {fileID: 4125534973057611912}
   - component: {fileID: 4125534973057611915}
-  - component: {fileID: 671688798690720030}
+  - component: {fileID: 8411226590202452836}
   m_Layer: 5
   m_Name: SkillForm
   m_TagString: Untagged
@@ -388,7 +388,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &671688798690720030
+--- !u!114 &8411226590202452836
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -397,10 +397,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4125534973057611911}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7af63ea0150b4143a852302cf67c249, type: 3}
+  m_Script: {fileID: 11500000, guid: 353453f2752a4be4583f4adbd57bdfd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   SlotContainer: {fileID: 7499684791574585296}
+  IsPivotCenter: 1
   PrefabSlot: {fileID: 5002837495865364544, guid: 95ab7a212a6109340aa6c5141edc1f33,
     type: 3}
   SkillList: {fileID: 11400000, guid: b78558cb27c3edd4da9f17d29da5f16e, type: 2}

@@ -177,7 +177,7 @@ CanvasGroup:
   m_GameObject: {fileID: 5002837495865364544}
   m_Enabled: 1
   m_Alpha: 1
-  m_Interactable: 1
+  m_Interactable: 0
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!114 &-2221056785316631803
@@ -198,3 +198,5 @@ MonoBehaviour:
   canvasGroup: {fileID: 2015607559095166221}
   uiItem: {fileID: 0}
   Item: {fileID: 3062472750632085586}
+  showTooltipTime: 0.2
+  timer: 0
