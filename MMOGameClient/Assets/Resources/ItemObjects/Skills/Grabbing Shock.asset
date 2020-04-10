@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 4
   Name: Grabbing Shock
-  Level: 0
+  Details: 
+  Level: 3
   Tier: 1
   ItemType: 0
   Value: 0

@@ -100,7 +100,6 @@ namespace Assets.Scripts.Handlers
 
             int effectCount;
 
-            string effectName;
             int effectID;
             int effectValue;
             float effectMultiplier;
@@ -147,7 +146,6 @@ namespace Assets.Scripts.Handlers
                 effectCount = msgIn.ReadInt16();
                 for (int f = 0; f < effectCount; f++)
                 {
-                    //effectName = msgIn.ReadString(); //////////REMOVE NAME SEND AND DELETE THIS
                     effectID = msgIn.ReadInt16();
                     effectValue = msgIn.ReadInt16();
                     effectMinLevel = msgIn.ReadInt16();

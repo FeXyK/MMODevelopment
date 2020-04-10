@@ -9,6 +9,8 @@ namespace Assets.Scripts.UI_Window
         public Vector2 size;
         Vector3 pivotShift;
 
+        WindowTooltip tooltip;
+
         public virtual void CallOnStart()
         {
             size = GetComponent<RectTransform>().sizeDelta;
@@ -45,6 +47,15 @@ namespace Assets.Scripts.UI_Window
         public void SetFormAsLastSibling()
         {
             this.transform.SetAsLastSibling();
+        }
+        private void OnDisable()
+        {
+            if (tooltip == null)
+            {
+                tooltip = FindObjectOfType<WindowTooltip>();
+            }
+            if (tooltip != null)
+                tooltip.Hide();
         }
     }
 }

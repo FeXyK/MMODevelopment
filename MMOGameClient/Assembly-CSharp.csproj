@@ -127,6 +127,7 @@
     <Compile Include="Assets\Scripts\UI\UIItems\FoodItem.cs" />
     <Compile Include="Assets\Scripts\UI\UIItems\PotionItem.cs" />
     <Compile Include="Assets\Scripts\UI\UIItems\SkillItem.cs" />
+    <Compile Include="Assets\Scripts\UI\UIItems\UIItemContainer.cs" />
     <Compile Include="Assets\Scripts\UI\UIItems\WeaponItem.cs" />
     <Compile Include="Assets\Scripts\UI\UIRarityColors.cs" />
     <Compile Include="Assets\Scripts\UI\UISkillList.cs" />

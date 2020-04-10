@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Character;
 using Assets.Scripts.SkillSystem;
+using Assets.Scripts.SkillSystem.SkillSys;
 using Lidgren.Network;
 using Lidgren.Network.Message;
 using Lidgren.Network.ServerFiles;
@@ -82,10 +83,10 @@ namespace Assets.Scripts.Handlers
             switch (skillID)
             {
                 case 1:
-                    //GameObject.Instantiate(SkillList.Instance.skill[skillID]).GetComponent<Skill_FireballScript>().Set(source.transform, target.transform);
+                    GameObject.Instantiate(SkillLibrary.Projectile).GetComponent<Skill_FireballScript>().Set(source.transform, target.transform);
                     break;
                 case 4:
-                    //GameObject.Instantiate(SkillList.Instance.skill[skillID], target.transform);
+                    GameObject.Instantiate(SkillLibrary.Instant, target.transform);
                     break;
                 default:
                     break;
@@ -206,10 +207,10 @@ namespace Assets.Scripts.Handlers
         internal void EntityPositionUpdate(NetIncomingMessage msgIn)
         {
             int entityID = msgIn.ReadInt16();
-                if (entityID == dataHandler.myCharacter.entity.id)
-                {
-                    return;
-                }
+            if (entityID == dataHandler.myCharacter.entity.id)
+            {
+                return;
+            }
             if (dataHandler.otherCharacters.ContainsKey(entityID))
             {
                 float posX = msgIn.ReadFloat();

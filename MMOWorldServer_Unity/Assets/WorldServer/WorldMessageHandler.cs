@@ -120,7 +120,6 @@ namespace MMOGameServer.WorldServer
                 Debug.Log("Effects count: " + skill.Effects.Count);
                 foreach (var effect in skill.Effects.Values)
                 {
-                    msgOut.Write(effect.Name);
                     msgOut.Write(effect.EffectID, 16);
                     msgOut.Write(effect.MinLevel, 16);
                     msgOut.Write(effect.Value, 16);

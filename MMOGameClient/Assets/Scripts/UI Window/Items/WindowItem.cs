@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.UI;
+﻿using Assets.Scripts.Handlers;
+using Assets.Scripts.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -129,7 +130,7 @@ namespace Assets.Scripts.UI_Window
         }
         public virtual void Use()
         {
-            Debug.Log("Use item main");
+            GameMessageSender.Instance.SendUseMessage(uiItem);
         }
         public virtual void Refresh()
         {

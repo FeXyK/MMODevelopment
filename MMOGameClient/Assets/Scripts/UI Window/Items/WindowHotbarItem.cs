@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.SkillSystem.SkillSys;
+﻿using Assets.Scripts.Handlers;
+using Assets.Scripts.SkillSystem.SkillSys;
 using Assets.Scripts.UI;
 using Assets.Scripts.UI.UIItems;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace Assets.Scripts.UI_Window
     class WindowHotbarItem : WindowItem, IDropHandler
     {
         public int Amount;
+        public string Hotkey;
         public int ListNumber;
         public float CooldownTime;
 
@@ -24,12 +26,19 @@ namespace Assets.Scripts.UI_Window
             }
             else
                 Item.ItemCooldown.text = "";
+
+            if (CooldownTime <= 0 && Input.GetKeyDown(Hotkey))
+            {
+                Use();
+            }
         }
         public override void CallOnBeginDrag(PointerEventData eventData)
         {
             base.CallOnBeginDrag(eventData);
             if (clone != null)
             {
+                if (Hotbar == null)
+                    Hotbar = FindObjectOfType<WindowHotbar>();
                 clone.transform.SetParent(Hotbar.transform);
                 clone.GetComponent<RectTransform>().sizeDelta = this.GetComponent<RectTransform>().sizeDelta;
             }
@@ -112,10 +121,18 @@ namespace Assets.Scripts.UI_Window
         public override void LoadTooltip(UIItem item)
         {
             base.LoadTooltip(item);
-            
+
             tooltip.ManaCost.text = ((SkillItem)item).ManaCost.ToString();
             tooltip.Range.text = ((SkillItem)item).Range.ToString();
             tooltip.NextLevelCost.text = ((SkillItem)item).GoldCost.ToString();
+        }
+        public override void Use()
+        {
+            if (uiItem.ID >= 0)
+            {
+                GameMessageSender.Instance.SendSkillCast(uiItem as SkillItem);
+                CooldownTime = uiItem.GetCooldown();
+            }
         }
     }
 }

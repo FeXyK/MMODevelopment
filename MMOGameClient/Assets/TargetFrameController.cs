@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Character;
+using Assets.Scripts.Handlers;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -12,16 +13,17 @@ public class TargetFrameController : MonoBehaviour
     public TMP_Text NameBar;
     private void Update()
     {
-     if (target != null)
+        if (target != null)
         {
             HealthBar.value = target.Health;
             HealthBar.maxValue = target.MaxHealth;
         }
-}
+    }
     public void Set(EntityContainer target)
     {
         this.target = target;
         HealthBar.value = target.Health;
+        GameMessageSender.Instance.target = target;
 
         NameBar.text = target.entity.characterName;
     }

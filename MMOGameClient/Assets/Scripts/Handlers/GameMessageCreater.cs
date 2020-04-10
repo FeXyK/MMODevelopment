@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Character;
-using Assets.Scripts.SkillSystem;
+using Assets.Scripts.UI;
+using Assets.Scripts.UI.UIItems;
 using Lidgren.Network;
 using Lidgren.Network.Message;
 using Lidgren.Network.ServerFiles;
@@ -17,14 +18,14 @@ namespace Assets.Scripts.Handlers
         {
             this.netClient = netClient;
         }
-        //public NetOutgoingMessage CreateSkillCast(SkillAsset skill, EntityContainer target)
-        //{
-        //    NetOutgoingMessage msgOut = netClient.CreateMessage();
-        //    msgOut.Write((byte)MessageType.StartSkillCast);
-        //    msgOut.Write(target.entity.id, 16);
-        //    msgOut.Write(skill.SkillID, 16);
-        //    return msgOut;
-        //}
+        public NetOutgoingMessage CreateSkillCast(SkillItem skill, EntityContainer target)
+        {
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            msgOut.Write((byte)MessageType.StartSkillCast);
+            msgOut.Write(target.entity.id, 16);
+            msgOut.Write(skill.ID, 16);
+            return msgOut;
+        }
         public NetOutgoingMessage ClientReady()
         {
             NetOutgoingMessage msgReady = netClient.CreateMessage();
@@ -50,6 +51,7 @@ namespace Assets.Scripts.Handlers
             //msgOut.Write(dataHandler.myCharacter.transform.rotation.eulerAngles.y);
             return msgOut;
         }
+
         public NetOutgoingMessage PrivateChatMessage(string characterName, string[] msg)
         {
             NetOutgoingMessage msgOut = netClient.CreateMessage();
@@ -83,12 +85,30 @@ namespace Assets.Scripts.Handlers
             return msgOut;
         }
 
-        internal NetOutgoingMessage LevelUpSkill(int skillID, int level)
+        internal NetOutgoingMessage LevelUpSkill(UIItem item)
         {
             NetOutgoingMessage msgOut = netClient.CreateMessage();
             msgOut.Write((byte)MessageType.SkillLeveled);
-            msgOut.Write(skillID, 16);
-            msgOut.Write(level, 16);
+            msgOut.Write(item.ID, 16);
+            //msgOut.Write(level, 16);
+            return msgOut;
+        }
+
+        internal NetOutgoingMessage Use(UIItem item)
+        {
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            msgOut.Write((byte)MessageType.SkillLeveled);
+            msgOut.Write(item.ID, 16);
+            //msgOut.Write(level, 16);
+            return msgOut;
+        }
+
+        internal NetOutgoingMessage TakeOn(UIItem item)
+        {
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            msgOut.Write((byte)MessageType.SkillLeveled);
+            msgOut.Write(item.ID, 16);
+            //msgOut.Write(level, 16);
             return msgOut;
         }
     }

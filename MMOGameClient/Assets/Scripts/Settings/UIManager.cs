@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Character;
 using Assets.Scripts.Handlers;
+using Assets.Scripts.UI_Window;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -26,7 +27,7 @@ public class UIManager : MonoBehaviour
     public GameObject wInvertory;
     public ChatController wChat;
 
-    public Tooltip tooltip;
+    WindowTooltip tooltip;
 
 
     ResourceBarController healthBarController;
@@ -36,7 +37,7 @@ public class UIManager : MonoBehaviour
     Movement movement;
     private void Start()
     {
-        tooltip = FindObjectOfType<Tooltip>();
+        tooltip = FindObjectOfType<WindowTooltip>();
         healthBarController = HealthBar.GetComponent<ResourceBarController>();
         manaBarController = ManaBar.GetComponent<ResourceBarController>();
 
@@ -91,7 +92,10 @@ public class UIManager : MonoBehaviour
     }
     public void StackAdd(GameObject window)
     {
-        tooltip.Hide();
+        if (tooltip == null)
+            tooltip = FindObjectOfType<WindowTooltip>();
+        if (tooltip != null)
+            tooltip.Hide();
         if (stack.Contains(window))
         {
             stack.Remove(window);
@@ -106,7 +110,11 @@ public class UIManager : MonoBehaviour
     }
     public void StackRemove()
     {
-        tooltip.Hide();
+
+        if (tooltip == null)
+            tooltip = FindObjectOfType<WindowTooltip>();
+        if (tooltip != null)
+            tooltip.Hide();
         if (stack.Count > 0)
         {
             stack[stack.Count - 1].SetActive(false);
@@ -115,7 +123,11 @@ public class UIManager : MonoBehaviour
     }
     public void StackClear()
     {
-        tooltip.Hide();
+
+        if (tooltip == null)
+            tooltip = FindObjectOfType<WindowTooltip>();
+        if (tooltip != null)
+            tooltip.Hide();
         foreach (var window in stack)
         {
             window.SetActive(false);

@@ -1,8 +1,6 @@
-﻿
-using Assets.Scripts.SkillSystem.SkillSys;
+﻿using Assets.Scripts.SkillSystem.SkillSys;
 using Assets.Scripts.UI;
 using Assets.Scripts.UI.UIItems;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.UI_Window
@@ -19,16 +17,6 @@ namespace Assets.Scripts.UI_Window
         {
             DrawItems();
         }
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                foreach (var item in Hotbar.items)
-                {
-                    Debug.Log(item.Value.ID + " " + item.Value.ItemType);
-                }
-            }
-        }
         public void DrawItems()
         {
             Upload();
@@ -43,6 +31,7 @@ namespace Assets.Scripts.UI_Window
                     obj.GetComponent<WindowHotbarItem>().uiItem = item.Value;
                     obj.GetComponent<WindowHotbarItem>().ListNumber = item.Key;
                     obj.GetComponent<WindowHotbarItem>().Item.ItemHotkey.text = item.Key.ToString();
+                    obj.GetComponent<WindowHotbarItem>().Hotkey = item.Key.ToString();
                     foreach (var effect in item.Value.effects)
                     {
                         if (effect.EffectType == EffectValue.Cooldown)
@@ -62,10 +51,11 @@ namespace Assets.Scripts.UI_Window
         }
         public void Upload()
         {
-            for (int i = 0; i < HotbarSize; i++)
-            {
-                Hotbar.items.Add(new KeyValuePair<int, UIItem>(i, DefaultUIItem));
-            }
+            if (Hotbar.items.Count == 0)
+                for (int i = 0; i < HotbarSize; i++)
+                {
+                    Hotbar.items.Add(new UIItemContainer(i, DefaultUIItem));
+                }
         }
 
     }

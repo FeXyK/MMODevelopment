@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts.SkillSystem.SkillSys
 {
@@ -14,15 +15,56 @@ namespace Assets.Scripts.SkillSystem.SkillSys
             get
             {
                 if (instance == null)
+                {
                     instance = new SkillLibrary();
+                    Instant = Resources.Load<GameObject>("VFX/Fireshock");
+                }
                 return instance;
             }
         }
         List<Skill> skills = new List<Skill>();
+        private static GameObject projectile;
+        private static GameObject instant;
+        private static GameObject aoe;
+
+        public static GameObject Projectile
+        {
+            get
+            {
+                if (projectile == null)
+                    projectile = Resources.Load<GameObject>("VFX/Fireball");
+                return projectile;
+            }
+            set { }
+        }
+
+        public static GameObject Instant
+        {
+            get
+            {
+                if (Instant == null)
+                    instant = Resources.Load<GameObject>("VFX/Fireshock");
+                return Instant;
+            }
+            set { }
+        }
+
+        public static GameObject AoE
+        {
+            get
+            {
+                if (aoe== null)
+                    aoe = Resources.Load<GameObject>("VFX/Fireball");
+                return aoe;
+            }
+            set { }
+        }
         public static List<Skill> Skills()
         {
             if (instance == null)
+            {
                 instance = new SkillLibrary();
+            }
             return instance.skills;
         }
     }
