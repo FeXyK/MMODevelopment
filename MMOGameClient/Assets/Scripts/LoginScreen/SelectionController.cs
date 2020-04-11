@@ -103,7 +103,6 @@ namespace Assets.Scripts.LoginScreen
                 Destroy(characterItems[i].gameObject);
             }
             characterItems.Clear();
-            Debug.Log(characterItems.Count);
             SelectedCharacter = -1;
         }
     }

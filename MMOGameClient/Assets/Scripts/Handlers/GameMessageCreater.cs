@@ -33,13 +33,6 @@ namespace Assets.Scripts.Handlers
             return msgReady;
         }
 
-        internal NetOutgoingMessage SkillInformation()
-        {
-            NetOutgoingMessage msgOut = netClient.CreateMessage();
-            msgOut.Write((byte)MessageType.SkillListInformation);
-            return msgOut;
-        }
-
         public NetOutgoingMessage PositionUpdate(int id, Vector3 position)
         {
             NetOutgoingMessage msgOut = netClient.CreateMessage();
@@ -85,13 +78,12 @@ namespace Assets.Scripts.Handlers
             return msgOut;
         }
 
-        internal NetOutgoingMessage LevelUpSkill(UIItem item)
+        internal NetOutgoingMessage SkillLevelUp(UIItem item)
         {
             NetOutgoingMessage msgOut = netClient.CreateMessage();
             msgOut.Write((byte)MessageType.SkillLeveled);
             msgOut.Write(item.ID, 16);
-            //msgOut.Write(level, 16);
-            return msgOut;
+            return msgOut;  
         }
 
         internal NetOutgoingMessage Use(UIItem item)

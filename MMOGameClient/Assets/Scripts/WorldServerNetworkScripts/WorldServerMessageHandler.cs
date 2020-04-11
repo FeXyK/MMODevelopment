@@ -14,6 +14,8 @@ namespace Assets.Scripts.WorldServerNetworkScripts
         private static WorldServerMessageHandler instance;
         LoginScreenHandler loginScreenHandler;
         TMP_Text Notification;
+
+
         public static WorldServerMessageHandler GetInstance()
         {
             if (instance == null)
@@ -62,10 +64,6 @@ namespace Assets.Scripts.WorldServerNetworkScripts
             dataHandler.selectionController.CharacterForm.parent.parent.gameObject.SetActive(true);
             dataHandler.selectionController.ServerForm.gameObject.SetActive(false);
         }
-        public void HandlerSkillData(NetIncomingMessage msgIn)
-        {
-            dataHandler.LoadSkillList(msgIn); 
-        }
         internal void SendAuthenticationToken(NetIncomingMessage msgIn)
         {
             NetOutgoingMessage msgOut = netClient.CreateMessage();
@@ -89,6 +87,7 @@ namespace Assets.Scripts.WorldServerNetworkScripts
             if (dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter] != null)
             {
                 dataHandler.selectedCharacter = dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter];
+
                 dataHandler.selectedWorldServer = dataHandler.worldServers[dataHandler.selectionController.SelectedServerID];
 
                 NetOutgoingMessage msgOut = netClient.CreateMessage();

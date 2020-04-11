@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 7
   Name: Shockwave
+  Details: 
   Level: 0
   Tier: 1
   ItemType: 0
@@ -22,7 +23,7 @@ MonoBehaviour:
   Rarity: 1
   effects:
   - EffectType: 10
-    Value: 20
+    Value: 19
     Multiplier: 2
     MinSkillLevel: 1
   - EffectType: 130

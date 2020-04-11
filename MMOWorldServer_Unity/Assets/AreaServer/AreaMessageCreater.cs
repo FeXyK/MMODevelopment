@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace MMOGameServer
 {
-    public class AreaMessageCreater: Lidgren.Network.Message.MessageHandler
+    public class AreaMessageCreater : Lidgren.Network.Message.MessageHandler
     {
         NetServer netServer;
         AreaDataHandler dataHandler;
@@ -97,9 +97,18 @@ namespace MMOGameServer
             msgOut.Write(skills.Count, 16);
             foreach (var skill in skills)
             {
-                msgOut.Write(skill.Key,16);
-                msgOut.Write(skill.Value.GetLevel(),16);
+                msgOut.Write(skill.Key, 16);
+                msgOut.Write(skill.Value.GetLevel(), 16);
             }
+            return msgOut;
+        }
+
+        internal NetOutgoingMessage SkillLeveled(int skillID, int Level)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.SkillLeveled);
+            msgOut.Write((byte)skillID);
+            msgOut.Write((byte)Level);
             return msgOut;
         }
     }

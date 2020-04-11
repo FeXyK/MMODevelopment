@@ -21,7 +21,7 @@ public class UIManager : MonoBehaviour
 
     public GameObject wMain;
     public GameObject wOptions;
-    public GameObject wSkill;
+    public WindowSkillIventory wSkill;
     public GameObject wCharacter;
     public GameObject wGear;
     public GameObject wInvertory;
@@ -56,7 +56,7 @@ public class UIManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.K))
         {
-            StackAdd(wSkill);
+            StackAdd(wSkill.gameObject);
         }
         else if (Input.GetKeyDown(KeyCode.P))
         {

@@ -4,37 +4,45 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Utility_dotNET_Framework.Models;
 
 namespace Assets.AreaServer.SkillSystem
 {
     public class SkillItem
     {
         const float lagCompensation = 0.1f;
-        int skillID;
-        float cooldown;
-        float cooldownByDefault;
-        float cooldownByLevel;
-        int damage;
-        int baseDamage ;
-        int level;
-       public int skillType;
-        //Effects effects;
+        public int skillID;
+        public int Level;
+        public float cooldown;
+        public SkillType skillType = SkillType.Projectile;
 
-        public SkillItem(int skillID, int baseDamage, float cooldownByDefault, int level, int skillType)
+        public int ManaCost;
+        public float ManaCostMultiplier;
+        public int GoldCost;
+        public float GoldCostMultiplier;
+
+        public float CastTime;
+
+        public Dictionary<int, Effect> effects = new Dictionary<int, Effect>();
+
+        public SkillItem(Skill skill, int Level)
         {
-            this.skillID = skillID;
-            this.baseDamage = baseDamage;
-            this.cooldownByDefault = cooldownByDefault;
-            this.skillType = skillType;
-            SetLevel(level);
-        }
-        public void SetLevel(int level)
-        {
-            if (level <= 4)
+            skillID = skill.SkillID;
+            skillType = (SkillType)SkillLibrary.Instance.Skills[skillID].SkillType;
+            this.Level = Level;
+            ManaCost = skill.ManaCost;
+            ManaCostMultiplier = skill.ManaCostMultiplier;
+            GoldCost = skill.GoldCost;
+            GoldCostMultiplier = skill.GoldCostMultiplier;
+            foreach (var effect in SkillLibrary.Instance.Skills[skillID].Effects.Values)
             {
-                this.level = level;
-                this.damage = level * baseDamage;
-                this.cooldownByLevel = (cooldownByDefault / (float)level) - 1f;
+                Effect newEffect = new Effect();
+                newEffect.EffectID = effect.EffectID;
+                newEffect.Value = effect.Value;
+                newEffect.Multiplier = effect.Multiplier;
+                newEffect.MinLevel = effect.MinLevel;
+
+                effects.Add(effect.EffectID, newEffect);
             }
         }
         public bool IsReady()
@@ -43,31 +51,36 @@ namespace Assets.AreaServer.SkillSystem
         }
         public void SetCooldown()
         {
-            cooldown = Time.time + cooldownByLevel;
+            cooldown = Time.time + GetCooldown();
         }
         public float GetCooldown()
         {
-            return cooldown -Time.time ;
+            if (effects.ContainsKey((int)EffectType.Cooldown))
+                return effects[(int)EffectType.Cooldown].Value * Mathf.Pow(effects[130].Multiplier, Level - 1);
+            return 0;
         }
-
-        internal int GetDamage()
-        {
-            return damage;
-        }
-
-        internal void LevelUp()
-        {
-            SetLevel(level + 1);
-        }
-
         internal bool IsMaxLevel()
         {
-            return level >= 4 ? true : false; 
+            return Level >= 4 ? true : false;
+        }
+
+        internal int GetManaCost()
+        {
+
+            return (int)(ManaCost * (ManaCostMultiplier * (Level - 1)));
         }
 
         internal int GetLevel()
         {
-            return level;
+            return Level;
+        }
+
+        internal void LevelUp()
+        {
+            if (Level < 4)
+            {
+                Level++;
+            }
         }
     }
 }

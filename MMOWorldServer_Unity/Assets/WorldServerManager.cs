@@ -19,7 +19,6 @@ public class WorldServerManager : MonoBehaviour
             worldServer.areaServer = new AreaServerCore();
             worldServer.areaServer.Initialize(areaServerConfigFile);
 
-
             if (!TestingNonNetworkCode)
             {
                 worldServer.Initialize(worldServerConfigFile);

@@ -1,4 +1,6 @@
-﻿namespace Utility_dotNET_Framework.Models
+﻿using System;
+
+namespace Utility_dotNET_Framework.Models
 {
     public class Effect
     {
@@ -14,10 +16,23 @@
         {
 
         }
-        public string Name { get;  set; }
+        public float LeveledValue(int Level)
+        {
+            return Value * Pow(Multiplier, Level);
+        }
+        private float Pow(float value, int p)
+        {
+            float result = 1;
+            for (int i = 0; i < p - 1; i++)
+            {
+                result *= value;
+            }
+            return result;
+        }
+        public string Name { get; set; }
         public int EffectID { get; set; }
         public int Value { get; set; }
-        public int MinLevel { get;  set; }
+        public int MinLevel { get; set; }
         public float Multiplier { get; set; }
     }
 }

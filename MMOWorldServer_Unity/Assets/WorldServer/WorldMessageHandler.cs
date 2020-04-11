@@ -21,13 +21,14 @@ namespace MMOGameServer.WorldServer
         WorldMessageCreater messageCreater;
         WorldDataHandler dataHandler;
         Selection selection;
+        public AreaServerCore areaServer;
 
         //const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMODevelopment\MMOLoginServer\MMOGameServer\MMODB.mdf;Integrated Security=True";
         const int cooldownID = 130;
         const int spellDamageID = 40;
 
 
-        public WorldMessageHandler(NetServer server, WorldDataHandler handler)
+        public WorldMessageHandler(NetServer server, WorldDataHandler handler, AreaServerCore areaServer)
         {
             netServer = server;
             dataHandler = handler;
@@ -35,6 +36,7 @@ namespace MMOGameServer.WorldServer
             messageCreater = new WorldMessageCreater();
             messageCreater = new WorldMessageCreater();
             selection = new Selection("192.168.0.24", "mmo", 3306, "fexyk", "asdqwe123");
+            this.areaServer = areaServer;
             foreach (var skill in selection.GetSkillsData())
             {
                 SkillLibrary.Instance.Skills.Add(skill.SkillID, skill);
@@ -43,6 +45,10 @@ namespace MMOGameServer.WorldServer
             foreach (var skill in SkillLibrary.Instance.Skills)
             {
                 Debug.Log(skill);
+                foreach (var e in skill.Value.Effects)
+                {
+                    Debug.Log("Value: " + e.Value.Value);
+                }
             }
             //ItemList.Instance.Items = selection.GetItemsData();
         }
@@ -53,6 +59,7 @@ namespace MMOGameServer.WorldServer
 
             connection.publicKey = msgIn.ReadString();
             connection.connection = msgIn.SenderConnection;
+
             dataHandler.newConnections.Add(connection);
 
             msgOut.Write((byte)MessageType.KeyExchange);
@@ -89,46 +96,7 @@ namespace MMOGameServer.WorldServer
             SendCharacterList(msgIn);
         }
 
-        internal void SendSkillList(NetIncomingMessage msgIn)
-        {
-            //messageCreater.SkillListInformation(msgIn);
-            NetOutgoingMessage msgOut = netServer.CreateMessage();
-            msgOut.Write((byte)MessageType.SkillListInformation);
 
-            msgOut.Write(SkillLibrary.Instance.Skills.Count, 16);
-            foreach (var skill in SkillLibrary.Instance.Skills.Values)
-            {
-                msgOut.Write(skill.SkillID, 16);
-                msgOut.Write(skill.Name);
-                msgOut.Write(skill.SkillType, 16);
-
-                msgOut.Write(skill.Range);
-                msgOut.Write(skill.RangeMultiplier);
-
-                msgOut.Write(skill.Cost);
-                msgOut.Write(skill.CostMultiplier);
-
-                msgOut.Write(skill.LevelingCost);
-                msgOut.Write(skill.LevelingCostMultiplier);
-
-                msgOut.Write(skill.RequiredLevel1, 16);
-                msgOut.Write(skill.RequiredLevel2, 16);
-                msgOut.Write(skill.RequiredLevel3, 16);
-                msgOut.Write(skill.RequiredSkillID, 16);
-
-                msgOut.Write(skill.Effects.Count, 16);
-                Debug.Log("Effects count: " + skill.Effects.Count);
-                foreach (var effect in skill.Effects.Values)
-                {
-                    msgOut.Write(effect.EffectID, 16);
-                    msgOut.Write(effect.MinLevel, 16);
-                    msgOut.Write(effect.Value, 16);
-                    msgOut.Write(effect.Multiplier);
-                }
-            }
-            Debug.Log("Effects count: " + msgOut.LengthBytes);
-            netServer.SendMessage(msgOut, msgIn.SenderConnection, NetDeliveryMethod.ReliableOrdered);
-        }
 
         internal void PlayCharacter(NetIncomingMessage msgIn, AreaServerCore areaServer)
         {
@@ -154,33 +122,24 @@ namespace MMOGameServer.WorldServer
                     data.character.EntityID = temp.CharacterID;
                     data.character.AccountID = temp.AccountID;
                     data.character.EntityHealth = temp.Health.Value;
-                    data.character.EntityMaxHealth = temp.Health.Value;
+                    data.character.EntityMaxHealth = temp.MaxHealth.Value;
                     data.character.EntityMana = temp.Mana.Value;
-                    data.character.EntityMaxMana = temp.Mana.Value;
+                    data.character.EntityMaxMana = temp.MaxMana.Value;
                     data.character.EntityLevel = temp.Level.Value;
                     data.character.EntityExp = temp.Exp.Value;
                     data.character.CharacterType = (CharacterApperance)temp.CharType.Value;
                     data.character.EntityGold = temp.Gold.Value;
-
-                    int damage;//= SkillList.Instance.Skills();
-                    int skillType;
-                    float cooldown;// = SkillList.Instance.Skills.GetCooldown();
                     foreach (var skill in temp.Skills)
                     {
                         foreach (var skillItem in SkillLibrary.Instance.Skills)
                         {
                             if (skill.Key == skillItem.Key)
                             {
-                                damage = skillItem.Value.SpellDamage();//[spellDamageID].Value;
-                                cooldown = skillItem.Value.CooldownGet();// Effects[cooldownID].Value;
-                                skillType = skillItem.Value.SkillType;// Effects[cooldownID].Value;
-                                data.character.Skills.Add(skill.Key, new SkillItem(skill.Key, damage, cooldown, skill.Value, skillType));
-
+                                data.character.Skills.Add(skill.Key, new SkillItem(skillItem.Value, skill.Value));
                             }
                         }
                     }
                 }
-
                 data.position = new Vector3((float)temp.PosX.Value, (float)temp.PosY.Value, (float)temp.PosZ.Value);
                 data.authToken = account.authToken;
                 data.admin = account.admin;
@@ -268,7 +227,6 @@ namespace MMOGameServer.WorldServer
                     {
                         connection.authenticated = true;
                         connection.id = authToken.id;
-                        SendSkillList(msgIn);
                         NetOutgoingMessage msgOut = netServer.CreateMessage();
                         msgOut.Write((byte)MessageType.ClientAuthenticated);
 
@@ -342,32 +300,61 @@ namespace MMOGameServer.WorldServer
             account.characters.Clear();
             List<Utility_dotNET_Framework.Models.Character> charactersTemp = Selection.instance.GetCharactersData(account.id);
             CharacterData character;
+
             foreach (var temp in charactersTemp)
             {
-                character = new CharacterData();
-                character.name = temp.Name;
-                character.id = temp.CharacterID;
-                character.accountID = temp.AccountID;
-                character.positionX = (float)temp.PosX.Value;
-                character.positionY = (float)temp.PosY.Value;
-                character.positionZ = (float)temp.PosZ.Value;
-                character.currentHealth = temp.Health.Value;
-                character.currentMana = temp.Mana.Value;
-                character.level = temp.Level.Value;
-                character.currentExp = temp.Exp.Value;
-                character.characterType = temp.CharType.Value;
-
-                character.skills = temp.Skills;
-                Debug.LogWarning(" WRITING " );
-
-                foreach (var skill in temp.Skills)
+                Character existingEntity = areaServer.messageHandler.GetCharacter(temp.CharacterID);
+                if (existingEntity != null)
                 {
-                    Debug.LogWarning(skill.Key + " WWWWWWWWWW " + skill.Value);
-                }
+                    character = new CharacterData();
+                    character.name = temp.Name;
+                    character.id = temp.CharacterID;
+                    character.accountID = temp.AccountID;
+                    character.positionX = existingEntity.position.x;
+                    character.positionY = existingEntity.position.y;
+                    character.positionZ = existingEntity.position.z;
+                    character.currentHealth = temp.Health.Value;
+                    character.currentMana = temp.Mana.Value;
+                    character.maxHealth = temp.MaxHealth.Value;
+                    character.maxMana = temp.MaxMana.Value;
+                    character.level = temp.Level.Value;
+                    character.currentExp = temp.Exp.Value;
+                    character.characterType = temp.CharType.Value;
 
-                //character.= temp.CharSkills.Value;
-                character.gold = temp.Gold.Value;
-                account.characters.Add(character);
+                    character.skills = new Dictionary<int, int>();
+                    foreach (var skill in existingEntity.Skills)
+                    {
+                        character.skills.Add(skill.Key, skill.Value.Level);
+                    }
+                    character.gold = temp.Gold.Value;
+                    account.characters.Add(character);
+                }
+                else
+                {
+                    character = new CharacterData();
+                    character.name = temp.Name;
+                    character.id = temp.CharacterID;
+                    character.accountID = temp.AccountID;
+                    character.positionX = (float)temp.PosX.Value;
+                    character.positionY = (float)temp.PosY.Value;
+                    character.positionZ = (float)temp.PosZ.Value;
+                    character.currentHealth = (int)temp.Health.Value;
+                    character.currentMana = (int)temp.Mana.Value;
+                    character.maxHealth = (int)temp.MaxHealth.Value;
+                    character.maxMana = (int)temp.MaxMana.Value;
+                    character.level = temp.Level.Value;
+                    character.currentExp = temp.Exp.Value;
+                    character.characterType = temp.CharType.Value;
+
+                    character.skills = new Dictionary<int, int>();
+                    foreach (var skill in temp.Skills)
+                    {
+                        character.skills.Add(skill.Key, skill.Value);
+                    }
+
+                    character.gold = temp.Gold.Value;
+                    account.characters.Add(character);
+                }
             }
         }
         internal void SuccessfullAuthentication(NetIncomingMessage msgIn)

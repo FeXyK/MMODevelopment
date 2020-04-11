@@ -206,17 +206,17 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 14888}
     - Class: 114
-      Script: {instanceID: 15064}
+      Script: {instanceID: 15066}
     - Class: 114
-      Script: {instanceID: 15336}
+      Script: {instanceID: 15338}
     - Class: 114
-      Script: {instanceID: 15396}
+      Script: {instanceID: 15398}
     - Class: 114
-      Script: {instanceID: 15750}
+      Script: {instanceID: 15752}
     - Class: 114
-      Script: {instanceID: 15776}
+      Script: {instanceID: 15778}
     - Class: 114
-      Script: {instanceID: 15826}
+      Script: {instanceID: 15828}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -441,53 +441,53 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 14898}
     - Class: 114
-      Script: {instanceID: 15064}
+      Script: {instanceID: 15066}
     - Class: 114
-      Script: {instanceID: 15180}
+      Script: {instanceID: 15182}
     - Class: 114
-      Script: {instanceID: 15232}
+      Script: {instanceID: 15234}
     - Class: 114
-      Script: {instanceID: 15308}
+      Script: {instanceID: 15310}
     - Class: 114
-      Script: {instanceID: 15336}
-    - Class: 114
-      Script: {instanceID: 15394}
+      Script: {instanceID: 15338}
     - Class: 114
       Script: {instanceID: 15396}
     - Class: 114
-      Script: {instanceID: 15462}
+      Script: {instanceID: 15398}
     - Class: 114
-      Script: {instanceID: 15526}
+      Script: {instanceID: 15464}
     - Class: 114
-      Script: {instanceID: 15712}
+      Script: {instanceID: 15528}
     - Class: 114
       Script: {instanceID: 15714}
     - Class: 114
-      Script: {instanceID: 15750}
+      Script: {instanceID: 15716}
     - Class: 114
       Script: {instanceID: 15752}
     - Class: 114
-      Script: {instanceID: 15776}
+      Script: {instanceID: 15754}
     - Class: 114
-      Script: {instanceID: 15780}
+      Script: {instanceID: 15778}
     - Class: 114
-      Script: {instanceID: 15826}
+      Script: {instanceID: 15782}
     - Class: 114
-      Script: {instanceID: 15924}
+      Script: {instanceID: 15828}
     - Class: 114
-      Script: {instanceID: 15930}
+      Script: {instanceID: 15926}
     - Class: 114
-      Script: {instanceID: 44538}
+      Script: {instanceID: 15932}
     - Class: 114
-      Script: {instanceID: 46290}
+      Script: {instanceID: 17272}
     - Class: 114
-      Script: {instanceID: 78696}
+      Script: {instanceID: 53472}
     - Class: 114
-      Script: {instanceID: 79638}
+      Script: {instanceID: 132354}
     - Class: 114
-      Script: {instanceID: 79642}
+      Script: {instanceID: 133296}
     - Class: 114
-      Script: {instanceID: 79648}
+      Script: {instanceID: 133300}
+    - Class: 114
+      Script: {instanceID: 133306}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -663,7 +663,7 @@ ScriptsOnlyBuild:
     className: WindowHotbar
   - hash:
       serializedVersion: 2
-      Hash: f22d03ecfba0be5bd30ccc6e329f1b3b
+      Hash: 02cf5a3ca9907dd7bfa656d8a8cd6c11
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UIManager

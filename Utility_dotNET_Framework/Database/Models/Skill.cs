@@ -28,10 +28,10 @@ namespace Utility_dotNET_Framework.Models
         public int Level { get; set; }
         public int SkillID { get; set; }
         public float Cooldown { get; set; }
-        public float Cost { get; set; }
-        public float CostMultiplier { get; set; }
-        public float LevelingCost { get; set; }
-        public float LevelingCostMultiplier { get; set; }
+        public int ManaCost { get; set; }
+        public float ManaCostMultiplier { get; set; }
+        public int GoldCost { get; set; }
+        public float GoldCostMultiplier { get; set; }
         public float Range { get; set; }
         public float RangeMultiplier { get; set; }
         public int RequiredSkillID { get; internal set; }

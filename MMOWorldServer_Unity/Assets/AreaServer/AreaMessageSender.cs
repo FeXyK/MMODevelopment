@@ -48,6 +48,7 @@ namespace Assets.Scripts.Handlers
             msgOut.Write((byte)MessageType.EntityUpdate);
             msgOut.Write(target.EntityID, 16);
             msgOut.Write(target.EntityHealth, 16);
+            msgOut.Write(target.EntityMana, 16);
 
             netServer.SendToAll(msgOut, NetDeliveryMethod.Unreliable);
         }

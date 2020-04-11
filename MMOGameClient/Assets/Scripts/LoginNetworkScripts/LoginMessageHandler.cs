@@ -15,6 +15,10 @@ namespace Assets.Scripts.Handlers
         LoginScreenHandler loginScreenHandler;
         string publicKey;
         TMP_Text Notification;
+
+
+
+
         private static LoginMessageHandler instance;
         public static LoginMessageHandler GetInstance()
         {
@@ -63,10 +67,9 @@ namespace Assets.Scripts.Handlers
                 netClient.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered);
             }
         }
-
         internal void WorldServerAuthenticationTokenRequest()
         {
-            if (dataHandler.worldServers[dataHandler.selectionController.SelectedServerID] != null)
+            if ( dataHandler.worldServers[dataHandler.selectionController.SelectedServerID] != null)
             {
                 dataHandler.selectedWorldServer = dataHandler.worldServers[dataHandler.selectionController.SelectedServerID];
                 NetOutgoingMessage msgOut = netClient.CreateMessage();
@@ -114,9 +117,9 @@ namespace Assets.Scripts.Handlers
         }
         public void SetupConnection()
         {
-            string SERVER_IP="";
+            string SERVER_IP = "";
             int SERVER_PORT = 0;
-            if (netClient.ServerConnection != null) 
+            if (netClient.ServerConnection != null)
                 return;
 
             string[] lines = File.ReadAllLines(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.cfg");

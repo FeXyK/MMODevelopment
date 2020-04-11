@@ -10,7 +10,7 @@ namespace Assets.Scripts.UI
 {
     [CreateAssetMenu(fileName = "Skill List", menuName = "New SkillList")]
     [Serializable]
-    class UISkillList : ScriptableObject
+    public class UISkillList : ScriptableObject
     {
         public List<SkillItem> items = new List<SkillItem>();
     }

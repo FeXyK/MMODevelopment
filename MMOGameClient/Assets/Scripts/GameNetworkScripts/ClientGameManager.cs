@@ -37,11 +37,13 @@ namespace Assets.Scripts.GameNetworkScripts
         }
         public void SpawnPlayer()
         {
-            SelectionController selection = GameObject.FindObjectOfType<SelectionController>();
 
-            Vector3 position = selection.loginDataController.selectedCharacter.position;
+            Entity entity = LoginDataHandler.GetInstance().selectedCharacter;
+            //= GameObject.FindObjectOfType<SelectionController>();
+
+            Vector3 position = entity.position;
             GameObject player = null;
-            switch (selection.loginDataController.selectedCharacter.characterType)
+            switch (entity.characterType)
             {
                 case Character.CharacterApperance.Male:
                     player = GameObject.Instantiate(Resources.Load<GameObject>("PlayerPrefabs/PlayerMale"), position, Quaternion.identity);
@@ -54,13 +56,19 @@ namespace Assets.Scripts.GameNetworkScripts
                     break;
             }
             messageHandler.dataHandler.myCharacter = player.GetComponent<EntityContainer>();
-            player.GetComponent<EntityContainer>().Set(selection.loginDataController.selectedCharacter);
+
+            player.GetComponent<EntityContainer>().Set(entity);
+
             float health = player.GetComponent<EntityContainer>().Health;
             float maxHealth = player.GetComponent<EntityContainer>().MaxHealth;
             float mana = player.GetComponent<EntityContainer>().Mana;
-            float maxMana= player.GetComponent<EntityContainer>().MaxMana;
+            float maxMana = player.GetComponent<EntityContainer>().MaxMana;
 
 
+            Debug.Log("!Health: " + entity.health);
+            Debug.Log("!Max Health: " + entity.maxHealth);
+            Debug.Log("!Mana: " + entity.mana);
+            Debug.Log("!Max Mana: " + entity.maxMana);
 
             GameObject.FindGameObjectWithTag("Player_HealthBar").GetComponentInChildren<TMP_Text>().text = health + " / " + maxHealth + "   [" + (int)((health / maxHealth) * 100) + "%]";
             GameObject.FindGameObjectWithTag("Player_ManaBar").GetComponentInChildren<TMP_Text>().text = mana + " / " + maxMana + "   [" + (int)((mana / maxMana) * 100) + "%]";
@@ -107,11 +115,11 @@ namespace Assets.Scripts.GameNetworkScripts
                         case MessageType.SkillCasted:
                             messageHandler.SkillCasted(msgIn);
                             break;
-                        case MessageType.EntityUpdate:
-                            messageHandler.EntityHealthUpdate(msgIn);
+                        case MessageType.SkillLeveled:
+                            messageHandler.SkillLeveled(msgIn);
                             break;
-                        case MessageType.SkillListInformation:
-                            messageHandler.SkillListInformation(msgIn);
+                        case MessageType.EntityUpdate:
+                            messageHandler.EntityResourceUpdate(msgIn);
                             break;
                     }
                 }

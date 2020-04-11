@@ -17,7 +17,7 @@ namespace Assets.Scripts.SkillSystem.SkillSys
                 if (instance == null)
                 {
                     instance = new SkillLibrary();
-                    Instant = Resources.Load<GameObject>("VFX/Fireshock");
+
                 }
                 return instance;
             }
@@ -42,9 +42,9 @@ namespace Assets.Scripts.SkillSystem.SkillSys
         {
             get
             {
-                if (Instant == null)
+                if (instant == null)
                     instant = Resources.Load<GameObject>("VFX/Fireshock");
-                return Instant;
+                return instant;
             }
             set { }
         }

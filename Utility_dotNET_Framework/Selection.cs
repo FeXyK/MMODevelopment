@@ -219,7 +219,9 @@ namespace Utility_dotNET_Framework
             character.Exp = reader.GetInt32("exp");
             character.Gold = reader.GetInt32("gold");
             character.Health = reader.GetInt32("current_health");
+            character.MaxHealth = reader.GetInt32("max_health");
             character.Mana = reader.GetInt32("current_mana");
+            character.MaxMana = reader.GetInt32("max_mana");
             character.PosX = reader.GetFloat("x_position");
             character.PosY = reader.GetFloat("y_position");
             character.PosZ = reader.GetFloat("z_position");
@@ -248,10 +250,10 @@ namespace Utility_dotNET_Framework
                             skill.SkillID = reader.GetInt32("id_skill");
                             skill.Name = reader.GetString("skill_name");
                             skill.SkillType = reader.GetInt32("skill_type");
-                            skill.Cost = reader.GetFloat("use_cost");
-                            skill.CostMultiplier = reader.GetFloat("use_cost_multiplier");
-                            skill.LevelingCost = reader.GetFloat("leveling_cost");
-                            skill.LevelingCostMultiplier = reader.GetFloat("leveling_cost_multiplier");
+                            skill.ManaCost = reader.GetInt32("use_cost");
+                            skill.ManaCostMultiplier = reader.GetFloat("use_cost_multiplier");
+                            skill.GoldCost = reader.GetInt32("leveling_cost");
+                            skill.GoldCostMultiplier = reader.GetFloat("leveling_cost_multiplier");
                             skill.Range = reader.GetFloat("range");
                             skill.RangeMultiplier = reader.GetFloat("range_multiplier");
 

@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.UI;
+﻿using Assets.Scripts.Handlers;
+using Assets.Scripts.UI;
 using Assets.Scripts.UI.UIItems;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -47,7 +48,7 @@ namespace Assets.Scripts.UI_Window
         }
         public override void Use()
         {
-            Debug.Log("Use skill item");
+            GameMessageSender.Instance.SkillLevelUp(uiItem);
         }
         public override void LoadTooltip(UIItem item)
         {

@@ -29,7 +29,7 @@ namespace MMOGameServer
         {
             base.Initialize(source);
             dataHandler = new WorldDataHandler();
-            messageHandler = new WorldMessageHandler(netPeer as NetServer, dataHandler);
+            messageHandler = new WorldMessageHandler(netPeer as NetServer, dataHandler, areaServer);
         }
         public override void ReceiveMessages()
         {
@@ -77,9 +77,6 @@ namespace MMOGameServer
                             break;
                         case MessageType.Alive:
                             messageHandler.Alive(msgIn);
-                            break;
-                        case MessageType.SkillListInformation:
-                            messageHandler.SendSkillList(msgIn);
                             break;
                     }
                 }

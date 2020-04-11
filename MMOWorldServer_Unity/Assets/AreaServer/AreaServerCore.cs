@@ -1,16 +1,18 @@
 ﻿using Assets;
+using Assets.AreaServer.Entity;
 using Lidgren.Network;
 using Lidgren.Network.Message;
 using Lidgren.Network.Override;
 using Lidgren.Network.ServerFiles.Data;
 using System;
 using System.Collections.Concurrent;
+using UnityEngine;
 
 namespace MMOGameServer
 {
     class AreaServerCore : NetPeerOverride
     {
-        new AreaMessageHandler messageHandler = null;
+       public new AreaMessageHandler messageHandler = null;
         public ConcurrentQueue<CharacterWrapper> newConnections = new ConcurrentQueue<CharacterWrapper>();
         int tickCount = 0;
 
@@ -64,6 +66,9 @@ namespace MMOGameServer
                         case MessageType.StartSkillCast:
                             messageHandler.StartSkillCast(msgIn);
                             break;
+                        case MessageType.UsePotion:
+                            messageHandler.UsePotion(msgIn);
+                            break;
                         case MessageType.SkillListInformation:
                             messageHandler.ClientSkillInformation(msgIn);
                             break;
@@ -86,6 +91,11 @@ namespace MMOGameServer
                 tickCount = 0;
             }
             tickCount++;
+        }
+
+        internal Character GetCharacter(int characterID)
+        {
+            return messageHandler.GetCharacter(characterID);   
         }
     }
 }

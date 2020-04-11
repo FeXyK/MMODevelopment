@@ -49,7 +49,6 @@ namespace Assets.Scripts.Handlers
             Debug.Log("MYCHARACTERS COUNT: " + myCharacters.Count + " " + count);
             for (int i = 0; i < count; i++)
             {
-
                 entity = new Entity();
                 entity.characterName = msgIn.ReadString();
                 entity.id = msgIn.ReadInt32();
@@ -59,108 +58,35 @@ namespace Assets.Scripts.Handlers
                 entity.gold = msgIn.ReadInt32();
                 entity.characterType = (CharacterApperance)msgIn.ReadInt32();
 
-                entity.health =  msgIn.ReadInt32();
-                entity.maxHealth =  msgIn.ReadInt32();
+                entity.health = msgIn.ReadInt32();
+                entity.maxHealth = msgIn.ReadInt32();
                 entity.mana = msgIn.ReadInt32();
                 entity.maxMana = msgIn.ReadInt32();
+
+                Debug.Log("Health: " + entity.health);
+                Debug.Log("Max Health: " + entity.maxHealth);
+                Debug.Log("Mana: " + entity.mana);
+                Debug.Log("Max Mana: " + entity.maxMana);
+
 
                 float x = msgIn.ReadFloat();
                 float y = msgIn.ReadFloat();
                 float z = msgIn.ReadFloat();
                 entity.position = new Vector3(x, y, z);
 
-                Dictionary<int, int> skills = new Dictionary<int, int>();
-                int skillCount = msgIn.ReadInt16();
+                entity.skills = new Dictionary<int, int>();
 
+                int skillCount = msgIn.ReadInt16();
                 for (int k = 0; k < skillCount; k++)
                 {
                     int id = msgIn.ReadInt16();
                     int level = msgIn.ReadInt16();
 
-                    skills.Add(id, level);
+                    entity.skills.Add(id, level);
                 }
-                //Debug.Log("---");
-                //Debug.Log(entity.characterName);
-                //entity.skillTree = new SkillTree(skills);
-                //Debug.Log("CHARACTER SKILLS: ");
-                //foreach (var skill in entity.skillTree.skills)
-                //{
-                //    Debug.Log(skill.ID + " " + skill.Name + " " + skill.level);
-                //}
                 myCharacters.Add(entity);
             }
             selectionController.DrawCharacterItems(myCharacters);
-        }
-        public void LoadSkillList(NetIncomingMessage msgIn)
-        {
-
-            Debug.Log("SKILLDATA: ");
-            Skill skill;
-            int skillCount = msgIn.ReadInt16();
-
-            int effectCount;
-
-            int effectID;
-            int effectValue;
-            float effectMultiplier;
-            int effectMinLevel;
-
-            float range;
-            float rangeMultiplier;
-
-            float levelingCost;
-            float levelingCostMultiplier;
-
-            float useCost;
-            float useCostMultiplier;
-
-            Effect effect;
-            for (int k = 0; k < skillCount; k++)
-            {
-                skill = new Skill();
-
-                skill.ID = msgIn.ReadInt16();
-                skill.Name = msgIn.ReadString();
-                skill.SkillType = msgIn.ReadInt16();
-
-                range = msgIn.ReadFloat();
-                rangeMultiplier = msgIn.ReadFloat();
-
-                useCost = msgIn.ReadFloat();
-                useCostMultiplier = msgIn.ReadFloat();
-
-                levelingCost = msgIn.ReadFloat();
-                levelingCostMultiplier = msgIn.ReadFloat();
-
-                skill.SetRange(range, rangeMultiplier);
-                skill.SetUseCost(useCost, useCostMultiplier);
-                skill.SetLevelingCost(levelingCost, levelingCostMultiplier);
-
-
-                int l1 = msgIn.ReadInt16();
-                int l2 = msgIn.ReadInt16();
-                int l3 = msgIn.ReadInt16();
-                skill.SetRequiredLevel(l1, l2, l3);
-                skill.RequiredSkillID = msgIn.ReadInt16();
-
-                effectCount = msgIn.ReadInt16();
-                for (int f = 0; f < effectCount; f++)
-                {
-                    effectID = msgIn.ReadInt16();
-                    effectValue = msgIn.ReadInt16();
-                    effectMinLevel = msgIn.ReadInt16();
-                    effectMultiplier = msgIn.ReadFloat();
-
-                    effect = new Effect((EffectValue)effectID, effectValue, effectMinLevel, effectMultiplier);
-                    skill.effects.Add(effect);
-                }
-                SkillLibrary.Skills().Add(skill);
-            }
-            //Debug.Log("----------------------------------------------------------");
-            //foreach (var s in SkillLibrary.Skills())
-            //{
-            //    Debug.Log(s);
-            //}
         }
         public void LoadGameServerData(NetIncomingMessage msgIn)
         {

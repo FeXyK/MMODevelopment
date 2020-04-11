@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Character;
+using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.UI_Window
 {
-    class UIWindow : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerDownHandler
+    public class UIWindow : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerDownHandler
     {
         public Transform SlotContainer;
         public Vector2 size;
@@ -11,8 +13,12 @@ namespace Assets.Scripts.UI_Window
 
         WindowTooltip tooltip;
 
+        public Entity Player;
+        private bool dirtyFlag;
+
         public virtual void CallOnStart()
         {
+            Player = GameObject.FindGameObjectWithTag("PlayerCharacter").GetComponent<EntityContainer>().entity;
             size = GetComponent<RectTransform>().sizeDelta;
             pivotShift = Input.mousePosition - this.transform.position;
             this.transform.SetAsLastSibling();
@@ -57,5 +63,24 @@ namespace Assets.Scripts.UI_Window
             if (tooltip != null)
                 tooltip.Hide();
         }
+        private void OnEnable()
+        {
+            if (dirtyFlag)
+            {
+                Refresh();
+                dirtyFlag = false;
+            }
+        }
+
+        public virtual void Refresh()
+        {
+
+        }
+
+        internal virtual void Dirty()
+        {
+            dirtyFlag = true;
+        }
+
     }
 }

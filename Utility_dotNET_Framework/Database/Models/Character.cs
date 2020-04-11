@@ -10,12 +10,13 @@ namespace Utility_dotNET_Framework.Models
         public string Name { get; set; }
         public int? Health { get; set; }
         public int? Mana { get; set; }
+        public int? MaxHealth { get; set; }
+        public int? MaxMana { get; set; }
         public int? Exp { get; set; }
         public int? Level { get; set; }
-        public double? PosX { get; set; }
-        public double? PosY { get; set; }
-        public double? PosZ { get; set; }
-        public double? Rotation { get; set; }
+        public float? PosX { get; set; }
+        public float? PosY { get; set; }
+        public float? PosZ { get; set; }
         public int? CharSkills { get; set; }
         public int? CharType { get; set; }
         public int? Gold { get; set; }

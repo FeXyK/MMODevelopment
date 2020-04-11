@@ -27,13 +27,6 @@ namespace Assets.Scripts.Handlers
                 instance = this;
             }
         }
-
-        internal void GetSkillInformation()
-        {
-            NetOutgoingMessage msgOut = messageCreater.SkillInformation();
-            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
-        }
-
         public static GameMessageSender Instance
         {
             get
@@ -65,6 +58,16 @@ namespace Assets.Scripts.Handlers
             NetOutgoingMessage msgOut = messageCreater.PositionUpdate(dataHandler.myCharacter.entity.id, dataHandler.myCharacter.transform.position);
             netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
         }
+
+        internal void SkillLevelUp(UIItem item)
+        {
+            if (item.ID >= 0)
+            {
+                NetOutgoingMessage msgOut = messageCreater.SkillLevelUp(item);
+                netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+            }
+        }
+
         public void SendPrivateChatMessage(string[] msg)
         {
             NetOutgoingMessage msgOut = messageCreater.PrivateChatMessage(dataHandler.myCharacter.entity.characterName, msg);
@@ -100,7 +103,7 @@ namespace Assets.Scripts.Handlers
             switch (item.ItemType)
             {
                 case UIItemType.Skill:
-                    msgOut = messageCreater.LevelUpSkill(item);
+                    msgOut = messageCreater.SkillLevelUp(item);
                     break;
                 case UIItemType.Weapon:
                     msgOut = messageCreater.TakeOn(item);

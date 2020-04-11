@@ -30,6 +30,12 @@ public class LoginScreenHandler : MonoBehaviour
     bool flag = false;
     float tickTime;
 
+    float playButtonTimer;
+    float playButtonTimerDefault = 1f;
+
+    float worldServerAuthTimer;
+    float worldServerAuthTimerDefault = 1f;
+
     private void Start()
     {
         QualitySettings.vSyncCount = 0;
@@ -85,8 +91,11 @@ public class LoginScreenHandler : MonoBehaviour
     }
     public void LoginWorldServer()
     {
-
-        loginMessageHandler.WorldServerAuthenticationTokenRequest();
+        if (playButtonTimer - Time.time < 0)
+        {
+            playButtonTimer = playButtonTimerDefault;
+            loginMessageHandler.WorldServerAuthenticationTokenRequest();
+        }
     }
     private void LoginThread()
     {
@@ -149,7 +158,11 @@ public class LoginScreenHandler : MonoBehaviour
     }
     public void PlayCharacter()
     {
-        worldMessageHandler.PlayCharacter();
+        if (playButtonTimer - Time.time < 0)
+        {
+            playButtonTimer = playButtonTimerDefault;
+            worldMessageHandler.PlayCharacter();
+        }
     }
     public void ShowCharacterCreation()
     {

@@ -23,7 +23,7 @@ MonoBehaviour:
   Rarity: 1
   effects:
   - EffectType: 10
-    Value: 20
+    Value: 10
     Multiplier: 2
     MinSkillLevel: 1
   - EffectType: 130

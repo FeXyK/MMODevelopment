@@ -78,9 +78,11 @@
     <Compile Include="Assets\AreaServer\Entity\MobBehaviour.cs" />
     <Compile Include="Assets\AreaServer\GridSystem\Grid.cs" />
     <Compile Include="Assets\AreaServer\GridSystem\GridNode.cs" />
+    <Compile Include="Assets\AreaServer\SkillSystem\EffectType.cs" />
     <Compile Include="Assets\AreaServer\SkillSystem\SkillItem.cs" />
     <Compile Include="Assets\AreaServer\SkillSystem\SkillLibrary.cs" />
     <Compile Include="Assets\AreaServer\SkillSystem\SkillProjectile.cs" />
+    <Compile Include="Assets\AreaServer\SkillSystem\SkillType.cs" />
     <Compile Include="Assets\CharacterWrapper.cs" />
     <Compile Include="Assets\WorldServer\WorldDataHandler.cs" />
     <Compile Include="Assets\WorldServer\WorldMessageCreater.cs" />

@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Character;
 using Assets.Scripts.SkillSystem;
 using Assets.Scripts.SkillSystem.SkillSys;
+using Assets.Scripts.UI_Window;
 using Lidgren.Network;
 using Lidgren.Network.Message;
 using Lidgren.Network.ServerFiles;
@@ -15,6 +16,7 @@ namespace Assets.Scripts.Handlers
         public GameDataHandler dataHandler;
         GameMessageSender messageSender;
         UIManager uiManager;
+
 
         public GameMessageHandler(NetClient client)
         {
@@ -63,13 +65,15 @@ namespace Assets.Scripts.Handlers
             }
         }
 
-        internal void EntityHealthUpdate(NetIncomingMessage msgIn)
+        internal void EntityResourceUpdate(NetIncomingMessage msgIn)
         {
 
             int targetID = msgIn.ReadInt16();
             EntityContainer target = dataHandler.GetEntity(targetID);
             target.Health = msgIn.ReadInt16();
+            target.Mana = msgIn.ReadInt16();
             Debug.LogWarning(target.Health);
+            Debug.LogWarning(target.Mana);
         }
         internal void SkillCasted(NetIncomingMessage msgIn)
         {
@@ -122,30 +126,6 @@ namespace Assets.Scripts.Handlers
                 EntityContainer newMob = newMobObj.GetComponent<EntityContainer>();
                 newMob.Set(entityID, entityLevel, health, 0, entityName, maxHealth);
                 dataHandler.otherCharacters.Add(entityID, newMob);
-            }
-        }
-
-        internal void SkillListInformation(NetIncomingMessage msgIn)
-        {
-            int count = msgIn.ReadInt16();
-            int skillID;
-            int level;
-            //uiManager.wSkill.SetActive(true);
-            for (int i = 0; i < count; i++)
-            {
-                skillID = msgIn.ReadInt16();
-                level = msgIn.ReadInt16();
-                Debug.LogWarning("SKILLID: " + skillID);
-                Debug.LogWarning("level: " + level);
-                //foreach (var skill in GameObject.FindObjectOfType<SkillTreeController>().skills)
-                //{
-                //    Debug.LogWarning("skill: " + skill.SkillID);
-                //    if (skill.SkillID == skillID)
-                //    {
-                //        skill.SetLevel((SkillRank)level);
-                //    }
-                //}
-                //skillController.gameObject.SetActive(true);
             }
         }
         internal void MobPositionUpdate(NetIncomingMessage msgIn)
@@ -203,6 +183,17 @@ namespace Assets.Scripts.Handlers
                 dataHandler.otherCharacters.Remove(newCharacter.entity.id);
             }
             dataHandler.otherCharacters.Add(newCharacter.entity.id, newCharacter);
+        }
+        internal void SkillLeveled(NetIncomingMessage msgIn)
+        {
+            int skillID = msgIn.ReadByte();
+            int level = msgIn.ReadByte();
+
+            if (dataHandler.myCharacter.entity.skills.ContainsKey(skillID))
+                dataHandler.myCharacter.entity.skills[skillID] = level;
+            else
+                dataHandler.myCharacter.entity.skills[skillID] = level;
+            uiManager.wSkill.Refresh();
         }
         internal void EntityPositionUpdate(NetIncomingMessage msgIn)
         {

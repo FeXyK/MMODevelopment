@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 6
   Name: Shock
+  Details: 
   Level: 0
   Tier: 1
   ItemType: 0
@@ -22,7 +23,7 @@ MonoBehaviour:
   Rarity: 1
   effects:
   - EffectType: 10
-    Value: 15
+    Value: 9
     Multiplier: 2
     MinSkillLevel: 1
   - EffectType: 130

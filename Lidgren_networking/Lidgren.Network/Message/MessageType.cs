@@ -53,6 +53,10 @@ namespace Lidgren.Network.Message
         SkillLeveled,
         EntityUpdate,
 
+        UsePotion,
+        UseFood,
+        UseEqippeable,
+
         Client,
         WorldServer
     }

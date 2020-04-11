@@ -317,24 +317,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LoadingScreenCanvas: {fileID: 666362853}
   loadingBar: {fileID: 1249738164}
---- !u!114 &1000834950
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000834948}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf1c26856adcc0d43be06267517d95f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SliderMouseX: {fileID: 0}
-  SliderMouseY: {fileID: 0}
-  SliderVolume: {fileID: 0}
-  mouseX: 20
-  mouseY: 20
-  audioVolume: 0
 --- !u!114 &1000834951
 MonoBehaviour:
   m_ObjectHideFlags: 0

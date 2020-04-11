@@ -3,7 +3,7 @@
 namespace Assets.Scripts.UI.UIItems
 {
     [CreateAssetMenu(fileName = "New Skill", menuName = "Skill")]
-    class SkillItem : UIItem
+    public class SkillItem : UIItem
     {
         public UISkillType SkilType;
         [SerializeField]
