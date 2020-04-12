@@ -135,8 +135,6 @@
     <Compile Include="Assets\Scripts\UI\UIRarityColors.cs" />
     <Compile Include="Assets\Scripts\UI\UISkillList.cs" />
     <Compile Include="Assets\Scripts\UI\UISkillType.cs" />
-    <Compile Include="Assets\Scripts\Utility\Tooltip.cs" />
-    <Compile Include="Assets\Scripts\Utility\UIArrow.cs" />
     <Compile Include="Assets\Scripts\WorldServerNetworkScripts\WorldServerMessageCreater.cs" />
     <Compile Include="Assets\Scripts\WorldServerNetworkScripts\WorldServerMessageHandler.cs" />
     <Compile Include="Assets\Scripts\WorldServerNetworkScripts\WorldServerMessageReader.cs" />

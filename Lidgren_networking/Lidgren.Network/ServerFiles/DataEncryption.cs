@@ -58,7 +58,7 @@ namespace Lidgren.Network.ServerFiles
         }
         public static byte[] HashString(string dataString)
         {
-            byte[] data = System.Text.Encoding.UTF8.GetBytes(dataString);
+            byte[] data = Encoding.UTF8.GetBytes(dataString);
             return new SHA256Managed().ComputeHash(data);
         }
     }

@@ -28,7 +28,7 @@ public class TargetSelector : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, maxSelectableDistance))
             {
-                if (hit.transform.tag == "Entity")
+                if (hit.transform.GetComponent<EntityContainer>() != null)
                 {
                     selectedTarget = hit.transform.gameObject;
                     targetFrameController.Set(hit.transform.GetComponent<EntityContainer>());

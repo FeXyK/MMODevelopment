@@ -96,12 +96,20 @@ namespace Assets.Scripts.Handlers
                 case 4:
                 case 5:
                 case 6:
+                    GameObject.Instantiate(SkillLibrary.Shock).transform.position = target.transform.position;
+                    break;
                 case 7:
                     GameObject.Instantiate(SkillLibrary.Instant).transform.position = target.transform.position;
                     break;
                 case 8:
                 case 9:
                     GameObject.Instantiate(SkillLibrary.AoE).transform.position = target.transform.position;
+                    break;
+                case 10:
+                    GameObject.Instantiate(SkillLibrary.Manawave, target.transform);//.transform.position = target.transform.position;
+                    break;
+                case 11:
+                    GameObject.Instantiate(SkillLibrary.EssenceOfLife, target.transform);//transform.position = target.transform.position;
                     break;
                 default:
                     break;

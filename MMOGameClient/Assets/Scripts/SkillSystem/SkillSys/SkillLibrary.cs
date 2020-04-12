@@ -24,8 +24,17 @@ namespace Assets.Scripts.SkillSystem.SkillSys
         }
         List<Skill> skills = new List<Skill>();
         private static GameObject projectile;
-        private static GameObject instant;
+        private static GameObject explosion;
         private static GameObject aoe;
+        private static GameObject manawave;
+        private static GameObject essenceoflife;
+        private static GameObject grabbingshock;
+        private static GameObject shock;
+        private static GameObject sunfire;
+        private static GameObject fireclaw;
+        private static GameObject fireshock;
+        private static GameObject shockwave;
+        private static GameObject basicattack;
 
         public static GameObject Projectile
         {
@@ -42,9 +51,19 @@ namespace Assets.Scripts.SkillSystem.SkillSys
         {
             get
             {
-                if (instant == null)
-                    instant = Resources.Load<GameObject>("VFX/Fireshock");
-                return instant;
+                if (explosion == null)
+                    explosion = Resources.Load<GameObject>("VFX/Fireshock");
+                return explosion;
+            }
+            set { }
+        }
+        public static GameObject Shock
+        {
+            get
+            {
+                if (shock == null)
+                    shock= Resources.Load<GameObject>("VFX/Shock");
+                return shock;
             }
             set { }
         }
@@ -53,12 +72,34 @@ namespace Assets.Scripts.SkillSystem.SkillSys
         {
             get
             {
-                if (aoe== null)
+                if (aoe == null)
                     aoe = Resources.Load<GameObject>("VFX/Singularity");
                 return aoe;
             }
             set { }
         }
+
+        public static GameObject EssenceOfLife
+        {
+            get
+            {
+                if (essenceoflife == null)
+                    essenceoflife = Resources.Load<GameObject>("VFX/Essence of Life");
+                return essenceoflife;
+            }
+            set => essenceoflife = value;
+        }
+        public static GameObject Manawave
+        {
+            get
+            {
+                if (manawave == null)
+                    manawave = Resources.Load<GameObject>("VFX/Manawave");
+                return manawave;
+            }
+            set => manawave = value;
+        }
+
         public static List<Skill> Skills()
         {
             if (instance == null)
