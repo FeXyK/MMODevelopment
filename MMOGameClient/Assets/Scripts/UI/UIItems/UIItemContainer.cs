@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Assets.Scripts.UI.UIItems
 {
     [Serializable]
-    class UIItemContainer
+    public class UIItemContainer
     {
         public int Key;
         public UIItem Value;

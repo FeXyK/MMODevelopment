@@ -54,7 +54,7 @@ namespace Assets.Scripts.SkillSystem.SkillSys
             get
             {
                 if (aoe== null)
-                    aoe = Resources.Load<GameObject>("VFX/Fireball");
+                    aoe = Resources.Load<GameObject>("VFX/Singularity");
                 return aoe;
             }
             set { }

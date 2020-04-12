@@ -19,9 +19,7 @@ namespace Assets.AreaServer.Entity
             {
                 if (EntityMana < EntityMaxMana)
                 {
-                    EntityMana += 15;
-                    if (EntityMana > EntityMaxMana)
-                        EntityMana = EntityMaxMana;
+                    EntityMana += 20;
                 }
                 RegenTimer = 1;
             }

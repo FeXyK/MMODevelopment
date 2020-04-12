@@ -6,9 +6,6 @@ namespace Assets.Scripts.UI.UIItems
     [CreateAssetMenu(fileName = "New Food", menuName = "Food")]
     class FoodItem : UIItem
     {
-        private void Awake()
-        {
-        }
         public override void CallOnAwake()
         {
             base.CallOnAwake();

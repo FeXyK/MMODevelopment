@@ -18,10 +18,22 @@ namespace Assets.Scripts.UI_Window
 
         public virtual void CallOnStart()
         {
-            Player = GameObject.FindGameObjectWithTag("PlayerCharacter").GetComponent<EntityContainer>().entity;
+
+            Player = GetPlayer();
             size = GetComponent<RectTransform>().sizeDelta;
             pivotShift = Input.mousePosition - this.transform.position;
             this.transform.SetAsLastSibling();
+        }
+        public Entity GetPlayer()
+        {
+
+            if (Player == null)
+            {
+                GameObject PlayerObject = GameObject.FindGameObjectWithTag("PlayerCharacter");
+                if (PlayerObject != null)
+                    return GameObject.FindGameObjectWithTag("PlayerCharacter").GetComponent<EntityContainer>().entity;
+            }
+            return Player;
         }
         public virtual void CallOnDrag()
         {

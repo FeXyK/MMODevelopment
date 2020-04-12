@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 10
   Name: Manawave
+  Details: 
   Level: 0
   Tier: 1
   ItemType: 0
@@ -32,6 +33,9 @@ MonoBehaviour:
   Prefab: {fileID: 0}
   Sprite: {fileID: 21300000, guid: eced15bb959edc54c8457ab75f9a45b5, type: 3}
   SkilType: 2
-  ManaCost: 30
-  Range: 0
-  GoldCost: 0
+  ManaCost: 10
+  ManaCostMultiplier: 1.25
+  Range: 30
+  RangeMultiplier: 1.25
+  GoldCost: 300
+  GoldCostMultiplier: 2

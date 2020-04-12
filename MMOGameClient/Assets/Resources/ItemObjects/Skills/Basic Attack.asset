@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 0
   Name: Basic Attack
-  Level: 1
+  Details: 
+  Level: 0
   Tier: 1
   ItemType: 0
   Value: 0
@@ -32,6 +33,9 @@ MonoBehaviour:
   Prefab: {fileID: 0}
   Sprite: {fileID: 21300000, guid: 5d1d51ce1560d254db60f4cb6c26cdaf, type: 3}
   SkilType: 2
-  ManaCost: 0
-  Range: 0
-  GoldCost: 0
+  ManaCost: 10
+  ManaCostMultiplier: 1.25
+  Range: 30
+  RangeMultiplier: 1.25
+  GoldCost: 300
+  GoldCostMultiplier: 2

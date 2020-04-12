@@ -1,18 +1,20 @@
 ﻿using Assets.Scripts.SkillSystem.SkillSys;
 using Assets.Scripts.UI;
 using Assets.Scripts.UI.UIItems;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.UI_Window
 {
-    class WindowHotbar : UIWindow
+    public class WindowHotbar : UIWindow
     {
         public int HotbarSize;
 
         public UIHotbar Hotbar;
         public GameObject PrefabSlot;
         public UIItem DefaultUIItem;
-
+        public List<WindowHotbarItem> hotbarSlots = new List<WindowHotbarItem>();
         private void Start()
         {
             DrawItems();
@@ -32,6 +34,7 @@ namespace Assets.Scripts.UI_Window
                     obj.GetComponent<WindowHotbarItem>().ListNumber = item.Key;
                     obj.GetComponent<WindowHotbarItem>().Item.ItemHotkey.text = item.Key.ToString();
                     obj.GetComponent<WindowHotbarItem>().Hotkey = item.Key.ToString();
+                    hotbarSlots.Add(obj.GetComponent<WindowHotbarItem>());
                     foreach (var effect in item.Value.effects)
                     {
                         if (effect.EffectType == EffectValue.Cooldown)
@@ -43,6 +46,16 @@ namespace Assets.Scripts.UI_Window
                     }
                 }
                 obj.GetComponent<WindowHotbarItem>().Refresh();
+            }
+        }
+        internal void SetCooldown(int skillID)
+        {
+            foreach (var slot in hotbarSlots)
+            {
+                if (slot.uiItem.ID == skillID)
+                {
+                    slot.SetCooldown();
+                }
             }
         }
         public void Modify(int key, UIItem item)

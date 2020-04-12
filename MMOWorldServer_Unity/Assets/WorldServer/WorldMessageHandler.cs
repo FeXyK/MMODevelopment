@@ -121,10 +121,10 @@ namespace MMOGameServer.WorldServer
                     data.character.EntityName = temp.Name;
                     data.character.EntityID = temp.CharacterID;
                     data.character.AccountID = temp.AccountID;
-                    data.character.EntityHealth = temp.Health.Value;
                     data.character.EntityMaxHealth = temp.MaxHealth.Value;
-                    data.character.EntityMana = temp.Mana.Value;
+                    data.character.EntityHealth = temp.Health.Value;
                     data.character.EntityMaxMana = temp.MaxMana.Value;
+                    data.character.EntityMana = temp.Mana.Value;
                     data.character.EntityLevel = temp.Level.Value;
                     data.character.EntityExp = temp.Exp.Value;
                     data.character.CharacterType = (CharacterApperance)temp.CharType.Value;

@@ -72,8 +72,6 @@ namespace Assets.Scripts.Handlers
             EntityContainer target = dataHandler.GetEntity(targetID);
             target.Health = msgIn.ReadInt16();
             target.Mana = msgIn.ReadInt16();
-            Debug.LogWarning(target.Health);
-            Debug.LogWarning(target.Mana);
         }
         internal void SkillCasted(NetIncomingMessage msgIn)
         {
@@ -83,14 +81,27 @@ namespace Assets.Scripts.Handlers
 
             EntityContainer target = dataHandler.GetEntity(targetID);
             EntityContainer source = dataHandler.GetEntity(sourceID);
-
+            if (sourceID == dataHandler.myCharacter.entity.id)
+            {
+                uiManager.wHotbar.SetCooldown(skillID);
+            }
             switch (skillID)
             {
                 case 1:
                     GameObject.Instantiate(SkillLibrary.Projectile).GetComponent<Skill_FireballScript>().Set(source.transform, target.transform);
                     break;
+                case 0:
+                case 2:
+                case 3:
                 case 4:
-                    GameObject.Instantiate(SkillLibrary.Instant, target.transform);
+                case 5:
+                case 6:
+                case 7:
+                    GameObject.Instantiate(SkillLibrary.Instant).transform.position = target.transform.position;
+                    break;
+                case 8:
+                case 9:
+                    GameObject.Instantiate(SkillLibrary.AoE).transform.position = target.transform.position;
                     break;
                 default:
                     break;

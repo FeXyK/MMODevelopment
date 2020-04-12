@@ -9,15 +9,27 @@ namespace Assets.Scripts.UI.UIItems
         [SerializeField]
         public int ManaCost;
         [SerializeField]
+        public float ManaCostMultiplier;
+        [SerializeField]
         public int Range;
         [SerializeField]
+        public float RangeMultiplier;
+        [SerializeField]
         public int GoldCost;
-        //public override void CallOnAwake()
-        //{
-        //    base.CallOnAwake();
-        //    ID = 0;
-        //    MaxAmount = 1;
-        //    ItemType = UIItemType.Skill;
-        //}
+        [SerializeField]
+        public float GoldCostMultiplier;
+
+        public float GetManaCost()
+        {
+            return ManaCost * (Mathf.Pow(ManaCostMultiplier, Level - 1));
+        }
+        public float GetGoldCost()
+        {
+            return GoldCost * (Mathf.Pow(GoldCostMultiplier, Level - 1));
+        }
+        public float GetRange()
+        {
+            return Range * (Mathf.Pow(RangeMultiplier, Level - 1));
+        }
     }
 }

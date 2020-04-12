@@ -3,21 +3,26 @@ using UnityEngine;
 
 namespace Assets.Scripts.UI.UIItems
 {
-    public enum ArmorPiece
+    public enum GearPiece
     {
-        Head,
-        Arms,
-        Chest,
-        Legs,
-        Feet,
+        Helmet,
+        Gauntlets,
+        Bracers,
+        Chestplate,
+        Pauldron,
+        Cape,
+        Leggings,
+        Boots,
+        Necklace,
+        Ring,
+        Earring,
+        MainHand,
+        OffHand,
     }
     [CreateAssetMenu(fileName = "New Armor", menuName = "Armor")]
     class ArmorItem : UIItem
     {
-        public ArmorPiece Piece;
-        private void Awake()
-        {
-        }
+        public GearPiece ArmorPiece;
         public override void CallOnAwake()
         {
             base.CallOnAwake();

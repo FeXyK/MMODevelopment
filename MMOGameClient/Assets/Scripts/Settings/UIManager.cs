@@ -11,7 +11,17 @@ public class UIManager : MonoBehaviour
 {
     public List<GameObject> stack = new List<GameObject>();
 
-    public GameObject Skillbar;
+    private static UIManager instance;
+    public static UIManager Instance
+    {
+        get
+        {
+            if (instance != null) return instance;
+            return null;
+        }
+    }
+    public FloatingNotification floatingNotification;
+    public WindowHotbar wHotbar;
     public GameObject Minimap;
     public Slider HealthBar;
     public Slider ManaBar;
@@ -40,10 +50,14 @@ public class UIManager : MonoBehaviour
         tooltip = FindObjectOfType<WindowTooltip>();
         healthBarController = HealthBar.GetComponent<ResourceBarController>();
         manaBarController = ManaBar.GetComponent<ResourceBarController>();
-
         player = FindObjectOfType<EntityContainer>();
         if (player != null)
             movement = player.GetComponent<Movement>();
+        instance = this;
+    }
+    public void SetCooldown(int skillID)
+    {
+        wHotbar.SetCooldown(skillID);
     }
     private void Update()
     {
@@ -143,5 +157,10 @@ public class UIManager : MonoBehaviour
     internal void Ping(string value)
     {
         wPing.text = value;
+    }
+
+    internal void SetFloatingNotification(string msg)
+    {
+        Instantiate(floatingNotification, this.transform).Message.text = msg;
     }
 }

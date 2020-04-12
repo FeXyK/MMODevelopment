@@ -75,7 +75,6 @@ public class TargetSelector : MonoBehaviour
                 uiManager.TargetFrame.SetActive(true);
                 targetFrameController.Set(selectedTarget.GetComponent<EntityContainer>());
             }
-            Debug.Log(targets.Count);
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {

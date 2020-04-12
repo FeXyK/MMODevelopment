@@ -2,7 +2,7 @@
 
 namespace Assets.AreaServer.Entity
 {
-   public class MobBase : Entity
+    public class MobBase : Entity
     {
         MobBehaviour Behaviour;
         public int MobTypeID;
@@ -36,7 +36,7 @@ namespace Assets.AreaServer.Entity
                 {
                     MoveTimer = MoveTimerDefault;
                     Target = MoveHere(RandomVector(-3, 3));
-                rigi.AddForce(RandomVector(-MoveForce, MoveForce));
+                    rigi.AddForce(RandomVector(-MoveForce, MoveForce));
                 }
                 if (EntityHealth <= 0)
                 {
@@ -57,14 +57,14 @@ namespace Assets.AreaServer.Entity
             }
         }
 
-        internal void Set(int mobID, int entityID, MobBehaviour mobBehaviour)
+        internal void Set(int mobID, int entityID, int maxHealth, MobBehaviour mobBehaviour)
         {
             //this.EntityID = entityID;
             this.EntityID = mobID * 100 + entityID;
             this.MobTypeID = mobID;
             Behaviour = mobBehaviour;
-            EntityHealth = 110;
-           EntityMaxHealth= 111;
+            EntityMaxHealth = maxHealth;
+            EntityHealth = EntityMaxHealth;
         }
 
         public Vector3 MoveHere(Vector3 target)
@@ -73,9 +73,9 @@ namespace Assets.AreaServer.Entity
         }
         private Vector3 RandomVector(float min, float max)
         {
-            var x = UnityEngine.Random.Range( min, max);
-            var z = UnityEngine.Random.Range( min,  max);
-            return new Vector3(x, 0 , z);
+            var x = UnityEngine.Random.Range(min, max);
+            var z = UnityEngine.Random.Range(min, max);
+            return new Vector3(x, 0, z);
         }
         public override string ToString()
         {

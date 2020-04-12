@@ -29,35 +29,37 @@ namespace Assets.Scripts.Character
                 entity.maxHealth = value;
             }
         }
-        private int mana;
 
         public int Mana
         {
-            get { return mana; }
+            get { return entity.mana; }
             set
             {
-                mana = value;
+                entity.mana = value;
             }
         }
-        private int maxMana;
 
         public int MaxMana
         {
-            get { return maxMana; }
+            get { return entity.maxMana; }
             set
             {
-                maxMana = value;
+                entity.maxMana = value;
             }
         }
         private void Awake()
         {
-            if (HealthBar == null)
+
+            if (this.gameObject.tag == "PlayerCharacter")
             {
-                HealthBar = GameObject.FindGameObjectWithTag("Player_HealthBar").GetComponent<Slider>();
-            }
-            if (ManaBar == null)
-            {
-                ManaBar = GameObject.FindGameObjectWithTag("Player_ManaBar").GetComponent<Slider>();
+                if (HealthBar == null)
+                {
+                    HealthBar = GameObject.FindGameObjectWithTag("Player_HealthBar").GetComponent<Slider>();
+                }
+                if (ManaBar == null)
+                {
+                    ManaBar = GameObject.FindGameObjectWithTag("Player_ManaBar").GetComponent<Slider>();
+                }
             }
         }
         public void Update()
@@ -68,12 +70,18 @@ namespace Assets.Scripts.Character
                 this.transform.position = Vector3.Lerp(this.transform.position, entity.position, tickRate);
                 this.transform.LookAt(new Vector3(entity.position.x, entity.position.y, entity.position.y));
             }
-            else
+
+            if (HealthBar == null)
             {
-                HealthBar.maxValue = entity.maxHealth;
-                HealthBar.value = entity.health;
-                ManaBar.maxValue = maxMana;
-                ManaBar.value = mana;
+                HealthBar = GameObject.FindGameObjectWithTag("Player_HealthBar").GetComponent<Slider>();
+            }
+
+            HealthBar.maxValue = entity.maxHealth;
+            HealthBar.value = entity.health;
+            if (this.gameObject.tag == "PlayerCharacter")
+            {
+                ManaBar.maxValue = 1000;
+                ManaBar.value = entity.mana;
             }
         }
         public void Set(int cId, int cLevel, int cHealth, CharacterApperance cType, string cName, int cMaxHealth, int cMaxMana = 100, int cMana = 100)

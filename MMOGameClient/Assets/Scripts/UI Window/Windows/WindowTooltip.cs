@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.UI_Window
 {
-    class WindowTooltip : UIWindow
+    public class WindowTooltip : UIWindow
     {
         public TMP_Text Name;
         public TMP_Text Details;
@@ -62,7 +62,7 @@ namespace Assets.Scripts.UI_Window
             SetHeight(item.effects.Count);
             Name.text = item.ID + " " + item.Name + " Lv." + item.Level;
             Details.text = details.Length > 0 ? details : "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut imperdiet massa quis orci tempus elementum.";
-            Cooldown.text = cd != 0 ? "Cooldown: " + cd.ToString() + " s" : "";
+            Cooldown.text = cd != 0 ? "CD: " + cd.ToString() + " s" : "";
             Level.text = item.Level > 0 ? "Lv." + item.Level.ToString() : "";
         }
         public override void CallOnStart()

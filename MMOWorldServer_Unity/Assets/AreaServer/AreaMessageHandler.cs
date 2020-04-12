@@ -51,14 +51,6 @@ namespace MMOGameServer
                 if (characterData != null)
                 {
                     dataHandler.waitingForAuth.Add(characterData);
-                    foreach (var s in characterData.character.Skills)
-                    {
-                        foreach (var e in s.Value.effects)
-                        {
-                            Debug.Log("!!?: " + e.Value.Value);
-                        }
-                    }
-                    Debug.Log(characterData.character.EntityName + " added to characters");
                 }
             }
         }
@@ -89,20 +81,12 @@ namespace MMOGameServer
                         GameObject.Instantiate(SkillLibrary.Instance.Projectile).GetComponent<SkillProjectile>().Set(source.transform, target, source.Skills[skillID]);
                         break;
                     case SkillType.AoE:
+                        GameObject.Instantiate(SkillLibrary.Instance.AoE).GetComponent<SkillAoE>().Set(source.transform, target, source.Skills[skillID], 20, 0.3f);
                         break;
                 }
                 source.ApplyCD(skillID);
                 NetOutgoingMessage msgOut = messageCreater.SkillCasted(source.EntityID, targetID, skillID);
                 netServer.SendToAll(msgOut, NetDeliveryMethod.Unreliable);
-            }
-            else
-            {
-                NetOutgoingMessage msgOut;
-                if (source.Skills.ContainsKey(skillID))
-                    msgOut = messageCreater.CreateNotification("Skill not ready! CD: " + source.Skills[skillID].GetCooldown());
-                else
-                    msgOut = messageCreater.CreateNotification("Skill not learned: " + source.Skills[skillID].GetCooldown());
-                msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.Unreliable, 0);
             }
         }
 
@@ -349,27 +333,18 @@ namespace MMOGameServer
             character.EntityID = data.character.EntityID;
             character.AccountID = data.character.AccountID;
             character.EntityGold = data.character.EntityGold;
-            character.EntityHealth = data.character.EntityHealth;
             character.EntityMaxHealth = data.character.EntityMaxHealth;
-            character.EntityMana = data.character.EntityMana;
+            character.EntityHealth = data.character.EntityHealth;
             character.EntityMaxMana = data.character.EntityMaxMana;
+            character.EntityMana = data.character.EntityMana;
             character.EntityLevel = data.character.EntityLevel;
             character.CharacterType = data.character.CharacterType;
             character.transform.position = data.position;
             character.EntityBaseArmor = 60;
             character.EntityBaseMagicResist = 60;
-
+            Debug.Log(data.character.EntityHealth);
+            Debug.Log(data.character.EntityMaxHealth);
             character.Skills = data.character.Skills;
-            foreach (var item in character.Skills)
-            {
-                Debug.Log("LOADCHARACTERFROM: " + item.Value.skillID);
-                foreach (var e in item.Value.effects)
-                {
-                    Debug.Log(e.Key);
-                    Debug.Log(e.Value.EffectID);
-                    Debug.Log(e.Value.Value);
-                }
-            }
             return character;
         }
 

@@ -69,7 +69,6 @@ namespace MMOGameServer
                     msgOut.Write(mob.EntityMaxHealth, 16);
                 }
             }
-
             return msgOut;
         }
         public NetOutgoingMessage SkillCasted(int sourceID, int targetID, int skillID)

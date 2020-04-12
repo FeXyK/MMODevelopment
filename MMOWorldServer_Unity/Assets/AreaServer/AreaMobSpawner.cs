@@ -9,7 +9,7 @@ namespace MMOGameServer
         public int MobID = 50;
         public int MaximumSpawnCount = 30;
         public float SpawnRadius = 30;
-        public Dictionary<int,MobBase> SpawnedMobs = new Dictionary<int, MobBase>();
+        public Dictionary<int, MobBase> SpawnedMobs = new Dictionary<int, MobBase>();
         public Vector3 position;
         public MobAreaSpawner(Vector3 position)
         {
@@ -25,9 +25,10 @@ namespace MMOGameServer
                 gameObject.transform.position = RandomVector(-SpawnRadius / 2, SpawnRadius / 2);
 
                 mob = gameObject.AddComponent<MobBase>();
-                mob.Set(MobID, MobID + i, MobBehaviour.Passive);
+                int maxHealth = 1000;
+                mob.Set(MobID, MobID + i, maxHealth, MobBehaviour.Passive);
                 mob.EntityName = "Mob_" + MobID + i;
-                SpawnedMobs.Add(mob.EntityID,mob);
+                SpawnedMobs.Add(mob.EntityID, mob);
             }
         }
         private Vector3 RandomVector(float min, float max)

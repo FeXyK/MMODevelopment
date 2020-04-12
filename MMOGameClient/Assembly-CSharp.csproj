@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Assets\ChatController.cs" />
     <Compile Include="Assets\DestroyAfter.cs" />
+    <Compile Include="Assets\FloatingNotification.cs" />
     <Compile Include="Assets\Item.cs" />
     <Compile Include="Assets\ResourceBarController.cs" />
     <Compile Include="Assets\Scripts\Character\CameraOrbit.cs" />
@@ -106,12 +107,14 @@
     <Compile Include="Assets\Scripts\SkillSystem\SkillSys\EffectValue.cs" />
     <Compile Include="Assets\Scripts\SkillSystem\SkillSys\Skill.cs" />
     <Compile Include="Assets\Scripts\SkillSystem\SkillSys\SkillLibrary.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Items\WindowGearItem.cs" />
     <Compile Include="Assets\Scripts\UI Window\Items\WindowHotbarItem.cs" />
     <Compile Include="Assets\Scripts\UI Window\Items\WindowInventoryItem.cs" />
     <Compile Include="Assets\Scripts\UI Window\Items\WindowItem.cs" />
     <Compile Include="Assets\Scripts\UI Window\Items\WindowSkillItem.cs" />
     <Compile Include="Assets\Scripts\UI Window\Windows\UIWindow.cs" />
     <Compile Include="Assets\Scripts\UI Window\Windows\WindowCharacter.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Windows\WindowGear.cs" />
     <Compile Include="Assets\Scripts\UI Window\Windows\WindowHotbar.cs" />
     <Compile Include="Assets\Scripts\UI Window\Windows\WindowInventory.cs" />
     <Compile Include="Assets\Scripts\UI Window\Windows\WindowMap.cs" />

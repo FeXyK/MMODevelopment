@@ -15,7 +15,7 @@ MonoBehaviour:
   ID: 4
   Name: Grabbing Shock
   Details: 
-  Level: 3
+  Level: 0
   Tier: 1
   ItemType: 0
   Value: 0
@@ -33,6 +33,9 @@ MonoBehaviour:
   Prefab: {fileID: 0}
   Sprite: {fileID: 21300000, guid: 7df7ef7a23e39fb45a91256052a868e8, type: 3}
   SkilType: 2
-  ManaCost: 30
-  Range: 0
-  GoldCost: 0
+  ManaCost: 10
+  ManaCostMultiplier: 1.25
+  Range: 30
+  RangeMultiplier: 1.25
+  GoldCost: 300
+  GoldCostMultiplier: 2

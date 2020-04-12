@@ -18,6 +18,8 @@ namespace Assets.Scripts.UI.UIItems
     {
         public IWeaponType WeaponType;
 
+        public GearPiece WeaponPiece;
+
         public override void CallOnAwake()
         {
             base.CallOnAwake();

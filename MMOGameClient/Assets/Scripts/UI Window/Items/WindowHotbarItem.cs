@@ -2,12 +2,13 @@
 using Assets.Scripts.SkillSystem.SkillSys;
 using Assets.Scripts.UI;
 using Assets.Scripts.UI.UIItems;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.UI_Window
 {
-    class WindowHotbarItem : WindowItem, IDropHandler
+    public class WindowHotbarItem : WindowItem, IDropHandler
     {
         public int Amount;
         public string Hotkey;
@@ -27,7 +28,7 @@ namespace Assets.Scripts.UI_Window
             else
                 Item.ItemCooldown.text = "";
 
-            if (CooldownTime <= 0 && Input.GetKeyDown(Hotkey))
+            if (Input.GetKeyDown(Hotkey))
             {
                 Use();
             }
@@ -63,7 +64,7 @@ namespace Assets.Scripts.UI_Window
 
                 uiItem = draggedItem.uiItem;
                 Hotbar.Modify(ListNumber, uiItem);
-                CooldownTime = uiItem.GetCooldown();
+                CooldownTime = 0;// uiItem.GetCooldown();
 
                 if (draggedItem.uiItem.ItemType != UI.UIItemType.Skill)
                 {
@@ -79,6 +80,10 @@ namespace Assets.Scripts.UI_Window
                 }
                 Refresh();
             }
+        }
+        internal void SetCooldown()
+        {
+            CooldownTime = uiItem.GetCooldown();
         }
         public override void Refresh()
         {
@@ -130,8 +135,12 @@ namespace Assets.Scripts.UI_Window
         {
             if (uiItem.ID >= 0)
             {
-                GameMessageSender.Instance.SendSkillCast(uiItem as SkillItem);
-                CooldownTime = uiItem.GetCooldown();
+                if (UIManager.Instance.ManaBar.value < (uiItem as SkillItem).GetManaCost())
+                    UIManager.Instance.SetFloatingNotification("Not enough mana");
+                else if (CooldownTime > 0)
+                    UIManager.Instance.SetFloatingNotification("Skill on cooldown");
+                else
+                    GameMessageSender.Instance.SendSkillCast(uiItem as SkillItem);
             }
         }
     }

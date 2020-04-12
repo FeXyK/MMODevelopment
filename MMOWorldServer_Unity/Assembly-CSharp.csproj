@@ -79,6 +79,7 @@
     <Compile Include="Assets\AreaServer\GridSystem\Grid.cs" />
     <Compile Include="Assets\AreaServer\GridSystem\GridNode.cs" />
     <Compile Include="Assets\AreaServer\SkillSystem\EffectType.cs" />
+    <Compile Include="Assets\AreaServer\SkillSystem\SkillAoE.cs" />
     <Compile Include="Assets\AreaServer\SkillSystem\SkillItem.cs" />
     <Compile Include="Assets\AreaServer\SkillSystem\SkillLibrary.cs" />
     <Compile Include="Assets\AreaServer\SkillSystem\SkillProjectile.cs" />

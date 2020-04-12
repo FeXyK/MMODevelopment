@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.UI_Window
 {
-    class WindowItem : MonoBehaviour, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IEndDragHandler
+    public class WindowItem : MonoBehaviour, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IEndDragHandler
     {
         public Color originColor;
         public GameObject clone;
@@ -33,12 +33,13 @@ namespace Assets.Scripts.UI_Window
         }
         private void Update()
         {
-            if (showTooltip && uiItem.ID >= 0)
-            {
-                timer -= Time.deltaTime;
-                if (timer < 0)
-                    ShowTooltip();
-            }
+            if (uiItem != null)
+                if (showTooltip && uiItem.ID >= 0)
+                {
+                    timer -= Time.deltaTime;
+                    if (timer < 0)
+                        ShowTooltip();
+                }
         }
         public void OnBeginDrag(PointerEventData eventData)
         {

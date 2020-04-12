@@ -22,12 +22,4 @@ public class Entity
     public Dictionary<int,int> skills = new Dictionary<int, int>();
 
     public float tickRate = 0;
-
-    public void Set(Entity ch)
-    {
-        id = ch.id;
-        level = ch.level;
-        characterType = ch.characterType;
-        characterName = ch.characterName;
-    }
 }

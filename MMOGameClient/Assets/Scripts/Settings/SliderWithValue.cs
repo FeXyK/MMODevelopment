@@ -6,16 +6,6 @@ public class SliderWithValue : MonoBehaviour
 {
     public Slider slider;
     public TMP_InputField inputField;
-    private void Start()
-    {
-        try
-        {
-            //slider.value = float.Parse(inputField.text);
-        }
-        catch (Exception)
-        {
-        }
-    }
     public void SetSliderValue()
     {
         slider.value = float.Parse(inputField.text);

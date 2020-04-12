@@ -32,7 +32,10 @@ MonoBehaviour:
     MinSkillLevel: 1
   Prefab: {fileID: 0}
   Sprite: {fileID: 21300000, guid: d70dd1b9c6ae54448923db5c4924edd5, type: 3}
-  SkilType: 0
-  ManaCost: 30
-  Range: 0
-  GoldCost: 0
+  SkilType: 1
+  ManaCost: 10
+  ManaCostMultiplier: 1.25
+  Range: 30
+  RangeMultiplier: 1.25
+  GoldCost: 300
+  GoldCostMultiplier: 2

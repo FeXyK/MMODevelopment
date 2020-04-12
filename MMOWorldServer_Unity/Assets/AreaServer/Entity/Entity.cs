@@ -26,6 +26,14 @@ namespace Assets.AreaServer.Entity
             set
             {
                 entityHealth = value;
+                if (entityHealth < 0)
+                {
+                    entityHealth = 0;
+                }
+                if (entityHealth > EntityMaxHealth)
+                {
+                    entityHealth = EntityMaxHealth;
+                }
                 AreaMessageSender.Instance.SendEntityUpdate(this);
             }
         }
@@ -35,6 +43,10 @@ namespace Assets.AreaServer.Entity
             set
             {
                 entityMana = value;
+                if (entityMana < 0)
+                    entityMana = 0;
+                if (entityMana > EntityMaxMana)
+                    entityMana = EntityMaxMana;
                 AreaMessageSender.Instance.SendEntityUpdate(this);
             }
         }

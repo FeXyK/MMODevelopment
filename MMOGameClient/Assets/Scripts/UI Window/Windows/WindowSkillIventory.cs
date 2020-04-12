@@ -21,20 +21,19 @@ namespace Assets.Scripts.UI_Window
                 GameObject.Destroy(child.gameObject);
             }
 
-            if (Player == null)
-                Player = GameObject.FindGameObjectWithTag("PlayerCharacter").GetComponent<EntityContainer>().entity;
-
-            foreach (var skill in Player.skills)
-            {
-                foreach (var uiskill in SkillList.items)
+            Player = GetPlayer();
+            if (Player != null)
+                foreach (var skill in Player.skills)
                 {
-                    if (uiskill.ID == skill.Key)
+                    foreach (var uiskill in SkillList.items)
                     {
-                        uiskill.Level = skill.Value;
-                        break;
+                        if (uiskill.ID == skill.Key)
+                        {
+                            uiskill.Level = skill.Value;
+                            break;
+                        }
                     }
                 }
-            }
             foreach (var item in SkillList.items)
             {
                 GameObject obj = Instantiate(PrefabSlot);
