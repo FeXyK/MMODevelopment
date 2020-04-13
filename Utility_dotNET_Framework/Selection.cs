@@ -227,14 +227,13 @@ namespace Utility_dotNET_Framework
             character.PosZ = reader.GetFloat("z_position");
 
             character.Skills = GetCharacterSkills(character.CharacterID);
+            character.Inventory = GetCharacterItems(character.CharacterID);
 
             return character;
         }
         public List<Skill> GetSkillsData()
         {
             List<Skill> skills = new List<Skill>();
-            List<Effect> effects;
-            effects = GetEffectsData();
             Skill skill;
 
             using (MySqlConnection conn = new MySqlConnection(connectionString))
@@ -247,9 +246,9 @@ namespace Utility_dotNET_Framework
                         while (reader.Read())
                         {
                             skill = new Skill();
-                            skill.SkillID = reader.GetInt32("id_skill");
-                            skill.Name = reader.GetString("skill_name");
-                            skill.SkillType = reader.GetInt32("skill_type");
+                            skill.ID = reader.GetInt32("id");
+                            skill.Name = reader.GetString("name");
+                            skill.SkillType = reader.GetInt32("type");
                             skill.ManaCost = reader.GetInt32("use_cost");
                             skill.ManaCostMultiplier = reader.GetFloat("use_cost_multiplier");
                             skill.GoldCost = reader.GetInt32("leveling_cost");
@@ -262,23 +261,21 @@ namespace Utility_dotNET_Framework
                             skill.RequiredLevel3 = reader.GetInt32("rq_level3");
                             skill.RequiredSkillID = reader.GetInt32("rq_id_skill");
 
-                            string name;
                             int id;
                             int value;
                             int minLevel;
                             float multiplier;
                             for (int i = 0; i < 7; i++)
                             {
-                                id = reader.GetInt32("skill_stat_" + i);
+                                id = reader.GetInt32("stat_" + i);
                                 if (id != 0)
                                 {
                                     //name = reader.GetString("stat_name");
-                                    name = "name";
-                                    value = reader.GetInt32("skill_stat_" + i + "_value");
-                                    minLevel = reader.GetInt32("skill_stat_" + i + "_min_level");
-                                    multiplier = reader.GetFloat("skill_stat_" + i + "_multiplier");
+                                    value = reader.GetInt32("stat_" + i + "_value");
+                                    minLevel = reader.GetInt32("stat_" + i + "_min_level");
+                                    multiplier = reader.GetFloat("stat_" + i + "_multiplier");
 
-                                    skill.Effects.Add(id, new Effect(name, id, value, minLevel, multiplier));
+                                    skill.Effects.Add(id, new Effect(id, value, minLevel, multiplier));
                                 }
                             }
                             skills.Add(skill);
@@ -286,40 +283,80 @@ namespace Utility_dotNET_Framework
                     }
                 }
             }
-
             return skills;
         }
-
-        private List<Effect> GetEffectsData()
+        public List<KeyValuePair<int, CharacterItem>> GetCharacterItems(int characterID)
         {
-            List<Effect> effects = new List<Effect>();
-            Effect effect;
+            List<KeyValuePair<int, CharacterItem>> Inventory = new List<KeyValuePair<int, CharacterItem>>();
+            int itemID;
+            int durability;
+            int amount;
+            int level;
+
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM mmo.stat", conn))
+                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM mmo.character_item WHERE id_character = @characterID", conn))
+                {
+                    cmd.Parameters.AddWithValue("characterID", characterID);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            itemID = reader.GetInt32("id_item");
+                            durability = reader.GetInt32("durability");
+                            amount = reader.GetInt32("amount");
+                            level = reader.GetInt32("level");
+
+                            Inventory.Add(new KeyValuePair<int, CharacterItem>(itemID, new CharacterItem(itemID, durability, amount, level)));
+                        }
+                    }
+                }
+            }
+            return Inventory;
+        }
+        public List<InventoryItem> GetItems()
+        {
+            List<InventoryItem> items = new List<InventoryItem>();
+            InventoryItem item;
+
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM mmo.item", conn))
                 {
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            effect = LoadEffect(reader);
-                            effects.Add(effect);
+                            item = new InventoryItem();
+                            item.Name = reader.GetString("name");
+                            item.ID = reader.GetInt32("id");
+                            item.RequiredLevel = reader.GetInt32("rq_level");
+
+                            int id;
+                            int value;
+                            int minLevel;
+                            float multiplier;
+                            for (int i = 0; i < 7; i++)
+                            {
+                                id = reader.GetInt32("stat_" + i);
+                                if (id != 0)
+                                {
+                                    value = reader.GetInt32("stat_" + i + "_value");
+                                    minLevel = reader.GetInt32("stat_" + i + "_min_level");
+                                    multiplier = reader.GetFloat("stat_" + i + "_multiplier");
+
+                                    item.Effects.Add(id, new Effect(id, value, minLevel, multiplier));
+                                }
+                            }
+                            items.Add(item);
                         }
                     }
                 }
             }
-            return effects;
+            return items;
         }
-        private Effect LoadEffect(MySqlDataReader reader)
-        {
-            Effect effect = new Effect();
-            effect.EffectID = reader.GetInt16("id_stat");
-            effect.Name = reader.GetString("name");
-
-            return effect;
-        }
-
         private Dictionary<int, int> GetCharacterSkills(int characterID)
         {
             Dictionary<int, int> skills = new Dictionary<int, int>();
@@ -333,7 +370,7 @@ namespace Utility_dotNET_Framework
                     {
                         while (reader.Read())
                         {
-                            int id = reader.GetInt16("id_skill");
+                            int id = reader.GetInt16("id");
                             int level = reader.GetInt16("level");
                             skills.Add(id, level);
                         }

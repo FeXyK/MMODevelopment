@@ -38,6 +38,8 @@ namespace Lidgren.Network.Message
         Notification,
         MobInformation,
         NewMobAreaData,
+        
+        NewItem,
 
         HideNames,
         ShowNames,

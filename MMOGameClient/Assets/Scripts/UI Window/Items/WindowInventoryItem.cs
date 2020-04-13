@@ -52,7 +52,7 @@ namespace Assets.Scripts.UI_Window
         public override void Refresh()
         {
             Item.ItemImage.sprite = uiItem.GetSprite();
-            if (Amount != 0)
+            if (Amount > 1)
                 Item.ItemAmount.text = Amount.ToString();
             else
                 Item.ItemAmount.text = "";

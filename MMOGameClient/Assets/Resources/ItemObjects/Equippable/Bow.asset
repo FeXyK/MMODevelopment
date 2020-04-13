@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4a5e3e059198934ea80c725ea9134e3, type: 3}
   m_Name: Bow
   m_EditorClassIdentifier: 
-  ID: 0
-  Name: Small Sword
+  ID: 5002
+  Name: Bow
+  Details: 
   Level: 1
   Tier: 1
   ItemType: 5
@@ -26,5 +27,6 @@ MonoBehaviour:
     Multiplier: 1
     MinSkillLevel: 0
   Prefab: {fileID: 0}
-  Sprite: {fileID: 0}
+  Sprite: {fileID: 21300000, guid: 3b43ee6516034f24e8ef051140877036, type: 3}
   WeaponType: 3
+  WeaponPiece: 0

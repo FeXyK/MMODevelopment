@@ -214,6 +214,17 @@ namespace Assets.Scripts.Handlers
                 dataHandler.myCharacter.entity.skills[skillID] = level;
             uiManager.wSkill.Refresh();
         }
+        internal void NewItem(NetIncomingMessage msgIn)
+        {
+            int skillID = msgIn.ReadByte();
+            int level = msgIn.ReadByte();
+
+            if (dataHandler.myCharacter.entity.skills.ContainsKey(skillID))
+                dataHandler.myCharacter.entity.skills[skillID] = level;
+            else
+                dataHandler.myCharacter.entity.skills[skillID] = level;
+            uiManager.wInvertory.Refresh();
+        }
         internal void EntityPositionUpdate(NetIncomingMessage msgIn)
         {
             int entityID = msgIn.ReadInt16();

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eadbe179dada664fbea52c4be96a624, type: 3}
   m_Name: Cloth Shirt
   m_EditorClassIdentifier: 
-  ID: 0
-  Name: Cloth
+  ID: 15002
+  Name: Cloth Shirt
   Details: 
   Level: 1
   Tier: 1
@@ -23,9 +23,9 @@ MonoBehaviour:
   Rarity: 1
   effects:
   - EffectType: 60
-    Value: 20
+    Value: 15
     Multiplier: 1
     MinSkillLevel: 0
   Prefab: {fileID: 0}
-  Sprite: {fileID: 0}
-  Piece: 2
+  Sprite: {fileID: 21300000, guid: 628c7f15be13d12488d89d5cb545512f, type: 3}
+  ArmorPiece: 3

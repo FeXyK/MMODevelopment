@@ -63,12 +63,6 @@ namespace Assets.Scripts.Handlers
                 entity.mana = msgIn.ReadInt32();
                 entity.maxMana = msgIn.ReadInt32();
 
-                Debug.Log("Health: " + entity.health);
-                Debug.Log("Max Health: " + entity.maxHealth);
-                Debug.Log("Mana: " + entity.mana);
-                Debug.Log("Max Mana: " + entity.maxMana);
-
-
                 float x = msgIn.ReadFloat();
                 float y = msgIn.ReadFloat();
                 float z = msgIn.ReadFloat();
@@ -83,6 +77,19 @@ namespace Assets.Scripts.Handlers
                     int level = msgIn.ReadInt16();
 
                     entity.skills.Add(id, level);
+                }
+
+                int inventoryCount = msgIn.ReadInt16();
+                for (int k = 0; k < inventoryCount; k++)
+                {
+                    int id = msgIn.ReadInt32();
+                    int[] values = new int[3];
+                    values[0] = msgIn.ReadInt16();
+                    values[1] = msgIn.ReadInt16();
+                    values[2] = msgIn.ReadInt16();
+
+                    entity.inventory.Add(id, values);
+                    Debug.Log(id + "Level: " + values[0]);
                 }
                 myCharacters.Add(entity);
             }

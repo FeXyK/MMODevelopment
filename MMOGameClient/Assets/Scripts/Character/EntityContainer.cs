@@ -114,6 +114,11 @@ namespace Assets.Scripts.Character
                 this.entity.skills.Add(skill.Key, skill.Value);
                 Debug.Log("SETTING SKILLS FOR PLAYER");
             }
+            foreach (var item in entity.inventory)
+            {
+                this.entity.inventory.Add(item.Key, item.Value);
+                Debug.Log("SETTING SKILLS FOR PLAYER");
+            }
         }
     }
 }

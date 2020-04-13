@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eadbe179dada664fbea52c4be96a624, type: 3}
   m_Name: Cloth Sleeves
   m_EditorClassIdentifier: 
-  ID: 0
-  Name: Cloth
+  ID: 15004
+  Name: Cloth Sleeves
+  Details: 
   Level: 1
   Tier: 1
   ItemType: 2
@@ -22,9 +23,9 @@ MonoBehaviour:
   Rarity: 1
   effects:
   - EffectType: 60
-    Value: 20
+    Value: 5
     Multiplier: 1
     MinSkillLevel: 0
   Prefab: {fileID: 0}
-  Sprite: {fileID: 0}
-  Piece: 1
+  Sprite: {fileID: 21300000, guid: cb94467f22584f24a8ec0369c164449e, type: 3}
+  ArmorPiece: 1

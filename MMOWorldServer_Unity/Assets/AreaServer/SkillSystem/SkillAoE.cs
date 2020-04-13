@@ -4,6 +4,7 @@ namespace Assets.AreaServer.SkillSystem
     class SkillAoE : MonoBehaviour
     {
         public Transform source;
+        
         public Entity.Entity target;
         public float time;
         public float damageDelay = 0.3f;

@@ -21,6 +21,7 @@ namespace Utility_dotNET_Framework.Models
         public int? CharType { get; set; }
         public int? Gold { get; set; }
         public Dictionary<int, int> Skills = new Dictionary<int, int>();
+        public List<KeyValuePair<int, CharacterItem>> Inventory = new List<KeyValuePair<int, CharacterItem>>();
         public override string ToString()
         {
             return CharacterID + " " + AccountID + " " + Name;

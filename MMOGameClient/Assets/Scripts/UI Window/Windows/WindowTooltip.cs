@@ -56,7 +56,7 @@ namespace Assets.Scripts.UI_Window
             string details = "" + item.Details;
             for (int i = 0; i < item.effects.Count; i++)
             {
-                if (item.effects[i].MinSkillLevel >= item.Level)
+                if (item.effects[i].MinSkillLevel <= item.Level)
                     Effects[i].text = item.effects[i].ToString();
             }
             SetHeight(item.effects.Count);

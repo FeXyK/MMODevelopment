@@ -34,7 +34,7 @@ public class UIManager : MonoBehaviour
     public WindowSkillIventory wSkill;
     public GameObject wCharacter;
     public GameObject wGear;
-    public GameObject wInvertory;
+    public WindowInventory wInvertory;
     public ChatController wChat;
 
     WindowTooltip tooltip;
@@ -82,7 +82,7 @@ public class UIManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.I))
         {
-            StackAdd(wInvertory);
+            StackAdd(wInvertory.gameObject);
         }
         else if (Input.GetKeyDown(KeyCode.O))
         {

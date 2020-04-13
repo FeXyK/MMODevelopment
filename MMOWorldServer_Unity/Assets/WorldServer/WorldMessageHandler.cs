@@ -13,7 +13,7 @@ using Assets.AreaServer.SkillSystem;
 
 namespace MMOGameServer.WorldServer
 {
-    class WorldMessageHandler : Lidgren.Network.Message.MessageHandler
+    class WorldMessageHandler : MessageHandler
     {
 
         NetServer netServer;
@@ -22,10 +22,6 @@ namespace MMOGameServer.WorldServer
         WorldDataHandler dataHandler;
         Selection selection;
         public AreaServerCore areaServer;
-
-        //const string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\MMODevelopment\MMOLoginServer\MMOGameServer\MMODB.mdf;Integrated Security=True";
-        const int cooldownID = 130;
-        const int spellDamageID = 40;
 
 
         public WorldMessageHandler(NetServer server, WorldDataHandler handler, AreaServerCore areaServer)
@@ -39,17 +35,22 @@ namespace MMOGameServer.WorldServer
             this.areaServer = areaServer;
             foreach (var skill in selection.GetSkillsData())
             {
-                SkillLibrary.Instance.Skills.Add(skill.SkillID, skill);
+                SkillLibrary.Instance.Skills.Add(skill.ID, skill);
 
             }
-            foreach (var skill in SkillLibrary.Instance.Skills)
+            foreach (var item in selection.GetItems())
             {
-                Debug.Log(skill);
-                foreach (var e in skill.Value.Effects)
-                {
-                    Debug.Log("Value: " + e.Value.Value);
-                }
+                ItemLibrary.Instance.Items.Add(item.ID, item);
             }
+
+            //foreach (var skill in ItemLibrary.Instance.Items)
+            //{
+            //    Debug.Log(skill);
+            //    foreach (var e in skill.Value.Effects)
+            //    {
+            //        Debug.Log("Value: " + e.Value.Value);
+            //    }
+            //}
             //ItemList.Instance.Items = selection.GetItemsData();
         }
         internal void KeyExchange(NetIncomingMessage msgIn)
@@ -139,6 +140,11 @@ namespace MMOGameServer.WorldServer
                             }
                         }
                     }
+                    foreach (var item in temp.Inventory)
+                    {
+                        data.character.Inventory.Add(item.Key, new CharacterItem(item.Value));
+                    }
+                    Debug.Log("CHARACTER PLAY INVENTORY SIZE: " + data.character.Inventory.Count);
                 }
                 data.position = new Vector3((float)temp.PosX.Value, (float)temp.PosY.Value, (float)temp.PosZ.Value);
                 data.authToken = account.authToken;
@@ -234,10 +240,7 @@ namespace MMOGameServer.WorldServer
 
                         Console.WriteLine((NetSendResult)msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1));
 
-
-
                         Debug.Log("Successfull authentication");
-
                     }
                     else
                     {
@@ -290,6 +293,15 @@ namespace MMOGameServer.WorldServer
                         msgOut.Write(skill.Key, 16);
                         msgOut.Write(skill.Value, 16);
                     }
+
+                    msgOut.Write(character.Inventory.Count, 16);
+                    foreach (var item in character.Inventory)
+                    {
+                        msgOut.Write(item.Key, 32);
+                        msgOut.Write(item.Value[0], 16);
+                        msgOut.Write(item.Value[1], 16);
+                        msgOut.Write(item.Value[2], 16);
+                    }
                 }
                 account.connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 2);
                 Console.WriteLine("CharacterList Sent");
@@ -326,6 +338,14 @@ namespace MMOGameServer.WorldServer
                     {
                         character.skills.Add(skill.Key, skill.Value.Level);
                     }
+                    foreach (var item in existingEntity.Inventory)
+                    {
+                        int[] values = new int[3];
+                        values[0] = item.Value.Level;
+                        values[1] = item.Value.Durability;
+                        values[2] = item.Value.Amount;
+                        character.Inventory.Add(item.Key, values);
+                    }
                     character.gold = temp.Gold.Value;
                     account.characters.Add(character);
                 }
@@ -351,7 +371,14 @@ namespace MMOGameServer.WorldServer
                     {
                         character.skills.Add(skill.Key, skill.Value);
                     }
-
+                    foreach (var item in temp.Inventory)
+                    {
+                        int[] values = new int[3];
+                        values[0] = item.Value.Level;
+                        values[1] = item.Value.Durability;
+                        values[2] = item.Value.Amount;
+                        character.Inventory.Add(item.Key, values);
+                    }
                     character.gold = temp.Gold.Value;
                     account.characters.Add(character);
                 }

@@ -85,6 +85,7 @@
     <Compile Include="Assets\Scripts\Handlers\GameMessageSender.cs" />
     <Compile Include="Assets\Scripts\Handlers\LoginDataHandler.cs" />
     <Compile Include="Assets\Scripts\InGame\InGameManager.cs" />
+    <Compile Include="Assets\Scripts\InventorySystem\ItemLibrary.cs" />
     <Compile Include="Assets\Scripts\LoginDataController.cs" />
     <Compile Include="Assets\Scripts\LoginNetworkScripts\LoginClientManager.cs" />
     <Compile Include="Assets\Scripts\LoginNetworkScripts\LoginMessageCreater.cs" />

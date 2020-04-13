@@ -21,6 +21,7 @@ namespace Lidgren.Network.ServerFiles.Data
         public int characterType;
         public int gold;
         public Dictionary<int, int> skills = new Dictionary<int, int>();
+        public Dictionary<int, int[]> Inventory = new Dictionary<int, int[]>();
         public CharacterData()
         {
 

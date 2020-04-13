@@ -2,6 +2,7 @@
 using Assets.Scripts.Handlers;
 using System.Collections.Generic;
 using UnityEngine;
+using Utility_dotNET_Framework.Models;
 
 namespace Assets.AreaServer.Entity
 {
@@ -55,6 +56,7 @@ namespace Assets.AreaServer.Entity
         public float EntityBaseMagicResist;
 
         public Dictionary<int, SkillItem> Skills = new Dictionary<int, SkillItem>();
+        public Dictionary<int, CharacterItem> Inventory = new Dictionary<int, CharacterItem>();
         internal Vector3 position;
 
 
@@ -96,9 +98,6 @@ namespace Assets.AreaServer.Entity
                 if (skill.Level >= effect.Value.MinLevel)
                     switch ((EffectType)effect.Key)
                     {
-                        case EffectType.Damage:
-                            EntityHealth -= (int)(effect.Value.LeveledValue(skill.Level));
-                            break;
                         case EffectType.RestoreHealth:
                             EntityHealth += (int)(effect.Value.LeveledValue(skill.Level));
                             break;
@@ -106,8 +105,7 @@ namespace Assets.AreaServer.Entity
                             EntityMana += (int)(effect.Value.LeveledValue(skill.Level));
                             break;
                         case EffectType.AttackDamage:
-                            EntityHealth -= (int)(effect.Value.LeveledValue(skill.Level));
-                            break;
+                        case EffectType.Damage:
                         case EffectType.SpellDamage:
                             EntityHealth -= (int)(effect.Value.LeveledValue(skill.Level));
                             break;

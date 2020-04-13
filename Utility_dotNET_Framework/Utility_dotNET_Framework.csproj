@@ -80,7 +80,10 @@
   <ItemGroup>
     <Compile Include="Database\Models\Account.cs" />
     <Compile Include="Database\Models\Character.cs" />
+    <Compile Include="Database\Models\CharacterItem.cs" />
     <Compile Include="Database\Models\Effect.cs" />
+    <Compile Include="Database\Models\InventoryItem.cs" />
+    <Compile Include="Database\Models\Item.cs" />
     <Compile Include="Database\Models\Skill.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Selection.cs" />

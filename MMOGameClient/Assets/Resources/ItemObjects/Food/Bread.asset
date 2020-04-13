@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b211300ee8a7de49b1c18164259b3c5, type: 3}
   m_Name: Bread
   m_EditorClassIdentifier: 
+  ID: 0
   Name: Bread
+  Details: 
   Level: 0
   Tier: 1
   ItemType: 4
   Value: 0
+  MaxAmount: 0
   Rarity: 1
+  effects: []
   Prefab: {fileID: 0}
+  Sprite: {fileID: 21300000, guid: 938b399af96a82a4493259248aadd808, type: 3}

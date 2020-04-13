@@ -27,7 +27,7 @@ namespace Assets.AreaServer.SkillSystem
 
         public SkillItem(Skill skill, int Level)
         {
-            skillID = skill.SkillID;
+            skillID = skill.ID;
             skillType = (SkillType)SkillLibrary.Instance.Skills[skillID].SkillType;
             this.Level = Level;
             ManaCost = skill.ManaCost;

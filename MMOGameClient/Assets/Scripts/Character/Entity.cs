@@ -19,7 +19,8 @@ public class Entity
 
     public CharacterApperance characterType;
 
-    public Dictionary<int,int> skills = new Dictionary<int, int>();
+    public Dictionary<int, int> skills = new Dictionary<int, int>();
+    public Dictionary<int, int[]> inventory = new Dictionary<int, int[]>();
 
     public float tickRate = 0;
 }

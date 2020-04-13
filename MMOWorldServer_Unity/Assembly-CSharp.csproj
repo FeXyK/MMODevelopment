@@ -72,8 +72,10 @@
     <Compile Include="Assets\AreaServer\AreaServerCore.cs" />
     <Compile Include="Assets\AreaServer\Entity\Character.cs" />
     <Compile Include="Assets\AreaServer\Entity\CharacterApperance.cs" />
+    <Compile Include="Assets\AreaServer\Entity\CharacterItem.cs" />
     <Compile Include="Assets\AreaServer\Entity\Entity.cs" />
     <Compile Include="Assets\AreaServer\Entity\Gear\Gear.cs" />
+    <Compile Include="Assets\AreaServer\Entity\ItemLibrary.cs" />
     <Compile Include="Assets\AreaServer\Entity\MobBase.cs" />
     <Compile Include="Assets\AreaServer\Entity\MobBehaviour.cs" />
     <Compile Include="Assets\AreaServer\GridSystem\Grid.cs" />

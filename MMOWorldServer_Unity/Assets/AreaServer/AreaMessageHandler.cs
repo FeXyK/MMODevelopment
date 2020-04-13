@@ -345,6 +345,7 @@ namespace MMOGameServer
             Debug.Log(data.character.EntityHealth);
             Debug.Log(data.character.EntityMaxHealth);
             character.Skills = data.character.Skills;
+            character.Inventory = data.character.Inventory;
             return character;
         }
 

@@ -1,11 +1,12 @@
-﻿using Assets.Scripts.UI;
+﻿using Assets.Scripts.InventorySystem;
+using Assets.Scripts.UI;
 using Assets.Scripts.UI.UIItems;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.UI_Window
 {
-    class WindowInventory : UIWindow
+    public class WindowInventory : UIWindow
     {
         public UIInventory Inventory;
 
@@ -45,7 +46,7 @@ namespace Assets.Scripts.UI_Window
                 else
                 {
                     obj.GetComponent<WindowInventoryItem>().uiItem = item.Value;
-                    obj.GetComponent<WindowInventoryItem>().Amount = item.Key;
+                        obj.GetComponent<WindowInventoryItem>().Amount = item.Key;
                 }
                 obj.GetComponent<WindowInventoryItem>().Refresh();
             }
@@ -53,22 +54,33 @@ namespace Assets.Scripts.UI_Window
 
         private void Upload()
         {
-            for (int i = 0; i < InventorySize; i++)
-            {
-                if (UnityEngine.Random.Range(0, 10) > 2)
-                    if (UnityEngine.Random.Range(0, 10) > 5)
-                        Inventory.items[i] = (new KeyValuePair<int, UIItem>(UnityEngine.Random.Range(0, 100), Resources.Load<PotionItem>("ItemObjects/Potion/Tier1 Healing Potion")));
-                    else
-                        Inventory.items[i] = (new KeyValuePair<int, UIItem>(UnityEngine.Random.Range(0, 100), Resources.Load<PotionItem>("ItemObjects/Potion/Tier1 Mana Potion")));
-            }
-            Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier2 Healing Potion")));
-            Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier2 Mana Potion")));
-            Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier3 Healing Potion")));
-            Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier3 Mana Potion")));
-            Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier4 Healing Potion")));
-            Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier4 Mana Potion")));
-            Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier5 Healing Potion")));
-            Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier5 Mana Potion")));
+            Player = GetPlayer();
+            int i = 0;
+            if (Player != null)
+                foreach (var item in Player.inventory)
+                {
+                    Debug.Log(item.Key);
+
+                    Inventory.items[i] = new KeyValuePair<int, UIItem>(item.Value[2], ItemLibrary.Items()[item.Key]);
+                    i++;
+                }
+            Debug.Log("Inv size: " + Player.inventory.Count);
+            //for (int i = 0; i < InventorySize; i++)
+            //{
+            //    if (UnityEngine.Random.Range(0, 10) > 2)
+            //        if (UnityEngine.Random.Range(0, 10) > 5)
+            //            Inventory.items[i] = (new KeyValuePair<int, UIItem>(UnityEngine.Random.Range(0, 100), Resources.Load<PotionItem>("ItemObjects/Potion/Tier1 Healing Potion")));
+            //        else
+            //            Inventory.items[i] = (new KeyValuePair<int, UIItem>(UnityEngine.Random.Range(0, 100), Resources.Load<PotionItem>("ItemObjects/Potion/Tier1 Mana Potion")));
+            //}
+            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier2 Healing Potion")));
+            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier2 Mana Potion")));
+            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier3 Healing Potion")));
+            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier3 Mana Potion")));
+            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier4 Healing Potion")));
+            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier4 Mana Potion")));
+            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier5 Healing Potion")));
+            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier5 Mana Potion")));
 
         }
     }
