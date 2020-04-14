@@ -9,9 +9,9 @@ namespace Assets.Scripts.UI
     public class UIHotbar : ScriptableObject
     {
         public List<UIItemContainer> items = new List<UIItemContainer>();
-        public void Modify(int key, UIItem item)
+        public void Modify(int key, int amount, UIItem item)
         {
-            items[key] = new UIItemContainer(key, item);
+            items[key] = new UIItemContainer(key, amount, item);
         }
     }
 }

@@ -36,6 +36,24 @@ namespace Assets.AreaServer.Entity
                 effects.Add(effect.EffectID, newEffect);
             }
         }
+        public CharacterItem(InventoryItem item)
+        {
+            ID = item.ID;
+            Level = item.Level;
+            Durability = item.Durability;
+            RequieredLevel = item.RequiredLevel;
+            ItemType = item.ItemType;
 
+            foreach (var effect in item.Effects.Values)
+            {
+                Effect newEffect = new Effect();
+                newEffect.EffectID = effect.EffectID;
+                newEffect.Value = effect.Value;
+                newEffect.Multiplier = effect.Multiplier;
+                newEffect.MinLevel = effect.MinLevel;
+
+                effects.Add(effect.EffectID, newEffect);
+            }
+        }
     }
 }

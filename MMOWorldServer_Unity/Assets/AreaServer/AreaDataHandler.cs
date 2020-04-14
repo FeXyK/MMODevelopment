@@ -36,6 +36,7 @@ namespace MMOGameServer
                 entitiesByConnection.Remove(connection);
             }
             entitiesByConnection.Add(connection, newEntity);
+            newEntity.Connection = connection;
         }
         public void RemoveEntity(Entity newEntity, NetConnection connection)
         {
@@ -55,6 +56,10 @@ namespace MMOGameServer
         public Entity GetEntity(int entityID)
         {
             return entitiesByID[entityID];
+        }
+        public NetConnection GetEntityConnection(int entityID)
+        {
+            return entitiesByID[entityID].Connection;
         }
         //public CharacterData GetCharacter(NetIncomingMessage msgIn)
         //{

@@ -31,12 +31,13 @@ namespace Assets.Scripts.UI_Window
                     else
                     {
                         UIItem tempItem = this.uiItem;
-                        int tempAmount = draggedItem.Amount;
+                        int tempAmount = this.Amount;
 
                         uiItem = draggedItem.uiItem;
-                        draggedItem.Amount = Amount;
-                        Amount = tempAmount;
+                        Amount = draggedItem.Amount;
+
                         draggedItem.uiItem = tempItem;
+                        draggedItem.Amount = tempAmount;
                     }
                     draggedItem.Refresh();
                     Refresh();

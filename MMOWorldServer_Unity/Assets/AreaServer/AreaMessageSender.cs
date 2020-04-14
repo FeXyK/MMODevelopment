@@ -2,6 +2,7 @@
 using Lidgren.Network;
 using Lidgren.Network.Message;
 using Assets.AreaServer.Entity;
+using MMOGameServer;
 
 namespace Assets.Scripts.Handlers
 {
@@ -9,12 +10,14 @@ namespace Assets.Scripts.Handlers
     {
         private static AreaMessageSender instance = null;
         private NetServer netServer;
+        private AreaDataHandler dataHandler;
 
-        public AreaMessageSender(NetServer netServer)
+        public AreaMessageSender(NetServer netServer, AreaDataHandler dataHandler)
         {
             if (instance == null)
             {
                 this.netServer = netServer;
+                this.dataHandler = dataHandler;
                 instance = this;
             }
         }
@@ -51,6 +54,19 @@ namespace Assets.Scripts.Handlers
             msgOut.Write(target.EntityMana, 16);
 
             netServer.SendToAll(msgOut, NetDeliveryMethod.Unreliable);
+        }
+
+        internal void AddedItem(int entityID, int ID, bool v, int amount)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.NewItem);
+            msgOut.Write(ID,16);
+            msgOut.Write(v);
+            msgOut.Write(amount, 16);
+
+            NetConnection m = dataHandler.GetEntityConnection(entityID);
+
+            m.SendMessage(msgOut, NetDeliveryMethod.Unreliable, 0);
         }
     }
 }

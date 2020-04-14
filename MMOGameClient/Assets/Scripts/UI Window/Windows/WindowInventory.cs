@@ -9,14 +9,52 @@ namespace Assets.Scripts.UI_Window
     public class WindowInventory : UIWindow
     {
         public UIInventory Inventory;
-
+        List<WindowInventoryItem> InventoryObjects = new List<WindowInventoryItem>();
         public UIItem DefaultUIItem;
         public GameObject PrefabSlot;
 
         public int InventorySize;
-        public void AddItem(UIItem item)
+        private void Update()
         {
-
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                AddItem(new UIItemContainer(1, 1, ItemLibrary.Items()[1001]));
+            }
+        }
+        public void AddItem(UIItemContainer newItem)
+        {
+            SaveState();
+            foreach (var item in Inventory.items)
+            {
+                if (item.Item.ID == newItem.Item.ID && item.Amount < item.Item.MaxAmount)
+                {
+                    if (item.Item.MaxAmount >= newItem.Amount + item.Amount)
+                    {
+                        item.Amount += newItem.Amount;
+                    }
+                    else
+                    {
+                        if (newItem.Amount > 0)
+                        {
+                            newItem.Amount = newItem.Amount - (item.Item.MaxAmount - item.Amount);
+                            AddItem(newItem);
+                            item.Amount = item.Item.MaxAmount;
+                        }
+                    }
+                    newItem.Amount = 0;
+                    break;
+                }
+            }
+            if (newItem.Amount > 0)
+                for (int i = 0; i < Inventory.items.Count; i++)
+                {
+                    if (Inventory.items[i].Item.ID == -1)
+                    {
+                        Inventory.items[i] = newItem;
+                        break;
+                    }
+                }
+            Refresh();
         }
         public void RemoveItem(UIItem item)
         {
@@ -28,30 +66,51 @@ namespace Assets.Scripts.UI_Window
         }
         private void Start()
         {
-            DrawItems();
+            Initialize();
+            Upload();
+            Refresh();
         }
-        public void DrawItems()
+        public void Initialize()
         {
+            Inventory.items.Clear();
             for (int i = 0; i < InventorySize; i++)
             {
-                Inventory.items.Add(new KeyValuePair<int, UIItem>(0, DefaultUIItem));
-            }
-            Upload();
-            foreach (var item in Inventory.items)
-            {
-                GameObject obj = Instantiate(PrefabSlot);
-                obj.transform.SetParent(SlotContainer);
-                if (item.Value == null)
-                    obj.GetComponent<WindowInventoryItem>().uiItem = DefaultUIItem;
-                else
-                {
-                    obj.GetComponent<WindowInventoryItem>().uiItem = item.Value;
-                        obj.GetComponent<WindowInventoryItem>().Amount = item.Key;
-                }
-                obj.GetComponent<WindowInventoryItem>().Refresh();
+                Inventory.items.Add(new UIItemContainer(0,0, DefaultUIItem));
             }
         }
+        public void SaveState()
+        {
+            if (InventoryObjects.Count == Inventory.items.Count)
+                for (int i = 0; i < InventorySize; i++)
+                {
+                    Inventory.items[i].Amount = InventoryObjects[i].Amount;
+                    Inventory.items[i].Item = InventoryObjects[i].uiItem;
+                }
+        }
+        public override void Refresh()
+        {
 
+            foreach (Transform child in SlotContainer.transform)
+            {
+                Destroy(child.gameObject);
+            }
+            InventoryObjects.Clear();
+            foreach (var item in Inventory.items)
+            {
+                WindowInventoryItem obj = Instantiate(PrefabSlot).GetComponent<WindowInventoryItem>();
+                obj.transform.SetParent(SlotContainer);
+
+                if (item.Item == null)
+                    obj.uiItem = DefaultUIItem;
+                else
+                {
+                    obj.uiItem = item.Item;
+                    obj.Amount = item.Amount;
+                }
+                InventoryObjects.Add(obj);
+                obj.Refresh();
+            }
+        }
         private void Upload()
         {
             Player = GetPlayer();
@@ -59,29 +118,10 @@ namespace Assets.Scripts.UI_Window
             if (Player != null)
                 foreach (var item in Player.inventory)
                 {
-                    Debug.Log(item.Key);
-
-                    Inventory.items[i] = new KeyValuePair<int, UIItem>(item.Value[2], ItemLibrary.Items()[item.Key]);
+                    Inventory.items[i] = new UIItemContainer(item.Value[2], item.Value[0], ItemLibrary.Items()[item.Key]);
                     i++;
                 }
             Debug.Log("Inv size: " + Player.inventory.Count);
-            //for (int i = 0; i < InventorySize; i++)
-            //{
-            //    if (UnityEngine.Random.Range(0, 10) > 2)
-            //        if (UnityEngine.Random.Range(0, 10) > 5)
-            //            Inventory.items[i] = (new KeyValuePair<int, UIItem>(UnityEngine.Random.Range(0, 100), Resources.Load<PotionItem>("ItemObjects/Potion/Tier1 Healing Potion")));
-            //        else
-            //            Inventory.items[i] = (new KeyValuePair<int, UIItem>(UnityEngine.Random.Range(0, 100), Resources.Load<PotionItem>("ItemObjects/Potion/Tier1 Mana Potion")));
-            //}
-            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier2 Healing Potion")));
-            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier2 Mana Potion")));
-            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier3 Healing Potion")));
-            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier3 Mana Potion")));
-            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier4 Healing Potion")));
-            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier4 Mana Potion")));
-            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier5 Healing Potion")));
-            //Inventory.items.Add(new KeyValuePair<int, UIItem>(2, Resources.Load<PotionItem>("ItemObjects/Potion/Tier5 Mana Potion")));
-
         }
     }
 }

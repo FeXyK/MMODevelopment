@@ -6,12 +6,20 @@ namespace Assets.Scripts.UI.UIItems
     [Serializable]
     public class UIItemContainer
     {
-        public int Key;
-        public UIItem Value;
-        public UIItemContainer(int Key, UIItem Value)
+        public int Amount;
+        public int Level;
+        public UIItem Item;
+
+
+        public UIItemContainer(int Amount, int Level, UIItem Item)
         {
-            this.Key = Key;
-            this.Value = Value;
+            this.Amount = Amount;
+            this.Level = Level;
+            this.Item = Item;
+        }
+        public override string ToString()
+        {
+            return Amount + " V: " + Item.ID;
         }
     }
 }

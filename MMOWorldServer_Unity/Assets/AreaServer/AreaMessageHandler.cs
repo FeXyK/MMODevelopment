@@ -33,7 +33,7 @@ namespace MMOGameServer
             dataHandler = new AreaDataHandler();
             messageCreater = new AreaMessageCreater(netServer, dataHandler);
             messageReader = new AreaMessageReader();
-            messageSender = new AreaMessageSender(netServer);
+            messageSender = new AreaMessageSender(netServer, dataHandler);
             {
                 MobAreaSpawner mobArea = new MobAreaSpawner(new Vector3(7, 80, 178));
                 dataHandler.mobAreas.Add(mobArea);
@@ -75,13 +75,13 @@ namespace MMOGameServer
                 switch (source.Skills[skillID].skillType)
                 {
                     case SkillType.Instant:
-                        target.ApplyEffects(source.Skills[skillID]);
+                        target.ApplyEffects(source.Skills[skillID], source);
                         break;
                     case SkillType.Projectile:
-                        GameObject.Instantiate(SkillLibrary.Instance.Projectile).GetComponent<SkillProjectile>().Set(source.transform, target, source.Skills[skillID]);
+                        GameObject.Instantiate(SkillLibrary.Instance.Projectile).GetComponent<SkillProjectile>().Set(source, target, source.Skills[skillID]);
                         break;
                     case SkillType.AoE:
-                        GameObject.Instantiate(SkillLibrary.Instance.AoE).GetComponent<SkillAoE>().Set(source.transform, target, source.Skills[skillID], 20, 0.3f);
+                        GameObject.Instantiate(SkillLibrary.Instance.AoE).GetComponent<SkillAoE>().Set(source,  target, source.Skills[skillID], 20, 0.3f);
                         break;
                 }
                 source.ApplyCD(skillID);
@@ -258,6 +258,7 @@ namespace MMOGameServer
                 else
                 {
                     newCharacter = LoadCharacterFrom(data);
+                    newCharacter.Connection = msgIn.SenderConnection;
                     dataHandler.AddEntity(newCharacter, msgIn.SenderConnection);
                 }
                 dataHandler.waitingForAuth.Remove(data);

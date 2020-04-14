@@ -1,5 +1,6 @@
 ﻿using Assets.AreaServer.SkillSystem;
 using Assets.Scripts.Handlers;
+using Lidgren.Network;
 using System.Collections.Generic;
 using UnityEngine;
 using Utility_dotNET_Framework.Models;
@@ -57,8 +58,9 @@ namespace Assets.AreaServer.Entity
 
         public Dictionary<int, SkillItem> Skills = new Dictionary<int, SkillItem>();
         public Dictionary<int, CharacterItem> Inventory = new Dictionary<int, CharacterItem>();
-        internal Vector3 position;
 
+        internal Vector3 position;
+        public NetConnection Connection;
 
         public void ApplyCD(int skillID)
         {
@@ -86,7 +88,7 @@ namespace Assets.AreaServer.Entity
         {
 
         }
-        public void ApplyEffects(SkillItem skill)
+        public void ApplyEffects(SkillItem skill, Entity source)
         {
             foreach (var effect in skill.effects)
             {
@@ -108,6 +110,11 @@ namespace Assets.AreaServer.Entity
                         case EffectType.Damage:
                         case EffectType.SpellDamage:
                             EntityHealth -= (int)(effect.Value.LeveledValue(skill.Level));
+                            if (EntityHealth <= 0)
+                            {
+                                source.AddInventoryItem(ItemLibrary.Instance.Items[1001]);
+
+                            }
                             break;
                         case EffectType.MagicResist:
                             break;
@@ -143,6 +150,16 @@ namespace Assets.AreaServer.Entity
                             break;
                     }
             }
+        }
+        public void AddInventoryItem(InventoryItem item)
+        {
+            CharacterItem ch = new CharacterItem(ItemLibrary.Instance.Items[1001]);
+            ch.Amount = 1;
+            if (!Inventory.ContainsKey(1001))
+                Inventory.Add(1001, ch);
+            else
+                Inventory[1001].Amount+= ch.Amount;
+            AreaMessageSender.Instance.AddedItem(EntityID, ch.ID, false, ch.Amount);
         }
     }
 }

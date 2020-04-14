@@ -4,7 +4,7 @@ namespace Assets.AreaServer.SkillSystem
 {
     class SkillProjectile : MonoBehaviour
     {
-        public Transform source;
+        public Entity.Entity source;
         public Entity.Entity target;
         public float speed;
         SkillItem skill;
@@ -14,15 +14,15 @@ namespace Assets.AreaServer.SkillSystem
             this.transform.Translate(Vector3.forward * Time.deltaTime * speed);
             if (Vector3.Distance(this.transform.position, target.transform.position) < 0.2f)
             {
-                target.ApplyEffects(skill);
+                target.ApplyEffects(skill, source);
                 Destroy(this.gameObject);
             }
         }
-        public void Set(Transform source, Entity.Entity target, SkillItem skill)
+        public void Set(Entity.Entity source, Entity.Entity target, SkillItem skill)
         {
             this.source = source;
             this.target = target;
-            this.transform.position = source.position;
+            this.transform.position = source.transform.position;
             this.skill = skill;
         }
     }

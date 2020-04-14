@@ -1159,7 +1159,7 @@ MonoBehaviour:
   wSkill: {fileID: 4158889920129308924}
   wCharacter: {fileID: 4951635560083324184}
   wGear: {fileID: 4092183555283291909}
-  wInvertory: {fileID: 8045805368907924656}
+  wInvertory: {fileID: 522935039}
   wChat: {fileID: 7836661461642858612}
 --- !u!114 &5692178369882233683
 MonoBehaviour:

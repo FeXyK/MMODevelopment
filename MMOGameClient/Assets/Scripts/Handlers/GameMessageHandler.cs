@@ -1,6 +1,9 @@
 ﻿using Assets.Scripts.Character;
+using Assets.Scripts.InventorySystem;
 using Assets.Scripts.SkillSystem;
 using Assets.Scripts.SkillSystem.SkillSys;
+using Assets.Scripts.UI;
+using Assets.Scripts.UI.UIItems;
 using Assets.Scripts.UI_Window;
 using Lidgren.Network;
 using Lidgren.Network.Message;
@@ -216,14 +219,18 @@ namespace Assets.Scripts.Handlers
         }
         internal void NewItem(NetIncomingMessage msgIn)
         {
-            int skillID = msgIn.ReadByte();
-            int level = msgIn.ReadByte();
-
-            if (dataHandler.myCharacter.entity.skills.ContainsKey(skillID))
-                dataHandler.myCharacter.entity.skills[skillID] = level;
+            int ID = msgIn.ReadInt16();
+            bool hasLevel = msgIn.ReadBoolean();
+            int value = msgIn.ReadInt16();
+            UIItemContainer item;
+            if (!hasLevel)
+                item = new UIItemContainer(value, 1, ItemLibrary.Items()[ID]);
             else
-                dataHandler.myCharacter.entity.skills[skillID] = level;
-            uiManager.wInvertory.Refresh();
+            {
+                item = new UIItemContainer(1, value, ItemLibrary.Items()[ID]);
+                item.Level = value;
+            }
+            uiManager.wInvertory.AddItem(item);
         }
         internal void EntityPositionUpdate(NetIncomingMessage msgIn)
         {

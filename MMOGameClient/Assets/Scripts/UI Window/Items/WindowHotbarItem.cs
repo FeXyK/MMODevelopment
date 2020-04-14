@@ -27,11 +27,11 @@ namespace Assets.Scripts.UI_Window
             }
             else
                 Item.ItemCooldown.text = "";
-
-            if (Input.GetKeyDown(Hotkey))
-            {
-                Use();
-            }
+            if (Hotkey.Length > 0)
+                if (Input.GetKeyDown(Hotkey))
+                {
+                    Use();
+                }
         }
         public override void CallOnBeginDrag(PointerEventData eventData)
         {
@@ -49,7 +49,7 @@ namespace Assets.Scripts.UI_Window
             if (eventData.pointerDrag != null)
             {
                 uiItem = DefaultUISlot;
-                Hotbar.Modify(ListNumber, DefaultUISlot);
+                Hotbar.Modify(ListNumber, ListNumber, DefaultUISlot);
             }
             Refresh();
             base.CallOnEndDrag(eventData);
@@ -63,7 +63,7 @@ namespace Assets.Scripts.UI_Window
                     Hotbar = FindObjectOfType<WindowHotbar>();
 
                 uiItem = draggedItem.uiItem;
-                Hotbar.Modify(ListNumber, uiItem);
+                Hotbar.Modify(ListNumber, 0, uiItem);
                 CooldownTime = 0;// uiItem.GetCooldown();
 
                 if (draggedItem.uiItem.ItemType != UI.UIItemType.Skill)
@@ -102,7 +102,9 @@ namespace Assets.Scripts.UI_Window
                 Item.ItemCooldown.text = "";
                 Item.ItemManaCost.text = "";
                 Item.ItemAmount.text = "";
+
             }
+            Item.ItemHotkey.text = Hotkey.ToString();
             foreach (var effect in uiItem.effects)
             {
                 if (effect.EffectType == EffectValue.Cooldown)

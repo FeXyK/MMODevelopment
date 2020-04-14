@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.UI.UIItems;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.UI
@@ -8,6 +9,6 @@ namespace Assets.Scripts.UI
     public class UIInventory : ScriptableObject
     {
         [SerializeField]
-        public List<KeyValuePair<int,  UIItem>> items = new List<KeyValuePair<int, UIItem>>();
+        public List<UIItemContainer> items = new List<UIItemContainer>();
     }
 }

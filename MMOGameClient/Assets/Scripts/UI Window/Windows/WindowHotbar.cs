@@ -26,25 +26,26 @@ namespace Assets.Scripts.UI_Window
             {
                 GameObject obj = Instantiate(PrefabSlot);
                 obj.transform.SetParent(SlotContainer);
-                if (item.Value == null)
+                if (item.Item == null)
                     obj.GetComponent<WindowHotbarItem>().uiItem = DefaultUIItem;
                 else
                 {
-                    obj.GetComponent<WindowHotbarItem>().uiItem = item.Value;
-                    obj.GetComponent<WindowHotbarItem>().ListNumber = item.Key;
-                    obj.GetComponent<WindowHotbarItem>().Item.ItemHotkey.text = item.Key.ToString();
-                    obj.GetComponent<WindowHotbarItem>().Hotkey = item.Key.ToString();
+                    obj.GetComponent<WindowHotbarItem>().uiItem = item.Item;
+                    obj.GetComponent<WindowHotbarItem>().ListNumber = item.Amount;
+                    obj.GetComponent<WindowHotbarItem>().Item.ItemHotkey.text = item.Amount.ToString();
+                    obj.GetComponent<WindowHotbarItem>().Hotkey = item.Amount.ToString();
                     hotbarSlots.Add(obj.GetComponent<WindowHotbarItem>());
-                    foreach (var effect in item.Value.effects)
+                    foreach (var effect in item.Item.effects)
                     {
                         if (effect.EffectType == EffectValue.Cooldown)
                             obj.GetComponent<WindowHotbarItem>().Item.ItemCooldown.text = effect.Value.ToString();
                     }
-                    if ((item.Value as SkillItem) != null)
+                    if ((item.Item as SkillItem) != null)
                     {
-                        obj.GetComponent<WindowHotbarItem>().Item.ItemManaCost.text = (item.Value as SkillItem).ManaCost.ToString();
+                        obj.GetComponent<WindowHotbarItem>().Item.ItemManaCost.text = (item.Item as SkillItem).ManaCost.ToString();
                     }
                 }
+                    Debug.Log(obj.GetComponent<WindowHotbarItem>().Hotkey);
                 obj.GetComponent<WindowHotbarItem>().Refresh();
             }
         }
@@ -58,16 +59,16 @@ namespace Assets.Scripts.UI_Window
                 }
             }
         }
-        public void Modify(int key, UIItem item)
+        public void Modify(int key, int amount, UIItem item)
         {
-            Hotbar.Modify(key, item);
+            Hotbar.Modify(key, amount, item);
         }
         public void Upload()
         {
-            if (Hotbar.items.Count == 0)
-                for (int i = 0; i < HotbarSize; i++)
+            Hotbar.items.Clear();
+            for (int i = 0; i < HotbarSize; i++)
                 {
-                    Hotbar.items.Add(new UIItemContainer(i, DefaultUIItem));
+                    Hotbar.items.Add(new UIItemContainer(i, 0, DefaultUIItem));
                 }
         }
 

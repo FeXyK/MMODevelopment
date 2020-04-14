@@ -119,6 +119,7 @@ namespace Assets.Scripts.GameNetworkScripts
                             messageHandler.SkillLeveled(msgIn);
                             break;
                         case MessageType.NewItem:
+                            Debug.Log("New Item");
                             messageHandler.NewItem(msgIn);
                             break;
                         case MessageType.EntityUpdate:
