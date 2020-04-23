@@ -17,7 +17,6 @@ public class WorldServerManager : MonoBehaviour
         {
             worldServer = new WorldServerCore();
             worldServer.areaServer = new AreaServerCore();
-            worldServer.areaServer.Initialize(areaServerConfigFile);
 
             if (!TestingNonNetworkCode)
             {
@@ -32,6 +31,7 @@ public class WorldServerManager : MonoBehaviour
                     Debug.LogError("Unable to connect to login server");
                 }
             }
+            worldServer.areaServer.Initialize(areaServerConfigFile);
         }
     }
     private void WorkerThread()

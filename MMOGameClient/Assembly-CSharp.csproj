@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Assets\ChatController.cs" />
     <Compile Include="Assets\DestroyAfter.cs" />
+    <Compile Include="Assets\DropItemController.cs" />
     <Compile Include="Assets\FloatingNotification.cs" />
     <Compile Include="Assets\Item.cs" />
     <Compile Include="Assets\ResourceBarController.cs" />

@@ -80,7 +80,7 @@ namespace Assets.Scripts.GameNetworkScripts
             while ((msgIn = netPeer.ReadMessage()) != null)
             {
                 if (msgIn.MessageType == NetIncomingMessageType.Data)
-                {
+                { 
                     msgType = (MessageType)msgIn.ReadByte();
                     switch (msgType)
                     {
@@ -121,6 +121,14 @@ namespace Assets.Scripts.GameNetworkScripts
                         case MessageType.NewItem:
                             Debug.Log("New Item");
                             messageHandler.NewItem(msgIn);
+                            break;
+                        case MessageType.RemoveItem:
+                            Debug.Log("Remove Item");
+                            messageHandler.RemoveItem(msgIn);
+                            break;
+                        case MessageType.LootDrop:
+                            Debug.Log("Drop Item");
+                            messageHandler.LootDrop(msgIn);
                             break;
                         case MessageType.EntityUpdate:
                             messageHandler.EntityResourceUpdate(msgIn);

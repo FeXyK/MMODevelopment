@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using Utility_dotNET_Framework.Models;
+using Utility.Models;
 
 namespace Assets.AreaServer.SkillSystem
 {
@@ -14,7 +14,7 @@ namespace Assets.AreaServer.SkillSystem
         public int skillID;
         public int Level;
         public float cooldown;
-        public SkillType skillType = SkillType.Projectile;
+        public ESkillType skillType = ESkillType.Projectile;
 
         public int ManaCost;
         public float ManaCostMultiplier;
@@ -28,7 +28,7 @@ namespace Assets.AreaServer.SkillSystem
         public SkillItem(Skill skill, int Level)
         {
             skillID = skill.ID;
-            skillType = (SkillType)SkillLibrary.Instance.Skills[skillID].SkillType;
+            skillType = (ESkillType)SkillLibrary.Instance.Skills[skillID].SkillType;
             this.Level = Level;
             ManaCost = skill.ManaCost;
             ManaCostMultiplier = skill.ManaCostMultiplier;

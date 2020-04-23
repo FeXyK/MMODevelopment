@@ -1,33 +1,31 @@
-﻿
-using System;
+﻿using Assets.AreaServer.InventorySystem;
 using System.Collections.Generic;
 using UnityEngine;
-using Utility_dotNET_Framework.Models;
 
 namespace Assets.AreaServer.Entity
 {
     public class Character : Entity
     {
         public int AccountID;
-        public CharacterApperance CharacterType;
-        public Gear CharacterGear;
+        public ECharacterApperance CharacterType;
 
         public int EntityExp { get; internal set; }
 
         float RegenTimer = 1;
 
+        public Dictionary<int, SlotItem> Equipped = new Dictionary<int, SlotItem>();
+        public Dictionary<int, SlotItem> Storage = new Dictionary<int, SlotItem>();
         private void Update()
         {
             if (RegenTimer <= 0)
             {
                 if (EntityMana < EntityMaxMana)
                 {
-                    EntityMana += 20;
+                    EntityMana += 4;
                 }
                 RegenTimer = 1;
             }
             RegenTimer -= Time.deltaTime;
         }
-
     }
 }

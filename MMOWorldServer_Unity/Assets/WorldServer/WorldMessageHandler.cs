@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using Lidgren.Network;
 using Lidgren.Network.ServerFiles;
 using Lidgren.Network.ServerFiles.Data;
-using Utility_dotNET_Framework;
+using Utility;
 using UnityEngine;
 using Lidgren.Network.Message;
 using Assets;
 using Assets.AreaServer.Entity;
 using Assets.AreaServer.SkillSystem;
+using Assets.AreaServer.InventorySystem;
 
 namespace MMOGameServer.WorldServer
 {
@@ -41,6 +42,7 @@ namespace MMOGameServer.WorldServer
             foreach (var item in selection.GetItems())
             {
                 ItemLibrary.Instance.Items.Add(item.ID, item);
+                ItemLibrary.Instance.ItemsList.Add(item);
             }
 
             //foreach (var skill in ItemLibrary.Instance.Items)
@@ -117,8 +119,9 @@ namespace MMOGameServer.WorldServer
             {
                 account.authToken = Util.GenerateRandomSequence(40);
                 CharacterWrapper data = new CharacterWrapper();
-                Utility_dotNET_Framework.Models.Character temp = selection.GetCharacterData(account.id, characterId, characterName);
+                Utility.Models.Character temp = selection.GetCharacterData(account.id, characterId, characterName);
                 {
+                    data.character.Connection = msgIn.SenderConnection;
                     data.character.EntityName = temp.Name;
                     data.character.EntityID = temp.CharacterID;
                     data.character.AccountID = temp.AccountID;
@@ -128,7 +131,7 @@ namespace MMOGameServer.WorldServer
                     data.character.EntityMana = temp.Mana.Value;
                     data.character.EntityLevel = temp.Level.Value;
                     data.character.EntityExp = temp.Exp.Value;
-                    data.character.CharacterType = (CharacterApperance)temp.CharType.Value;
+                    data.character.CharacterType = (ECharacterApperance)temp.CharType.Value;
                     data.character.EntityGold = temp.Gold.Value;
                     foreach (var skill in temp.Skills)
                     {
@@ -142,7 +145,7 @@ namespace MMOGameServer.WorldServer
                     }
                     foreach (var item in temp.Inventory)
                     {
-                        data.character.Inventory.Add(item.Key, new CharacterItem(item.Value));
+                        data.character.Inventory.Add(item.Key, new SlotItem(item.Value));
                     }
                     Debug.Log("CHARACTER PLAY INVENTORY SIZE: " + data.character.Inventory.Count);
                 }
@@ -298,9 +301,12 @@ namespace MMOGameServer.WorldServer
                     foreach (var item in character.Inventory)
                     {
                         msgOut.Write(item.Key, 32);
-                        msgOut.Write(item.Value[0], 16);
+                        msgOut.Write(item.Value[0], 32);
                         msgOut.Write(item.Value[1], 16);
                         msgOut.Write(item.Value[2], 16);
+                        msgOut.Write(item.Value[3], 16);
+                        msgOut.Write(item.Value[4], 16);
+                        msgOut.Write(item.Value[5], 16);
                     }
                 }
                 account.connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 2);
@@ -310,7 +316,7 @@ namespace MMOGameServer.WorldServer
         internal void UpdateAccountCharacterList(ClientData account)
         {
             account.characters.Clear();
-            List<Utility_dotNET_Framework.Models.Character> charactersTemp = Selection.instance.GetCharactersData(account.id);
+            List<Utility.Models.Character> charactersTemp = Selection.instance.GetCharactersData(account.id);
             CharacterData character;
 
             foreach (var temp in charactersTemp)
@@ -340,11 +346,14 @@ namespace MMOGameServer.WorldServer
                     }
                     foreach (var item in existingEntity.Inventory)
                     {
-                        int[] values = new int[3];
-                        values[0] = item.Value.Level;
-                        values[1] = item.Value.Durability;
-                        values[2] = item.Value.Amount;
-                        character.Inventory.Add(item.Key, values);
+                        int[] values = new int[6];
+                        values[0] = item.Value.ID;
+                        values[1] = item.Value.ItemID;
+                        values[2] = item.Value.Level;
+                        values[3] = item.Value.Durability;
+                        values[4] = item.Value.Amount;
+                        values[5] = (int)item.Value.SlotType;
+                        character.Inventory.Add(item.Value.SlotID, values);
                     }
                     character.gold = temp.Gold.Value;
                     account.characters.Add(character);
@@ -373,11 +382,14 @@ namespace MMOGameServer.WorldServer
                     }
                     foreach (var item in temp.Inventory)
                     {
-                        int[] values = new int[3];
-                        values[0] = item.Value.Level;
-                        values[1] = item.Value.Durability;
-                        values[2] = item.Value.Amount;
-                        character.Inventory.Add(item.Key, values);
+                        int[] values = new int[6];
+                        values[0] = item.Value.ID;
+                        values[1] = item.Value.ItemID;
+                        values[2] = item.Value.Level;
+                        values[3] = item.Value.Durability;
+                        values[4] = item.Value.Amount;
+                        values[5] = (int)item.Value.SlotType;
+                        character.Inventory.Add(item.Value.SlotID, values);
                     }
                     character.gold = temp.Gold.Value;
                     account.characters.Add(character);

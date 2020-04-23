@@ -45,7 +45,6 @@ namespace Assets.Scripts.UI_Window
                         obj.GetComponent<WindowHotbarItem>().Item.ItemManaCost.text = (item.Item as SkillItem).ManaCost.ToString();
                     }
                 }
-                    Debug.Log(obj.GetComponent<WindowHotbarItem>().Hotkey);
                 obj.GetComponent<WindowHotbarItem>().Refresh();
             }
         }

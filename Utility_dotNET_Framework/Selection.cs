@@ -2,9 +2,9 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
-using Utility_dotNET_Framework.Models;
+using Utility.Models;
 
-namespace Utility_dotNET_Framework
+namespace Utility
 {
 
     public class Selection
@@ -30,7 +30,6 @@ namespace Utility_dotNET_Framework
                 using (MySqlCommand cmd = new MySqlCommand("SELECT COUNT(*) FROM mmo.character WHERE name=@characterName", conn))
                 {
                     cmd.Parameters.AddWithValue("characterName", characterName);
-
                     result = Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
@@ -256,9 +255,6 @@ namespace Utility_dotNET_Framework
                             skill.Range = reader.GetFloat("range");
                             skill.RangeMultiplier = reader.GetFloat("range_multiplier");
 
-                            skill.RequiredLevel1 = reader.GetInt32("rq_level1");
-                            skill.RequiredLevel2 = reader.GetInt32("rq_level2");
-                            skill.RequiredLevel3 = reader.GetInt32("rq_level3");
                             skill.RequiredSkillID = reader.GetInt32("rq_id_skill");
 
                             int id;
@@ -285,30 +281,32 @@ namespace Utility_dotNET_Framework
             }
             return skills;
         }
-        public List<KeyValuePair<int, CharacterItem>> GetCharacterItems(int characterID)
+        public Dictionary<int, CharacterItem> GetCharacterItems(int characterID)
         {
-            List<KeyValuePair<int, CharacterItem>> Inventory = new List<KeyValuePair<int, CharacterItem>>();
-            int itemID;
-            int durability;
-            int amount;
-            int level;
+            Dictionary<int, CharacterItem> Inventory = new Dictionary<int, CharacterItem>();
+            CharacterItem item = null;
 
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM mmo.character_item WHERE id_character = @characterID", conn))
+                using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM mmo.character_slot WHERE character_id = @characterID", conn))
                 {
                     cmd.Parameters.AddWithValue("characterID", characterID);
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            itemID = reader.GetInt32("id_item");
-                            durability = reader.GetInt32("durability");
-                            amount = reader.GetInt32("amount");
-                            level = reader.GetInt32("level");
+                            item = new CharacterItem();
+                            item.ID = reader.GetInt32("id");
+                            item.ItemID = reader.GetInt32("item_id");
+                            item.SlotID = reader.GetInt32("slot_id");
+                            item.SlotType = (ESlotType)reader.GetInt32("slot_type");
+                            item.Amount = reader.GetInt32("amount");
+                            item.Level = reader.GetInt32("level");
+                            item.Durability = reader.GetInt32("durability");
+                            item.MaxDurability = reader.GetInt32("max_durability");
 
-                            Inventory.Add(new KeyValuePair<int, CharacterItem>(itemID, new CharacterItem(itemID, durability, amount, level)));
+                            Inventory.Add(item.ID, item);
                         }
                     }
                 }
@@ -333,6 +331,7 @@ namespace Utility_dotNET_Framework
                             item.Name = reader.GetString("name");
                             item.ID = reader.GetInt32("id");
                             item.RequiredLevel = reader.GetInt32("rq_level");
+                            item.ItemType = (EItemType)reader.GetInt32("type");
 
                             int id;
                             int value;

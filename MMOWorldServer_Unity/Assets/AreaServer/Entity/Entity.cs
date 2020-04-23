@@ -1,14 +1,17 @@
-﻿using Assets.AreaServer.SkillSystem;
+﻿using Assets.AreaServer.InventorySystem;
+using Assets.AreaServer.SkillSystem;
 using Assets.Scripts.Handlers;
 using Lidgren.Network;
 using System.Collections.Generic;
 using UnityEngine;
-using Utility_dotNET_Framework.Models;
+using Utility.Models;
 
 namespace Assets.AreaServer.Entity
 {
     public class Entity : MonoBehaviour
     {
+        public NetConnection Connection;
+
         public string EntityName;
 
         public int EntityID;
@@ -52,15 +55,23 @@ namespace Assets.AreaServer.Entity
                 AreaMessageSender.Instance.SendEntityUpdate(this);
             }
         }
+
         public float EntityAttackRange;
         public float EntityBaseArmor;
         public float EntityBaseMagicResist;
 
         public Dictionary<int, SkillItem> Skills = new Dictionary<int, SkillItem>();
-        public Dictionary<int, CharacterItem> Inventory = new Dictionary<int, CharacterItem>();
+        public Dictionary<int, SlotItem> Inventory = new Dictionary<int, SlotItem>();
 
-        internal Vector3 position;
-        public NetConnection Connection;
+
+        public int MaxInventorySize = 32;
+        public int MaxStorageSize = 32;
+        public int CurrentInventorySize = 0;
+        public int CurrentStorageSize = 0;
+
+        public Vector3 position;
+
+   
 
         public void ApplyCD(int skillID)
         {
@@ -90,31 +101,94 @@ namespace Assets.AreaServer.Entity
         }
         public void ApplyEffects(SkillItem skill, Entity source)
         {
-            foreach (var effect in skill.effects)
+            if (EntityHealth > 0)
+                foreach (var effect in skill.effects)
+                {
+                    Debug.Log("Value: " + effect.Value.Value);
+                    Debug.Log("Multiplier: " + effect.Value.Multiplier);
+                    Debug.Log("MinLevel: " + effect.Value.MinLevel);
+                    Debug.Log("Level: " + skill.Level);
+                    Debug.Log((EffectType)effect.Value.EffectID + " " + (int)(effect.Value.Value * (effect.Value.Multiplier * skill.Level)));
+                    if (skill.Level >= effect.Value.MinLevel)
+                        switch ((EffectType)effect.Key)
+                        {
+                            case EffectType.RestoreHealth:
+                                EntityHealth += (int)(effect.Value.LeveledValue(skill.Level));
+                                break;
+                            case EffectType.RestoreMana:
+                                EntityMana += (int)(effect.Value.LeveledValue(skill.Level));
+                                break;
+                            case EffectType.AttackDamage:
+                            case EffectType.Damage:
+                            case EffectType.SpellDamage:
+                                if (source.EntityID != EntityID)
+                                    EntityHealth -= (int)(effect.Value.LeveledValue(skill.Level));
+                                if (EntityHealth <= 0)
+                                {
+                                    OnDie(source);
+                                }
+                                break;
+                            case EffectType.MagicResist:
+                                break;
+                            case EffectType.Armor:
+                                break;
+                            case EffectType.Duration:
+                                break;
+                            case EffectType.Health:
+                                break;
+                            case EffectType.Mana:
+                                break;
+                            case EffectType.MoveSpeed:
+                                break;
+                            case EffectType.MoveJump:
+                                break;
+                            case EffectType.CooldownReduction:
+                                break;
+                            case EffectType.Cooldown:
+                                break;
+                            case EffectType.AttrStrength:
+                                break;
+                            case EffectType.AttrIntelligence:
+                                break;
+                            case EffectType.AttrDexterity:
+                                break;
+                            case EffectType.AttrConstitution:
+                                break;
+                            case EffectType.AttrKnowledge:
+                                break;
+                            case EffectType.AttrLuck:
+                                break;
+                            default:
+                                break;
+                        }
+                }
+        }
+
+        internal void Use(int ID)
+        {
+            if (Inventory.ContainsKey(ID))
             {
-                Debug.Log("Value: " + effect.Value.Value);
-                Debug.Log("Multiplier: " + effect.Value.Multiplier);
-                Debug.Log("MinLevel: " + effect.Value.MinLevel);
-                Debug.Log("Level: " + skill.Level);
-                Debug.Log((EffectType)effect.Value.EffectID + " " + (int)(effect.Value.Value * (effect.Value.Multiplier * skill.Level)));
-                if (skill.Level >= effect.Value.MinLevel)
+                ApplyEffects(Inventory[ID].effects);
+                RemoveInventoryItem(ID, 1);
+            }
+        }
+        public void ApplyEffects(Dictionary<int, Effect> effects)
+        {
+            if (EntityHealth > 0)
+                foreach (var effect in effects)
+                {
                     switch ((EffectType)effect.Key)
                     {
                         case EffectType.RestoreHealth:
-                            EntityHealth += (int)(effect.Value.LeveledValue(skill.Level));
+                            EntityHealth += (int)effect.Value.Value;
                             break;
                         case EffectType.RestoreMana:
-                            EntityMana += (int)(effect.Value.LeveledValue(skill.Level));
+                            EntityMana += (int)effect.Value.Value;
                             break;
                         case EffectType.AttackDamage:
                         case EffectType.Damage:
                         case EffectType.SpellDamage:
-                            EntityHealth -= (int)(effect.Value.LeveledValue(skill.Level));
-                            if (EntityHealth <= 0)
-                            {
-                                source.AddInventoryItem(ItemLibrary.Instance.Items[1001]);
-
-                            }
+                            EntityHealth -= (int)effect.Value.Value;
                             break;
                         case EffectType.MagicResist:
                             break;
@@ -149,17 +223,49 @@ namespace Assets.AreaServer.Entity
                         default:
                             break;
                     }
+                }
+        }
+
+        public void AddInventoryItem(SlotItem item)
+        {
+            if (CurrentInventorySize < MaxInventorySize)
+            {
+                if (!Inventory.ContainsKey(item.ID))
+                {
+                    Inventory.Add(item.ID, item);
+                    CurrentInventorySize += item.InventorySpace();
+                }
+                else
+                {
+                    CurrentInventorySize -= Inventory[item.ID].InventorySpace();
+                    Inventory[item.ID].Amount += item.Amount;
+                    CurrentInventorySize += Inventory[item.ID].InventorySpace();
+                }
+                Debug.LogWarning(Connection);
+
+                AreaMessageSender.Instance.AddedItem(Connection, item);
             }
         }
-        public void AddInventoryItem(InventoryItem item)
+        private void RemoveInventoryItem(int ID, int amount)
         {
-            CharacterItem ch = new CharacterItem(ItemLibrary.Instance.Items[1001]);
-            ch.Amount = 1;
-            if (!Inventory.ContainsKey(1001))
-                Inventory.Add(1001, ch);
-            else
-                Inventory[1001].Amount+= ch.Amount;
-            AreaMessageSender.Instance.AddedItem(EntityID, ch.ID, false, ch.Amount);
+            if (Inventory.ContainsKey(ID))
+            {
+                Inventory[ID].Amount -= amount;
+                if (Inventory[ID].Amount == 0)
+                {
+                    Inventory.Remove(ID);
+                    CurrentInventorySize--;
+                }
+                AreaMessageSender.Instance.RemovedItem(Connection, ID, amount);
+            }
+        }
+        public virtual void OnDie(Entity source)
+        {
+
+        }
+        public virtual void OnRespawn()
+        {
+
         }
     }
 }

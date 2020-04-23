@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 1009
   Name: Legendary Healing Potion
+  Details: 
   Level: 0
   Tier: 1
-  ItemType: 4
+  ItemType: 3
   Value: 0
   MaxAmount: 100
   Rarity: 5

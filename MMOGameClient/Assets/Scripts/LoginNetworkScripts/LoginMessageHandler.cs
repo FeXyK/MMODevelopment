@@ -117,30 +117,31 @@ namespace Assets.Scripts.Handlers
         }
         public void SetupConnection()
         {
-            string SERVER_IP = "";
-            int SERVER_PORT = 0;
+            string SERVER_IP = "127.0.0.1";
+            int SERVER_PORT = 52221;
             if (netClient.ServerConnection != null)
                 return;
 
-            string[] lines = File.ReadAllLines(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.cfg");
-            string[] data;
-            foreach (var line in lines)
-            {
-                data = line.Split('=');
-                switch (data[0].Trim().ToLower())
-                {
-                    case "server":
-                        string[] conn = data[1].Split(':');
-                        SERVER_IP = conn[0];
-                        SERVER_PORT = int.Parse(conn[1]);
-                        break;
-                }
-            }
+            //string[] lines = File.ReadAllLines(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.cfg");
+            //string[] data;
+            //foreach (var line in lines)
+            //{
+            //    data = line.Split('=');
+            //    switch (data[0].Trim().ToLower())
+            //    {
+            //        case "server":
+            //            string[] conn = data[1].Split(':');
+            //            SERVER_IP = conn[0];
+            //            SERVER_PORT = int.Parse(conn[1]);
+            //            break;
+            //    }
+            //}
             NetOutgoingMessage msgLogin = netClient.CreateMessage();
 
             msgLogin.Write((byte)MessageType.KeyExchange);
             msgLogin.Write(DataEncryption.publicKey);
             netClient.Connect(SERVER_IP, SERVER_PORT, msgLogin);
+
             NetIncomingMessage msgIn = null;
             netClient.MessageReceivedEvent.WaitOne();
             while ((msgIn = netClient.ReadMessage()) != null)

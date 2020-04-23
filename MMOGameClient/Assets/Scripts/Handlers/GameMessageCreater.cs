@@ -45,6 +45,15 @@ namespace Assets.Scripts.Handlers
             return msgOut;
         }
 
+        internal NetOutgoingMessage CreatePickUpMessage(int transactionID)
+        {
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            msgOut.Write((byte)MessageType.LootPickUp);
+            msgOut.Write(transactionID, 32);
+
+            return msgOut;
+        }
+
         public NetOutgoingMessage PrivateChatMessage(string characterName, string[] msg)
         {
             NetOutgoingMessage msgOut = netClient.CreateMessage();
@@ -86,11 +95,12 @@ namespace Assets.Scripts.Handlers
             return msgOut;  
         }
 
-        internal NetOutgoingMessage Use(UIItem item)
+        internal NetOutgoingMessage UsePotion(UIItem item)
         {
+            Debug.LogWarning("USE: " + item.Name);
             NetOutgoingMessage msgOut = netClient.CreateMessage();
-            msgOut.Write((byte)MessageType.SkillLeveled);
-            msgOut.Write(item.ID, 16);
+            msgOut.Write((byte)MessageType.UsePotion);
+            msgOut.Write(item.ID, 32);
             //msgOut.Write(level, 16);
             return msgOut;
         }
@@ -99,8 +109,17 @@ namespace Assets.Scripts.Handlers
         {
             NetOutgoingMessage msgOut = netClient.CreateMessage();
             msgOut.Write((byte)MessageType.SkillLeveled);
-            msgOut.Write(item.ID, 16);
+            msgOut.Write(item.ID, 32);
             //msgOut.Write(level, 16);
+            return msgOut;
+        }
+
+        internal NetOutgoingMessage UseFood(UIItem item)
+        {
+            Debug.LogWarning("USE: " + item.Name);
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            msgOut.Write((byte)MessageType.UseFood);
+            msgOut.Write(item.ID, 32);
             return msgOut;
         }
     }

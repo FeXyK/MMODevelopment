@@ -12,7 +12,7 @@ namespace MMOGameServer
 {
     class AreaServerCore : NetPeerOverride
     {
-       public new AreaMessageHandler messageHandler = null;
+        public new AreaMessageHandler messageHandler = null;
         public ConcurrentQueue<CharacterWrapper> newConnections = new ConcurrentQueue<CharacterWrapper>();
         int tickCount = 0;
 
@@ -67,10 +67,16 @@ namespace MMOGameServer
                             messageHandler.StartSkillCast(msgIn);
                             break;
                         case MessageType.UsePotion:
-                            messageHandler.UsePotion(msgIn);
+                            messageHandler.Use(msgIn);
+                            break;
+                        case MessageType.UseFood:
+                            messageHandler.Use(msgIn);
                             break;
                         case MessageType.SkillListInformation:
                             messageHandler.ClientSkillInformation(msgIn);
+                            break;
+                        case MessageType.LootPickUp:
+                            messageHandler.LootPickUp(msgIn);
                             break;
                     }
                 }
@@ -85,9 +91,9 @@ namespace MMOGameServer
             if (tickCount > 1000)
             {
                 Console.WriteLine("Remove connections");
-                Console.WriteLine("Count: "+netPeer.Connections.Count);
+                Console.WriteLine("Count: " + netPeer.Connections.Count);
                 messageHandler.ClearConnections();
-                
+
                 tickCount = 0;
             }
             tickCount++;
@@ -95,7 +101,7 @@ namespace MMOGameServer
 
         internal Character GetCharacter(int characterID)
         {
-            return messageHandler.GetCharacter(characterID);   
+            return messageHandler.GetCharacter(characterID);
         }
     }
 }

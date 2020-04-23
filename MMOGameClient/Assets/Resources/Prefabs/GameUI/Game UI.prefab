@@ -1285,7 +1285,7 @@ MonoBehaviour:
   DefaultUIItem: {fileID: 11400000, guid: 79f19b11219e5994b9081752d0573021, type: 2}
   PrefabSlot: {fileID: 5002837495865364544, guid: 55a2c5e3a02793f4d8a9434d50838e63,
     type: 3}
-  InventorySize: 32
+  MaxInventorySize: 32
 --- !u!1001 &776356439470153678
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2390,7 +2390,7 @@ PrefabInstance:
     - target: {fileID: 983624725263506625, guid: 4457aa89146b26d469d8fd11bbb4042a,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1067232401934518277, guid: 4457aa89146b26d469d8fd11bbb4042a,
         type: 3}
@@ -2470,7 +2470,7 @@ PrefabInstance:
     - target: {fileID: 1368985877325280278, guid: 4457aa89146b26d469d8fd11bbb4042a,
         type: 3}
       propertyPath: m_textInfo.characterCount
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1604361514225443693, guid: 4457aa89146b26d469d8fd11bbb4042a,
         type: 3}

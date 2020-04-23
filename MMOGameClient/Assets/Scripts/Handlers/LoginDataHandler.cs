@@ -83,13 +83,15 @@ namespace Assets.Scripts.Handlers
                 for (int k = 0; k < inventoryCount; k++)
                 {
                     int id = msgIn.ReadInt32();
-                    int[] values = new int[3];
-                    values[0] = msgIn.ReadInt16();
+                    int[] values = new int[6];
+                    values[0] = msgIn.ReadInt32();
                     values[1] = msgIn.ReadInt16();
                     values[2] = msgIn.ReadInt16();
+                    values[3] = msgIn.ReadInt16();
+                    values[4] = msgIn.ReadInt16();
+                    values[5] = msgIn.ReadInt16();
 
                     entity.inventory.Add(id, values);
-                    Debug.Log(id + "Level: " + values[0]);
                 }
                 myCharacters.Add(entity);
             }

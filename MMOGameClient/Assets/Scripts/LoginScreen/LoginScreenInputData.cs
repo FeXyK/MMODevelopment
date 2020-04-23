@@ -11,8 +11,8 @@ public class LoginScreenInputData : MonoBehaviour
     private string passwordReg;
     private string passwordRegConfirm;
 
-    private string username;
-    private string password;
+    private string username="qwe";
+    private string password="qwe";
     public int selectedCharacterNumber { get; set; }
     public int selectedServerNumber { get; set; }
     public string Password { get => password; set => password = value; }

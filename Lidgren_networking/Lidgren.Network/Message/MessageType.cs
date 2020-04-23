@@ -40,6 +40,9 @@ namespace Lidgren.Network.Message
         NewMobAreaData,
         
         NewItem,
+        RemoveItem,
+        LootDrop,
+        LootPickUp,
 
         HideNames,
         ShowNames,

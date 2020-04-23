@@ -3,6 +3,8 @@ using Lidgren.Network;
 using Lidgren.Network.Message;
 using Assets.AreaServer.Entity;
 using MMOGameServer;
+using UnityEngine;
+using Assets.AreaServer.InventorySystem;
 
 namespace Assets.Scripts.Handlers
 {
@@ -53,20 +55,80 @@ namespace Assets.Scripts.Handlers
             msgOut.Write(target.EntityHealth, 16);
             msgOut.Write(target.EntityMana, 16);
 
+            msgOut.Write(target.Inventory.Count, 16);
+
+            if (target.EntityHealth <= 0)
+            {
+                foreach (var item in target.Inventory)
+                {
+                    msgOut.Write(item.Value.ID, 32);
+                    msgOut.Write(item.Value.Amount, 16);
+                    msgOut.Write(item.Value.Level, 16);
+                }
+            }
+
             netServer.SendToAll(msgOut, NetDeliveryMethod.Unreliable);
         }
 
-        internal void AddedItem(int entityID, int ID, bool v, int amount)
+        internal void AddedItem(int entityID, SlotItem item)
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
             msgOut.Write((byte)MessageType.NewItem);
-            msgOut.Write(ID,16);
-            msgOut.Write(v);
-            msgOut.Write(amount, 16);
+            msgOut.Write(item.ID, 32);
+            msgOut.Write(item.Level, 16);
+            msgOut.Write(item.Amount, 16);
 
-            NetConnection m = dataHandler.GetEntityConnection(entityID);
-
-            m.SendMessage(msgOut, NetDeliveryMethod.Unreliable, 0);
+            dataHandler.GetEntityConnection(entityID).SendMessage(msgOut, NetDeliveryMethod.Unreliable, 0);
         }
+        internal void AddedItem(NetConnection connection, SlotItem item)
+        {
+
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.NewItem);
+            msgOut.Write(item.ID, 32);
+            msgOut.Write(item.Level, 16);
+            msgOut.Write(item.Amount, 16);
+
+            connection.SendMessage(msgOut, NetDeliveryMethod.Unreliable, 0);
+        }
+        internal void DropLootTo(Entity source, Entity corpse)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.LootDrop);
+            msgOut.Write(source.EntityID, 32);// this entity can take this
+            msgOut.Write(corpse.EntityID, 32);// what dropped it
+
+            msgOut.Write(corpse.Inventory.Count, 16);
+            foreach (var item in corpse.Inventory)
+            {
+                DropItem drop = new DropItem(corpse.transform.position, item.Value);
+                msgOut.Write(dataHandler.droppedItemsCount, 32);
+                msgOut.Write(item.Value.ID, 32);
+                msgOut.Write(item.Value.Level, 16);
+                msgOut.Write(item.Value.Amount, 16);
+                dataHandler.droppedItems.Add(dataHandler.droppedItemsCount, drop);
+                dataHandler.droppedItemsCount++;
+            }
+            netServer.SendToAll(msgOut, NetDeliveryMethod.ReliableUnordered, 0);
+        }
+
+        internal void RemovedItem(int entityID, int itemID, int amount)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.RemoveItem);
+            msgOut.Write(itemID, 32);
+            msgOut.Write(amount, 16);
+            dataHandler.GetEntity(entityID).Connection.SendMessage(msgOut, NetDeliveryMethod.ReliableUnordered, 0);
+        }
+
+        internal void RemovedItem(NetConnection connection, int itemID, int amount)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.RemoveItem);
+            msgOut.Write(itemID, 32);
+            msgOut.Write(amount, 16);
+            connection.SendMessage(msgOut, NetDeliveryMethod.ReliableUnordered, 0);
+        }
+
     }
 }

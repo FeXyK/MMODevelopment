@@ -8,6 +8,7 @@ namespace Assets.Scripts.Handlers
     {
         public Dictionary<int, EntityContainer> otherCharacters = new Dictionary<int, EntityContainer>();
         public EntityContainer myCharacter;
+
         public GameDataHandler()
         {
             //myCharacter = GameObject.FindObjectOfType<EntityContainer>();

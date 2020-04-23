@@ -19,7 +19,7 @@ MonoBehaviour:
   Tier: 1
   ItemType: 2
   Value: 0
-  MaxAmount: 0
+  MaxAmount: 1
   Rarity: 1
   effects:
   - EffectType: 80

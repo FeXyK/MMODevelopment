@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Utility_dotNET_Framework
+namespace Utility
 {
     public class Util
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Utility_dotNET_Framework.Models;
+using Utility.Models;
 
 namespace Assets.AreaServer.SkillSystem
 {

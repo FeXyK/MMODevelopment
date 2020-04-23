@@ -5,6 +5,7 @@ using Lidgren.Network;
 using Lidgren.Network.ServerFiles.Data;
 using UnityEngine;
 using Assets;
+using Assets.AreaServer.InventorySystem;
 
 namespace MMOGameServer
 {
@@ -16,6 +17,9 @@ namespace MMOGameServer
 
         public Dictionary<int, Entity> entitiesByID = new Dictionary<int, Entity>();
         public Dictionary<NetConnection, Entity> entitiesByConnection = new Dictionary<NetConnection, Entity>();
+
+        public Dictionary<int, DropItem> droppedItems = new Dictionary<int, DropItem>();
+        public int droppedItemsCount = 0;
 
         public List<MobAreaSpawner> mobAreas = new List<MobAreaSpawner>();
 

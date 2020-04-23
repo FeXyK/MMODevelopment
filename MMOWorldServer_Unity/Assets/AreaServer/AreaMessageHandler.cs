@@ -69,32 +69,50 @@ namespace MMOGameServer
             {
                 target = dataHandler.entitiesByID[targetID] as Character;
             }
-
-            if (source.Cast(skillID))
-            {
-                switch (source.Skills[skillID].skillType)
+            if (target.EntityHealth > 0)
+                if (source.Cast(skillID))
                 {
-                    case SkillType.Instant:
-                        target.ApplyEffects(source.Skills[skillID], source);
-                        break;
-                    case SkillType.Projectile:
-                        GameObject.Instantiate(SkillLibrary.Instance.Projectile).GetComponent<SkillProjectile>().Set(source, target, source.Skills[skillID]);
-                        break;
-                    case SkillType.AoE:
-                        GameObject.Instantiate(SkillLibrary.Instance.AoE).GetComponent<SkillAoE>().Set(source,  target, source.Skills[skillID], 20, 0.3f);
-                        break;
+                    switch (source.Skills[skillID].skillType)
+                    {
+                        case ESkillType.Instant:
+                            target.ApplyEffects(source.Skills[skillID], source);
+                            break;
+                        case ESkillType.Projectile:
+                            GameObject.Instantiate(SkillLibrary.Instance.Projectile).GetComponent<SkillProjectile>().Set(source, target, source.Skills[skillID]);
+                            break;
+                        case ESkillType.AoE:
+                            GameObject.Instantiate(SkillLibrary.Instance.AoE).GetComponent<SkillAoE>().Set(source, target, source.Skills[skillID], 20, 0.3f);
+                            break;
+                    }
+                    source.ApplyCD(skillID);
+                    NetOutgoingMessage msgOut = messageCreater.SkillCasted(source.EntityID, targetID, skillID);
+                    netServer.SendToAll(msgOut, NetDeliveryMethod.Unreliable);
                 }
-                source.ApplyCD(skillID);
-                NetOutgoingMessage msgOut = messageCreater.SkillCasted(source.EntityID, targetID, skillID);
-                netServer.SendToAll(msgOut, NetDeliveryMethod.Unreliable);
+        }
+
+        internal void LootPickUp(NetIncomingMessage msgIn)
+        {
+            int transactionID = msgIn.ReadInt32();
+            Entity entity = dataHandler.GetEntity(msgIn.SenderConnection);
+            Debug.LogWarning("Pickup: " + entity.EntityName);
+            if (dataHandler.droppedItems.ContainsKey(transactionID))
+            {
+                entity.AddInventoryItem(dataHandler.droppedItems[transactionID].Item);
+                dataHandler.droppedItems.Remove(transactionID);
+            }
+            else
+            {
+                Debug.LogWarning("PICK UP LOOT KEY NOT FOUND " + transactionID);
             }
         }
 
-        internal void UsePotion(NetIncomingMessage msgIn)
+        internal void Use(NetIncomingMessage msgIn)
         {
-
+            int ID = msgIn.ReadInt32();
+            Entity entity = dataHandler.GetEntity(msgIn.SenderConnection);
+            Debug.LogWarning(entity.EntityName + "Using potion ID: " + ID);
+            entity.Use(ID);
         }
-
         internal void SkillLeveled(NetIncomingMessage msgIn)
         {
             Character source = dataHandler.GetEntity(msgIn.SenderConnection) as Character;
@@ -151,7 +169,6 @@ namespace MMOGameServer
             }
             ClientMobSpawn(msgIn.SenderConnection);
         }
-
         public void ClientSkillInformation(NetIncomingMessage msgIn)
         {
             Character characterData = dataHandler.GetEntity(msgIn.SenderConnection) as Character;
@@ -251,15 +268,21 @@ namespace MMOGameServer
                 if (dataHandler.entitiesByID.ContainsKey(data.character.EntityID))
                 {
                     newCharacter = dataHandler.entitiesByID[data.character.EntityID] as Character;
-
+                    newCharacter.Connection = msgIn.SenderConnection;
                     dataHandler.entitiesByID[newCharacter.EntityID] = newCharacter;
                     dataHandler.entitiesByConnection[msgIn.SenderConnection] = newCharacter;
                 }
                 else
                 {
-                    newCharacter = LoadCharacterFrom(data);
-                    newCharacter.Connection = msgIn.SenderConnection;
-                    dataHandler.AddEntity(newCharacter, msgIn.SenderConnection);
+                    //newCharacter = LoadCharacterFrom(data);
+                    data.character.Connection = msgIn.SenderConnection;
+
+                    data.character.EntityBaseArmor = 60;
+                    data.character.EntityBaseMagicResist = 60;
+                    data.character.MaxInventorySize = 32;
+                    data.character.MaxStorageSize = 50;
+
+                    dataHandler.AddEntity(data.character, msgIn.SenderConnection);
                 }
                 dataHandler.waitingForAuth.Remove(data);
             }
@@ -341,12 +364,12 @@ namespace MMOGameServer
             character.EntityLevel = data.character.EntityLevel;
             character.CharacterType = data.character.CharacterType;
             character.transform.position = data.position;
-            character.EntityBaseArmor = 60;
-            character.EntityBaseMagicResist = 60;
-            Debug.Log(data.character.EntityHealth);
-            Debug.Log(data.character.EntityMaxHealth);
             character.Skills = data.character.Skills;
             character.Inventory = data.character.Inventory;
+            character.Storage = data.character.Storage;
+            character.Equipped = data.character.Equipped;
+
+            character.Connection = data.character.Connection;
             return character;
         }
 

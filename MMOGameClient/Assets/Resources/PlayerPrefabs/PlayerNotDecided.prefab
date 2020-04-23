@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 661601104169855383}
   - component: {fileID: 8844226971394689473}
   m_Layer: 0
-  m_Name: PlayerCharacter
+  m_Name: PlayerNotDecided
   m_TagString: PlayerCharacter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -226,6 +226,7 @@ MonoBehaviour:
   HealthBar: {fileID: 0}
   ManaBar: {fileID: 0}
   tickRate: 0
+  coll: {fileID: 8844226971394689473}
 --- !u!54 &661601104169855380
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -1,5 +1,4 @@
-﻿
-namespace MMOGameServer.WorldServer
+﻿namespace MMOGameServer.WorldServer
 {
     class WorldMessageReader
     {

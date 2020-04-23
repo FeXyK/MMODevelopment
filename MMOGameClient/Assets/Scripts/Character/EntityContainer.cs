@@ -12,13 +12,17 @@ namespace Assets.Scripts.Character
 
         public float tickRate;
         public Entity entity = new Entity();
-
+        public Collider coll;
         public int Health
         {
             get { return entity.health; }
             set
             {
                 entity.health = value;
+                if (entity.health > 0)
+                    gameObject.layer = 0;
+                else
+                    gameObject.layer = 2;
             }
         }
         public int MaxHealth
@@ -107,17 +111,13 @@ namespace Assets.Scripts.Character
             Health = entity.health;
             MaxMana = entity.maxMana;
             Mana = entity.mana;
-            Debug.Log("MANAAAA" + Mana);
-            Debug.Log("SETTING SKILLS FOR PLAYER111");
             foreach (var skill in entity.skills)
             {
                 this.entity.skills.Add(skill.Key, skill.Value);
-                Debug.Log("SETTING SKILLS FOR PLAYER");
             }
             foreach (var item in entity.inventory)
             {
                 this.entity.inventory.Add(item.Key, item.Value);
-                Debug.Log("SETTING SKILLS FOR PLAYER");
             }
         }
     }

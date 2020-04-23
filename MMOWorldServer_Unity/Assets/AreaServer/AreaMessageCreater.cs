@@ -2,13 +2,12 @@
 using Assets.AreaServer.SkillSystem;
 using Lidgren.Network;
 using Lidgren.Network.Message;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace MMOGameServer
 {
-    public class AreaMessageCreater : Lidgren.Network.Message.MessageHandler
+    public class AreaMessageCreater : MessageHandler
     {
         NetServer netServer;
         AreaDataHandler dataHandler;

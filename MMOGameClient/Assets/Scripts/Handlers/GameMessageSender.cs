@@ -38,6 +38,14 @@ namespace Assets.Scripts.Handlers
                 return instance;
             }
         }
+
+        internal void SendPickUpMessage(int transactionID)
+        {
+            NetOutgoingMessage msgOut = messageCreater.CreatePickUpMessage(transactionID);
+            netClient.SendMessage(msgOut, NetDeliveryMethod.Unreliable);
+            Debug.LogWarning("tID: " + transactionID);
+        }
+
         internal void SendSkillCast(SkillItem item)
         {
             if (target != null)
@@ -112,10 +120,10 @@ namespace Assets.Scripts.Handlers
                     msgOut = messageCreater.TakeOn(item);
                     break;
                 case UIItemType.Potion:
-                    msgOut = messageCreater.Use(item);
+                    msgOut = messageCreater.UsePotion(item);
                     break;
                 case UIItemType.Food:
-                    msgOut = messageCreater.Use(item);
+                    msgOut = messageCreater.UseFood(item);
                     break;
             }
             if (msgOut != null)

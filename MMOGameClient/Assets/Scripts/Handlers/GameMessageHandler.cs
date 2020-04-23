@@ -166,6 +166,70 @@ namespace Assets.Scripts.Handlers
                 }
             }
         }
+        internal void RemoveItem(NetIncomingMessage msgIn)
+        {
+            int ID = msgIn.ReadInt32();
+            int amount = msgIn.ReadInt16();
+            Debug.LogWarning(ID);
+            Debug.LogWarning(amount);
+            uiManager.wInvertory.RemoveItem(ID, amount);
+        }
+        internal void LootDrop(NetIncomingMessage msgIn)
+        {
+            int entityID = msgIn.ReadInt32();
+            int corpseID = msgIn.ReadInt32();
+
+            GameObject newDrop = null;
+            int transactionID;
+            int ID;
+            int Level;
+            int Amount;
+
+            int count = msgIn.ReadInt16();
+
+            for (int i = 0; i < count; i++)
+            {
+                transactionID = msgIn.ReadInt32();
+
+                Debug.LogWarning("inc tID: " + transactionID);
+                ID = msgIn.ReadInt32();
+                Level = msgIn.ReadInt16();
+                Amount = msgIn.ReadInt16();
+                if (ItemLibrary.Items().ContainsKey(ID))
+                {
+                    switch (ItemLibrary.Items()[ID].Rarity)
+                    {
+                        case UIItemRarity.Scrap:
+                            newDrop = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/ItemDrop/Common"), dataHandler.GetEntity(corpseID).transform.position, Quaternion.identity);
+                            break;
+                        case UIItemRarity.Common:
+                            newDrop = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/ItemDrop/Common"), dataHandler.GetEntity(corpseID).transform.position, Quaternion.identity);
+                            break;
+                        case UIItemRarity.Uncommon:
+                            newDrop = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/ItemDrop/Uncommon"), dataHandler.GetEntity(corpseID).transform.position, Quaternion.identity);
+                            break;
+                        case UIItemRarity.Rare:
+                            newDrop = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/ItemDrop/Rare"), dataHandler.GetEntity(corpseID).transform.position, Quaternion.identity);
+                            break;
+                        case UIItemRarity.Epic:
+                            newDrop = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/ItemDrop/Epic"), dataHandler.GetEntity(corpseID).transform.position, Quaternion.identity);
+                            break;
+                        case UIItemRarity.Legendary:
+                            newDrop = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/ItemDrop/Legendary"), dataHandler.GetEntity(corpseID).transform.position, Quaternion.identity);
+                            break;
+                    }
+
+                    newDrop.transform.position += new Vector3(UnityEngine.Random.Range(-2, 2), 0, UnityEngine.Random.Range(-2, 2));
+                    newDrop.GetComponent<DropItemController>().TransactionID = transactionID;
+                    newDrop.GetComponent<DropItemController>().entityID = entityID;
+                    newDrop.GetComponent<DropItemController>().Amount = Amount;
+                    newDrop.GetComponent<DropItemController>().Level = Level;
+                    newDrop.GetComponent<DropItemController>().ID = ID;
+                    newDrop.GetComponent<DropItemController>().Name.text = ID + ": " + ItemLibrary.Items()[ID].Name + " x " + Amount + "\nLevel: " + Level + "\nItem of " + entityID;
+                    newDrop.GetComponent<DropItemController>().uiManager = uiManager;
+                }
+            }
+        }
         internal void EntitySpawn(NetIncomingMessage msgIn)
         {
             int characterID = msgIn.ReadInt16();
@@ -219,18 +283,30 @@ namespace Assets.Scripts.Handlers
         }
         internal void NewItem(NetIncomingMessage msgIn)
         {
-            int ID = msgIn.ReadInt16();
-            bool hasLevel = msgIn.ReadBoolean();
-            int value = msgIn.ReadInt16();
-            UIItemContainer item;
-            if (!hasLevel)
-                item = new UIItemContainer(value, 1, ItemLibrary.Items()[ID]);
-            else
+            int ID = msgIn.ReadInt32();
+            int level = msgIn.ReadInt16();
+            int amount = msgIn.ReadInt16();
+            Debug.LogWarning(ID);
+            Debug.LogWarning(level);
+            Debug.LogWarning(amount);
+            UIItemContainer item = null;
+            if (ItemLibrary.Items()[ID].MaxAmount == 0)
+                ItemLibrary.Items()[ID].MaxAmount = 1;
+
+            while (amount > 0)
             {
-                item = new UIItemContainer(1, value, ItemLibrary.Items()[ID]);
-                item.Level = value;
+                if (ItemLibrary.Items()[ID].MaxAmount < amount)
+                {
+                    item = new UIItemContainer(ItemLibrary.Items()[ID].MaxAmount, level, ItemLibrary.Items()[ID]);
+                    amount -= ItemLibrary.Items()[ID].MaxAmount;
+                }
+                else
+                {
+                    item = new UIItemContainer(amount, level, ItemLibrary.Items()[ID]);
+                    amount = 0;
+                }
+                uiManager.wInvertory.AddItem(item);
             }
-            uiManager.wInvertory.AddItem(item);
         }
         internal void EntityPositionUpdate(NetIncomingMessage msgIn)
         {

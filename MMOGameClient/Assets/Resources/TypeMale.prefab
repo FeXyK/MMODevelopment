@@ -236,6 +236,7 @@ MonoBehaviour:
   HealthBar: {fileID: 438327428944944676}
   ManaBar: {fileID: 0}
   tickRate: 0
+  coll: {fileID: 1303965956081498469}
 --- !u!1 &1303965956678406129
 GameObject:
   m_ObjectHideFlags: 0

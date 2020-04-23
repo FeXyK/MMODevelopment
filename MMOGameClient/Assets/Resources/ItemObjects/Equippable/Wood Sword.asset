@@ -17,9 +17,9 @@ MonoBehaviour:
   Details: 
   Level: 1
   Tier: 1
-  ItemType: 5
+  ItemType: 1
   Value: 0
-  MaxAmount: 0
+  MaxAmount: 1
   Rarity: 1
   effects:
   - EffectType: 10
