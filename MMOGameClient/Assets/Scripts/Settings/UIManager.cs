@@ -1,7 +1,6 @@
 ﻿using Assets.Scripts.Character;
 using Assets.Scripts.Handlers;
 using Assets.Scripts.UI_Window;
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -32,8 +31,7 @@ public class UIManager : MonoBehaviour
     public GameObject wMain;
     public GameObject wOptions;
     public WindowSkillIventory wSkill;
-    public GameObject wCharacter;
-    public GameObject wGear;
+    public WindowCharacterEquipped wCharacter;
     public WindowInventory wInvertory;
     public ChatController wChat;
 
@@ -74,11 +72,7 @@ public class UIManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.P))
         {
-            StackAdd(wGear);
-        }
-        else if (Input.GetKeyDown(KeyCode.C))
-        {
-            StackAdd(wCharacter);
+            StackAdd(wCharacter.gameObject);
         }
         else if (Input.GetKeyDown(KeyCode.I))
         {

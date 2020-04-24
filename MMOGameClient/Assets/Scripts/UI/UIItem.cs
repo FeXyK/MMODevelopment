@@ -20,13 +20,13 @@ namespace Assets.Scripts.UI
         [SerializeField]
         public int Tier;
         [SerializeField]
-        public UIItemType ItemType;
+        public EItemType ItemType;
         [SerializeField]
         public int Value;
         [SerializeField]
         public int MaxAmount;
         [SerializeField]
-        public UIItemRarity Rarity;
+        public EItemRarity Rarity;
         public List<Effect> effects = new List<Effect>();
         public GameObject Prefab;
         [SerializeField]
@@ -45,8 +45,8 @@ namespace Assets.Scripts.UI
         public virtual void CallOnAwake()
         {
             Name = this.name;
-            Rarity = UIItemRarity.Common;
-            ItemType = UIItemType.Scrap;
+            Rarity = EItemRarity.Common;
+            ItemType = EItemType.Scrap;
             Level = 0;
             Tier = 1;
             MaxAmount = 100;

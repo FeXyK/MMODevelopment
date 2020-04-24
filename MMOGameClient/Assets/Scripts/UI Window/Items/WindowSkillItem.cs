@@ -11,7 +11,7 @@ namespace Assets.Scripts.UI_Window
 
         public override void CallOnBeginDrag(PointerEventData eventData)
         {
-            if (uiItem.Level != 0)
+            if (Container.Item.Level != 0)
             {
                 base.CallOnBeginDrag(eventData);
             }
@@ -20,43 +20,43 @@ namespace Assets.Scripts.UI_Window
         }
         public override void Refresh()
         {
-            Item.ItemImage.sprite = uiItem.GetSprite();
-            switch ((UIItemRarity)uiItem.Level)
+            Item.ItemImage.sprite = Container.Item.GetSprite();
+            switch ((EItemRarity)Container.Item.Level)
             {
-                case UIItemRarity.Scrap:
-                    Item.ItemBorder.color = UIRarityColors.Scrap;
+                case EItemRarity.Scrap:
+                    Item.ItemBorder.color = ERarityColors.Scrap;
                     break;
-                case UIItemRarity.Common:
-                    Item.ItemBorder.color = UIRarityColors.Common;
+                case EItemRarity.Common:
+                    Item.ItemBorder.color = ERarityColors.Common;
                     break;
-                case UIItemRarity.Uncommon:
-                    Item.ItemBorder.color = UIRarityColors.Uncommon;
+                case EItemRarity.Uncommon:
+                    Item.ItemBorder.color = ERarityColors.Uncommon;
                     break;
-                case UIItemRarity.Rare:
-                    Item.ItemBorder.color = UIRarityColors.Rare;
+                case EItemRarity.Rare:
+                    Item.ItemBorder.color = ERarityColors.Rare;
                     break;
-                case UIItemRarity.Epic:
-                    Item.ItemBorder.color = UIRarityColors.Epic;
+                case EItemRarity.Epic:
+                    Item.ItemBorder.color = ERarityColors.Epic;
                     break;
-                case UIItemRarity.Legendary:
-                    Item.ItemBorder.color = UIRarityColors.Legendary;
+                case EItemRarity.Legendary:
+                    Item.ItemBorder.color = ERarityColors.Legendary;
                     break;
                 default:
-                    Item.ItemBorder.color = UIRarityColors.Scrap;
+                    Item.ItemBorder.color = ERarityColors.Scrap;
                     break;
             }
         }
         public override void Use()
         {
-            GameMessageSender.Instance.SkillLevelUp(uiItem);
+            GameMessageSender.Instance.SkillLevelUp(Container.Item);
         }
-        public override void LoadTooltip(UIItem item)
+        public override void LoadTooltip(UIContainer container)
         {
-            base.LoadTooltip(item);
+            base.LoadTooltip(container);
 
-            tooltip.ManaCost.text = "Mana: "+((SkillItem)item).ManaCost.ToString();
-            tooltip.Range.text = "Range: " + ((SkillItem)item).Range.ToString();
-            tooltip.NextLevelCost.text = "Gold: " + ((SkillItem)item).GoldCost.ToString();
+            tooltip.ManaCost.text = "Mana: " + ((SkillItem)container.Item).ManaCost.ToString();
+            tooltip.Range.text = "Range: " + ((SkillItem)container.Item).Range.ToString();
+            tooltip.NextLevelCost.text = "Gold: " + ((SkillItem)container.Item).GoldCost.ToString();
         }
     }
 }

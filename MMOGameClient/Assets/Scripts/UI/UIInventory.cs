@@ -9,6 +9,6 @@ namespace Assets.Scripts.UI
     public class UIInventory : ScriptableObject
     {
         [SerializeField]
-        public List<UIItemContainer> items = new List<UIItemContainer>();
+        public List<UIContainer> items = new List<UIContainer>();
     }
 }

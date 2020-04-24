@@ -1,6 +1,6 @@
 ﻿namespace Assets.Scripts.UI
 {
-    public enum UIItemRarity
+    public enum EItemRarity
     {
         Scrap,
         Common,

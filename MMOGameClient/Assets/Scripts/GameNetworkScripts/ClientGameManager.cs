@@ -95,42 +95,58 @@ namespace Assets.Scripts.GameNetworkScripts
                             messageHandler.EntityPositionUpdate(msgIn);
                             break;
                         case MessageType.OtherCharacterRemove:
+                            Debug.Log(msgType);
                             messageHandler.EntityDespawn(msgIn);
                             break;
                         case MessageType.AdminChatMessage:
+                            Debug.Log(msgType);
                             messageHandler.AdminCommand(msgIn);
                             break;
                         case MessageType.PrivateChatMessage:
+                            Debug.Log(msgType);
                             messageHandler.HandleChatMessage(msgIn, "PM");
                             break;
                         case MessageType.PublicChatMessage:
+                            Debug.Log(msgType);
                             messageHandler.HandleChatMessage(msgIn);
                             break;
                         case MessageType.NewMobAreaData:
+                            Debug.Log(msgType);
                             messageHandler.MobSpawn(msgIn);
                             break;
                         case MessageType.MobInformation:
                             messageHandler.MobPositionUpdate(msgIn);
                             break;
                         case MessageType.SkillCasted:
+                            Debug.Log(msgType);
                             messageHandler.SkillCasted(msgIn);
                             break;
                         case MessageType.SkillLeveled:
+                            Debug.Log(msgType);
                             messageHandler.SkillLeveled(msgIn);
                             break;
-                        case MessageType.NewItem:
-                            Debug.Log("New Item");
-                            messageHandler.NewItem(msgIn);
+                        case MessageType.EquipItem:
+                            Debug.Log(msgType);
+                            messageHandler.EquipItem(msgIn);
                             break;
-                        case MessageType.RemoveItem:
-                            Debug.Log("Remove Item");
+                        case MessageType.StorageInfo:
+                            Debug.Log(msgType);
+                            messageHandler.StorageInfo(msgIn);
+                            break;
+                        case MessageType.AddedItem:
+                            Debug.Log(msgType);
+                            messageHandler.AddedItem(msgIn);
+                            break;
+                        case MessageType.RemovedItem:
+                            Debug.Log(msgType);
                             messageHandler.RemoveItem(msgIn);
                             break;
-                        case MessageType.LootDrop:
-                            Debug.Log("Drop Item");
+                        case MessageType.DroppedLootItem:
+                            Debug.Log(msgType);
                             messageHandler.LootDrop(msgIn);
                             break;
                         case MessageType.EntityUpdate:
+                            Debug.Log(msgType);
                             messageHandler.EntityResourceUpdate(msgIn);
                             break;
                     }

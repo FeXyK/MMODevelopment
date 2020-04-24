@@ -13,7 +13,6 @@ namespace Assets.AreaServer.Entity
 
         float RegenTimer = 1;
 
-        public Dictionary<int, SlotItem> Equipped = new Dictionary<int, SlotItem>();
         public Dictionary<int, SlotItem> Storage = new Dictionary<int, SlotItem>();
         private void Update()
         {

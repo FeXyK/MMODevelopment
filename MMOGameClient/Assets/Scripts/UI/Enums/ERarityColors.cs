@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.UI
 {
-    public static class UIRarityColors
+    public static class ERarityColors
     {
         public static Color Scrap = new Color(0.2f, 0.2f, 0.2f, 1);
         public static Color Common = new Color(0.7f, 0.7f, 0.7f, 1);
@@ -15,6 +15,5 @@ namespace Assets.Scripts.UI
         public static Color Rare = new Color(0, 0, 1f, 1f);
         public static Color Epic = new Color(190f/255f, 0, 190f / 255f, 1f);
         public static Color Legendary = new Color(1f, 167f / 255f, 0, 1f);
-
     }
 }

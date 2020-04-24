@@ -110,19 +110,19 @@ namespace Assets.Scripts.Handlers
             NetOutgoingMessage msgOut = null;
             switch (item.ItemType)
             {
-                case UIItemType.Skill:
+                case EItemType.Skill:
                     msgOut = messageCreater.SkillLevelUp(item);
                     break;
-                case UIItemType.Weapon:
+                case EItemType.Weapon:
                     msgOut = messageCreater.TakeOn(item);
                     break;
-                case UIItemType.Armor:
+                case EItemType.Armor:
                     msgOut = messageCreater.TakeOn(item);
                     break;
-                case UIItemType.Potion:
+                case EItemType.Potion:
                     msgOut = messageCreater.UsePotion(item);
                     break;
-                case UIItemType.Food:
+                case EItemType.Food:
                     msgOut = messageCreater.UseFood(item);
                     break;
             }

@@ -73,7 +73,7 @@ namespace Assets.Scripts.Handlers
         internal void AddedItem(int entityID, SlotItem item)
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
-            msgOut.Write((byte)MessageType.NewItem);
+            msgOut.Write((byte)MessageType.AddedItem);
             msgOut.Write(item.ID, 32);
             msgOut.Write(item.Level, 16);
             msgOut.Write(item.Amount, 16);
@@ -82,9 +82,8 @@ namespace Assets.Scripts.Handlers
         }
         internal void AddedItem(NetConnection connection, SlotItem item)
         {
-
             NetOutgoingMessage msgOut = netServer.CreateMessage();
-            msgOut.Write((byte)MessageType.NewItem);
+            msgOut.Write((byte)MessageType.AddedItem);
             msgOut.Write(item.ID, 32);
             msgOut.Write(item.Level, 16);
             msgOut.Write(item.Amount, 16);
@@ -94,7 +93,7 @@ namespace Assets.Scripts.Handlers
         internal void DropLootTo(Entity source, Entity corpse)
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
-            msgOut.Write((byte)MessageType.LootDrop);
+            msgOut.Write((byte)MessageType.DroppedLootItem);
             msgOut.Write(source.EntityID, 32);// this entity can take this
             msgOut.Write(corpse.EntityID, 32);// what dropped it
 
@@ -115,7 +114,7 @@ namespace Assets.Scripts.Handlers
         internal void RemovedItem(int entityID, int itemID, int amount)
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
-            msgOut.Write((byte)MessageType.RemoveItem);
+            msgOut.Write((byte)MessageType.RemovedItem);
             msgOut.Write(itemID, 32);
             msgOut.Write(amount, 16);
             dataHandler.GetEntity(entityID).Connection.SendMessage(msgOut, NetDeliveryMethod.ReliableUnordered, 0);
@@ -124,7 +123,7 @@ namespace Assets.Scripts.Handlers
         internal void RemovedItem(NetConnection connection, int itemID, int amount)
         {
             NetOutgoingMessage msgOut = netServer.CreateMessage();
-            msgOut.Write((byte)MessageType.RemoveItem);
+            msgOut.Write((byte)MessageType.RemovedItem);
             msgOut.Write(itemID, 32);
             msgOut.Write(amount, 16);
             connection.SendMessage(msgOut, NetDeliveryMethod.ReliableUnordered, 0);

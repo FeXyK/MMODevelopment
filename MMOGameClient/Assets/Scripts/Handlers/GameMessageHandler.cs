@@ -166,6 +166,39 @@ namespace Assets.Scripts.Handlers
                 }
             }
         }
+
+        internal void EquipItem(NetIncomingMessage msgIn)
+        {
+            int uniqueID = msgIn.ReadInt32();
+            int slotID = msgIn.ReadInt16();
+            if (slotID < 0)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+        internal void UnequipItem(NetIncomingMessage msgIn)
+        {
+            int uniqueID = msgIn.ReadInt32();
+            int slotID = msgIn.ReadInt16();
+            if (slotID < 0)
+            {
+
+            }
+            else
+            {
+                
+            }
+        }
+
+        internal void StorageInfo(NetIncomingMessage msgIn)
+        {
+            throw new NotImplementedException();
+        }
+
         internal void RemoveItem(NetIncomingMessage msgIn)
         {
             int ID = msgIn.ReadInt32();
@@ -199,22 +232,22 @@ namespace Assets.Scripts.Handlers
                 {
                     switch (ItemLibrary.Items()[ID].Rarity)
                     {
-                        case UIItemRarity.Scrap:
+                        case EItemRarity.Scrap:
                             newDrop = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/ItemDrop/Common"), dataHandler.GetEntity(corpseID).transform.position, Quaternion.identity);
                             break;
-                        case UIItemRarity.Common:
+                        case EItemRarity.Common:
                             newDrop = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/ItemDrop/Common"), dataHandler.GetEntity(corpseID).transform.position, Quaternion.identity);
                             break;
-                        case UIItemRarity.Uncommon:
+                        case EItemRarity.Uncommon:
                             newDrop = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/ItemDrop/Uncommon"), dataHandler.GetEntity(corpseID).transform.position, Quaternion.identity);
                             break;
-                        case UIItemRarity.Rare:
+                        case EItemRarity.Rare:
                             newDrop = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/ItemDrop/Rare"), dataHandler.GetEntity(corpseID).transform.position, Quaternion.identity);
                             break;
-                        case UIItemRarity.Epic:
+                        case EItemRarity.Epic:
                             newDrop = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/ItemDrop/Epic"), dataHandler.GetEntity(corpseID).transform.position, Quaternion.identity);
                             break;
-                        case UIItemRarity.Legendary:
+                        case EItemRarity.Legendary:
                             newDrop = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/ItemDrop/Legendary"), dataHandler.GetEntity(corpseID).transform.position, Quaternion.identity);
                             break;
                     }
@@ -281,7 +314,7 @@ namespace Assets.Scripts.Handlers
                 dataHandler.myCharacter.entity.skills[skillID] = level;
             uiManager.wSkill.Refresh();
         }
-        internal void NewItem(NetIncomingMessage msgIn)
+        internal void AddedItem(NetIncomingMessage msgIn)
         {
             int ID = msgIn.ReadInt32();
             int level = msgIn.ReadInt16();
@@ -289,7 +322,7 @@ namespace Assets.Scripts.Handlers
             Debug.LogWarning(ID);
             Debug.LogWarning(level);
             Debug.LogWarning(amount);
-            UIItemContainer item = null;
+            UIContainer item = null;
             if (ItemLibrary.Items()[ID].MaxAmount == 0)
                 ItemLibrary.Items()[ID].MaxAmount = 1;
 
@@ -297,12 +330,12 @@ namespace Assets.Scripts.Handlers
             {
                 if (ItemLibrary.Items()[ID].MaxAmount < amount)
                 {
-                    item = new UIItemContainer(ItemLibrary.Items()[ID].MaxAmount, level, ItemLibrary.Items()[ID]);
+                    item = new UIContainer(ItemLibrary.Items()[ID].MaxAmount, level, ItemLibrary.Items()[ID]);
                     amount -= ItemLibrary.Items()[ID].MaxAmount;
                 }
                 else
                 {
-                    item = new UIItemContainer(amount, level, ItemLibrary.Items()[ID]);
+                    item = new UIContainer(amount, level, ItemLibrary.Items()[ID]);
                     amount = 0;
                 }
                 uiManager.wInvertory.AddItem(item);

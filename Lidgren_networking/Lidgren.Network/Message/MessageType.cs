@@ -39,11 +39,26 @@ namespace Lidgren.Network.Message
         MobInformation,
         NewMobAreaData,
         
-        NewItem,
-        RemoveItem,
-        LootDrop,
-        LootPickUp,
+        AddedItem,
+        RemovedItem,
 
+        DroppedLootItem,
+        PickUpItem,
+        
+        EquipItem,
+        UnequipItem,
+        DropItem,
+
+        StorageInfo,
+        StorageTakeOut,
+        StoragePutIn,
+
+        LevelUpItem,
+        LeveledItem,
+        DestroyItem,
+        DisassembleItem,
+
+        
         HideNames,
         ShowNames,
 

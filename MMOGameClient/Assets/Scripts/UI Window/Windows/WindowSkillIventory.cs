@@ -38,7 +38,7 @@ namespace Assets.Scripts.UI_Window
             {
                 GameObject obj = Instantiate(PrefabSlot);
                 obj.transform.SetParent(SlotContainer);
-                obj.GetComponent<WindowSkillItem>().uiItem = item;
+                obj.GetComponent<WindowSkillItem>().Container.Item = item;
                 obj.GetComponent<WindowSkillItem>().Refresh();
             }
         }

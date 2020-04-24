@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.UI;
+using Assets.Scripts.UI.UIItems;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -50,20 +51,20 @@ namespace Assets.Scripts.UI_Window
             this.GetComponent<RectTransform>().sizeDelta = new Vector2(size.x, y);
 
         }
-        internal void Load(UIItem item)
+        internal void Load(UIContainer container)
         {
-            float cd = item.GetCooldown();
-            string details = "" + item.Details;
-            for (int i = 0; i < item.effects.Count; i++)
+            float cd = container.Item.GetCooldown();
+            string details = "" + container.Item.Details;
+            for (int i = 0; i < container.Item.effects.Count; i++)
             {
-                if (item.effects[i].MinSkillLevel <= item.Level)
-                    Effects[i].text = item.effects[i].ToString();
+                if (container.Item.effects[i].MinSkillLevel <= container.Item.Level)
+                    Effects[i].text = container.Item.effects[i].ToString();
             }
-            SetHeight(item.effects.Count);
-            Name.text = item.ID + " " + item.Name + " Lv." + item.Level;
+            SetHeight(container.Item.effects.Count);
+            Name.text = container.Item.ID + " " + container.Item.Name + " Lv." + container.Item.Level;
             Details.text = details.Length > 0 ? details : "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut imperdiet massa quis orci tempus elementum.";
             Cooldown.text = cd != 0 ? "CD: " + cd.ToString() + " s" : "";
-            Level.text = item.Level > 0 ? "Lv." + item.Level.ToString() : "";
+            Level.text = container.Item.Level > 0 ? "Lv." + container.Item.Level.ToString() : "";
         }
         public override void CallOnStart()
         {

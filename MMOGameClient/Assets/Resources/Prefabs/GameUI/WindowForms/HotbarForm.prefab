@@ -88,10 +88,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SlotContainer: {fileID: 369303988120660883}
+  size: {x: 0, y: 0}
+  DefaultContainer:
+    UniqueID: 0
+    SlotID: 0
+    Amount: 0
+    Level: 0
+    Durability: 0
+    SlotType: 1
+    Item: {fileID: 11400000, guid: 79f19b11219e5994b9081752d0573021, type: 2}
   HotbarSize: 10
   Hotbar: {fileID: 11400000, guid: 1b896e48c3d429d4883b1a005e457d82, type: 2}
   PrefabSlot: {fileID: 0}
-  DefaultUIItem: {fileID: 11400000, guid: 79f19b11219e5994b9081752d0573021, type: 2}
+  hotbarSlots: []
 --- !u!1 &6631057183959348748
 GameObject:
   m_ObjectHideFlags: 0

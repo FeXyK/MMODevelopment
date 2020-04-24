@@ -48,7 +48,7 @@ namespace Assets.Scripts.Handlers
         internal NetOutgoingMessage CreatePickUpMessage(int transactionID)
         {
             NetOutgoingMessage msgOut = netClient.CreateMessage();
-            msgOut.Write((byte)MessageType.LootPickUp);
+            msgOut.Write((byte)MessageType.PickUpItem);
             msgOut.Write(transactionID, 32);
 
             return msgOut;

@@ -319,15 +319,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   originColor: {r: 0, g: 0, b: 0, a: 0}
-  origin: {fileID: 0}
+  clone: {fileID: 0}
   image: {fileID: 2308684241289265674}
   canvasGroup: {fileID: 2015607559095166221}
-  uiItem: {fileID: 0}
+  Container:
+    UniqueID: 0
+    SlotID: 0
+    Amount: 0
+    Level: 0
+    Durability: 0
+    SlotType: 2
+    Item: {fileID: 0}
+  DefaultContainer:
+    UniqueID: 0
+    SlotID: 0
+    Amount: 0
+    Level: 0
+    Durability: 0
+    SlotType: 2
+    Item: {fileID: 0}
   Item: {fileID: 3062472750632085586}
   showTooltipTime: 0.2
   timer: 0
-  Amount: 0
-  DefaultUISlot: {fileID: 11400000, guid: 79f19b11219e5994b9081752d0573021, type: 2}
+  tooltip: {fileID: 0}
 --- !u!114 &3062472750632085586
 MonoBehaviour:
   m_ObjectHideFlags: 0

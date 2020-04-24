@@ -75,8 +75,11 @@ namespace MMOGameServer
                         case MessageType.SkillListInformation:
                             messageHandler.ClientSkillInformation(msgIn);
                             break;
-                        case MessageType.LootPickUp:
-                            messageHandler.LootPickUp(msgIn);
+                        case MessageType.PickUpItem:
+                            messageHandler.PickUpItem(msgIn);
+                            break;
+                        case MessageType.EquipItem:
+                            messageHandler.EquipItem(msgIn);
                             break;
                     }
                 }

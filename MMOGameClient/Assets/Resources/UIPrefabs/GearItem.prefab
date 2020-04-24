@@ -196,9 +196,24 @@ MonoBehaviour:
   clone: {fileID: 0}
   image: {fileID: 2308684241289265674}
   canvasGroup: {fileID: 2015607559095166221}
-  uiItem: {fileID: 11400000, guid: 79f19b11219e5994b9081752d0573021, type: 2}
+  Container:
+    UniqueID: 0
+    SlotID: 0
+    Amount: 0
+    Level: 0
+    Durability: 0
+    SlotType: 0
+    Item: {fileID: 0}
+  DefaultContainer:
+    UniqueID: 0
+    SlotID: 0
+    Amount: 0
+    Level: 0
+    Durability: 0
+    SlotType: 0
+    Item: {fileID: 11400000, guid: a254ad5fe0b078e4db5f9e78db5d2404, type: 2}
   Item: {fileID: 3062472750632085586}
   showTooltipTime: 0
   timer: 0
   tooltip: {fileID: 0}
-  DefaultUISlot: {fileID: 11400000, guid: 0e4543f8b4b12594c99238b31da78d16, type: 2}
+  DefaultUISlot: {fileID: 11400000, guid: 1a27b4660e8a4664b97f8299c9ff9e19, type: 2}

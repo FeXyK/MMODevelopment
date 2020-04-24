@@ -1,43 +1,37 @@
 ﻿using Assets.Scripts.UI;
+using Assets.Scripts.UI.UIItems;
 using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.UI_Window
 {
     class WindowInventoryItem : WindowItem, IDropHandler
     {
-        public int Amount;
-        public UIItem DefaultUISlot;
-
         public void OnDrop(PointerEventData eventData)
         {
             WindowInventoryItem draggedItem = eventData.pointerDrag.GetComponent<WindowInventoryItem>();
             if (draggedItem != null)
             {
-                if (draggedItem.uiItem.ID != 0 && draggedItem != this)
+                if (draggedItem.Container.Item.ID != 0 && draggedItem != this)
                 {
-                    if (uiItem.ID == draggedItem.uiItem.ID)
+                    if (Container.Item.ID == draggedItem.Container.Item.ID)
                     {
-                        if (Amount + draggedItem.Amount <= uiItem.MaxAmount)
+                        if (Container.Amount + draggedItem.Container.Amount <= Container.Item.MaxAmount)
                         {
-                            Amount += draggedItem.Amount;
+                            Container.Amount += draggedItem.Container.Amount;
                             draggedItem.SetDefault();
                         }
                         else
                         {
-                            draggedItem.Amount -= uiItem.MaxAmount - Amount;
-                            Amount = uiItem.MaxAmount;
+                            draggedItem.Container.Amount -= Container.Item.MaxAmount - Container.Amount;
+                            Container.Amount = Container.Item.MaxAmount;
                         }
                     }
                     else
                     {
-                        UIItem tempItem = this.uiItem;
-                        int tempAmount = this.Amount;
+                        UIContainer tempContainer = this.Container;
 
-                        uiItem = draggedItem.uiItem;
-                        Amount = draggedItem.Amount;
-
-                        draggedItem.uiItem = tempItem;
-                        draggedItem.Amount = tempAmount;
+                        this.Container = draggedItem.Container;
+                        draggedItem.Container = tempContainer;
                     }
                     draggedItem.Refresh();
                     Refresh();
@@ -46,48 +40,54 @@ namespace Assets.Scripts.UI_Window
         }
         public void SetDefault()
         {
-            uiItem = DefaultUISlot;
-            Amount = 0;
+            Container = DefaultContainer;
             Refresh();
         }
         public override void Refresh()
         {
-            Item.ItemImage.sprite = uiItem.GetSprite();
-            if (Amount > 1)
-                Item.ItemAmount.text = Amount.ToString();
+            Item.ItemImage.sprite = Container.Item.GetSprite();
+            if (Container.Amount > 1)
+                Item.ItemAmount.text = Container.Amount.ToString();
             else
                 Item.ItemAmount.text = "";
-            switch (uiItem.Rarity)
+            switch (Container.Item.Rarity)
             {
-                case UIItemRarity.Scrap:
-                    Item.ItemBorder.color = UIRarityColors.Scrap;
+                case EItemRarity.Scrap:
+                    Item.ItemBorder.color = ERarityColors.Scrap;
                     break;
-                case UIItemRarity.Common:
-                    Item.ItemBorder.color = UIRarityColors.Common;
+                case EItemRarity.Common:
+                    Item.ItemBorder.color = ERarityColors.Common;
                     break;
-                case UIItemRarity.Uncommon:
-                    Item.ItemBorder.color = UIRarityColors.Uncommon;
+                case EItemRarity.Uncommon:
+                    Item.ItemBorder.color = ERarityColors.Uncommon;
                     break;
-                case UIItemRarity.Rare:
-                    Item.ItemBorder.color = UIRarityColors.Rare;
+                case EItemRarity.Rare:
+                    Item.ItemBorder.color = ERarityColors.Rare;
                     break;
-                case UIItemRarity.Epic:
-                    Item.ItemBorder.color = UIRarityColors.Epic;
+                case EItemRarity.Epic:
+                    Item.ItemBorder.color = ERarityColors.Epic;
                     break;
-                case UIItemRarity.Legendary:
-                    Item.ItemBorder.color = UIRarityColors.Legendary;
+                case EItemRarity.Legendary:
+                    Item.ItemBorder.color = ERarityColors.Legendary;
                     break;
                 default:
-                    Item.ItemBorder.color = UIRarityColors.Common;
+                    Item.ItemBorder.color = ERarityColors.Common;
                     break;
             }
         }
-        public override void LoadTooltip(UIItem item)
+        public override void LoadTooltip(UIContainer container)
         {
-            base.LoadTooltip(item);
+            base.LoadTooltip(container);
             tooltip.ManaCost.text = "";
             tooltip.Range.text = "";
-            tooltip.NextLevelCost.text = "Value: " + item.Value.ToString();
+            tooltip.NextLevelCost.text = "Value: " + container.Item.Value.ToString();
+        }
+        public override void Use()
+        {
+            if (Container.Item.ItemType == EItemType.Potion)
+                base.Use();
+            else
+                UIManager.Instance.wCharacter.Equip(Container.SlotID);
         }
     }
 }

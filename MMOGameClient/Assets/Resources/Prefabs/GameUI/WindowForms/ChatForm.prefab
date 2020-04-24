@@ -1614,14 +1614,14 @@ MonoBehaviour:
   ChatWindow: {fileID: 1302286223333554640}
   ChatInputType: {fileID: 5287998029649110221}
   ChatInput: {fileID: 7481656160827933876}
-  activeWindowColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 0.57254905}
-  inactiveWindowColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 0.36862746}
+  activeWindowColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 0.80784315}
+  inactiveWindowColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 0.09803922}
   activeInputWindowColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 0.36862746}
-  inactiveInputWindowColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 0.74509805}
-  activeTextWindowColor: {r: 1, g: 1, b: 1, a: 0}
-  inactiveTextWindowColor: {r: 1, g: 1, b: 1, a: 0}
-  activeTextInputColor: {r: 1, g: 1, b: 1, a: 0}
-  inactiveTextInputColor: {r: 1, g: 1, b: 1, a: 0}
+  inactiveInputWindowColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 0}
+  activeTextWindowColor: {r: 1, g: 1, b: 1, a: 1}
+  inactiveTextWindowColor: {r: 1, g: 1, b: 1, a: 1}
+  activeTextInputColor: {r: 1, g: 1, b: 1, a: 1}
+  inactiveTextInputColor: {r: 1, g: 1, b: 1, a: 1}
   Input: 0
 --- !u!1 &8397621912114039662
 GameObject:

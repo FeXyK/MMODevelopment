@@ -3,10 +3,10 @@ namespace Assets.AreaServer.SkillSystem
 {
     public enum EffectType
     {
-        Damage = 10,
+        TrueDamage = 10,
         RestoreHealth = 20,
         RestoreMana = 25,
-        AttackDamage = 30,
+        PhysicalDamage = 30,
         SpellDamage = 40,
         MagicResist = 50,
         Armor = 60,

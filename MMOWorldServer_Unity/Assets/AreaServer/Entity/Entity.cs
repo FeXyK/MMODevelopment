@@ -2,6 +2,7 @@
 using Assets.AreaServer.SkillSystem;
 using Assets.Scripts.Handlers;
 using Lidgren.Network;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Utility.Models;
@@ -56,14 +57,6 @@ namespace Assets.AreaServer.Entity
             }
         }
 
-        public float EntityAttackRange;
-        public float EntityBaseArmor;
-        public float EntityBaseMagicResist;
-
-        public Dictionary<int, SkillItem> Skills = new Dictionary<int, SkillItem>();
-        public Dictionary<int, SlotItem> Inventory = new Dictionary<int, SlotItem>();
-
-
         public int MaxInventorySize = 32;
         public int MaxStorageSize = 32;
         public int CurrentInventorySize = 0;
@@ -71,13 +64,20 @@ namespace Assets.AreaServer.Entity
 
         public Vector3 position;
 
-   
+        public Dictionary<int, SkillItem> Skills = new Dictionary<int, SkillItem>();
+        public Dictionary<int, SlotItem> Inventory = new Dictionary<int, SlotItem>();
+        public Dictionary<EItemType, SlotItem> Equipped = new Dictionary<EItemType, SlotItem>();
+
+        public Dictionary<float, Effect> Buffs = new Dictionary<float, Effect>();
+
+        public int MagicResist;
+        public int Armor;
 
         public void ApplyCD(int skillID)
         {
             Skills[skillID].SetCooldown();// = Time.time + cooldown;
         }
-        public bool Cast(int skillID)
+        public bool CastSkill(int skillID)
         {
             if (Skills.ContainsKey(skillID))
             {
@@ -88,27 +88,15 @@ namespace Assets.AreaServer.Entity
                 }
             }
             else
-                Debug.LogWarning("No skillID found: " + skillID);
+                Debug.LogError("No SkillID found: " + skillID);
             return false;
-        }
-        public void BasicAttack(Entity Target)
-        {
-
-        }
-        public void CastSkill(Entity Target)
-        {
-
         }
         public void ApplyEffects(SkillItem skill, Entity source)
         {
             if (EntityHealth > 0)
                 foreach (var effect in skill.effects)
                 {
-                    Debug.Log("Value: " + effect.Value.Value);
-                    Debug.Log("Multiplier: " + effect.Value.Multiplier);
-                    Debug.Log("MinLevel: " + effect.Value.MinLevel);
-                    Debug.Log("Level: " + skill.Level);
-                    Debug.Log((EffectType)effect.Value.EffectID + " " + (int)(effect.Value.Value * (effect.Value.Multiplier * skill.Level)));
+                    //Debug.Log((EffectType)effect.Value.EffectID + " " + (int)(effect.Value.Value * (effect.Value.Multiplier * skill.Level)));
                     if (skill.Level >= effect.Value.MinLevel)
                         switch ((EffectType)effect.Key)
                         {
@@ -118,11 +106,11 @@ namespace Assets.AreaServer.Entity
                             case EffectType.RestoreMana:
                                 EntityMana += (int)(effect.Value.LeveledValue(skill.Level));
                                 break;
-                            case EffectType.AttackDamage:
-                            case EffectType.Damage:
+                            case EffectType.PhysicalDamage:
+                            case EffectType.TrueDamage:
                             case EffectType.SpellDamage:
-                                if (source.EntityID != EntityID)
-                                    EntityHealth -= (int)(effect.Value.LeveledValue(skill.Level));
+                                //if (source.EntityID != EntityID)
+                                EntityHealth -= DamageCalculation(effect.Value, skill.Level);
                                 if (EntityHealth <= 0)
                                 {
                                     OnDie(source);
@@ -164,67 +152,40 @@ namespace Assets.AreaServer.Entity
                 }
         }
 
-        internal void Use(int ID)
+        private int DamageCalculation(Effect effect, int level)
         {
-            if (Inventory.ContainsKey(ID))
+            if (effect.EffectID == (int)EffectType.PhysicalDamage)
+                return (int)(effect.LeveledValue(level) - Armor);
+            if (effect.EffectID == (int)EffectType.SpellDamage)
+                return (int)(effect.LeveledValue(level) - MagicResist);
+            return (int)effect.LeveledValue(level);
+        }
+
+        internal void EquipItem(int slotID)
+        {
+            Equipped.Add(Inventory[slotID].ItemType, Inventory[slotID]);
+            RemoveInventoryItem(slotID, 1);
+        }
+        internal void UnequipItem(int slotID)
+        {
+            AddInventoryItem(Equipped[(EItemType)slotID]);
+            RemoveEquippedItem(slotID);
+        }
+        private void RemoveEquippedItem(int slotID)
+        {
+            AreaMessageSender.Instance.AddedItem(Connection, Equipped[(EItemType)slotID]);
+            Equipped.Remove((EItemType)slotID);
+        }
+
+        internal void Use(int slotID)
+        {
+            if (Inventory.ContainsKey(slotID))
             {
-                ApplyEffects(Inventory[ID].effects);
-                RemoveInventoryItem(ID, 1);
+                ApplyEffects(Inventory[slotID]);
+                RemoveInventoryItem(slotID, 1);
             }
         }
-        public void ApplyEffects(Dictionary<int, Effect> effects)
-        {
-            if (EntityHealth > 0)
-                foreach (var effect in effects)
-                {
-                    switch ((EffectType)effect.Key)
-                    {
-                        case EffectType.RestoreHealth:
-                            EntityHealth += (int)effect.Value.Value;
-                            break;
-                        case EffectType.RestoreMana:
-                            EntityMana += (int)effect.Value.Value;
-                            break;
-                        case EffectType.AttackDamage:
-                        case EffectType.Damage:
-                        case EffectType.SpellDamage:
-                            EntityHealth -= (int)effect.Value.Value;
-                            break;
-                        case EffectType.MagicResist:
-                            break;
-                        case EffectType.Armor:
-                            break;
-                        case EffectType.Duration:
-                            break;
-                        case EffectType.Health:
-                            break;
-                        case EffectType.Mana:
-                            break;
-                        case EffectType.MoveSpeed:
-                            break;
-                        case EffectType.MoveJump:
-                            break;
-                        case EffectType.CooldownReduction:
-                            break;
-                        case EffectType.Cooldown:
-                            break;
-                        case EffectType.AttrStrength:
-                            break;
-                        case EffectType.AttrIntelligence:
-                            break;
-                        case EffectType.AttrDexterity:
-                            break;
-                        case EffectType.AttrConstitution:
-                            break;
-                        case EffectType.AttrKnowledge:
-                            break;
-                        case EffectType.AttrLuck:
-                            break;
-                        default:
-                            break;
-                    }
-                }
-        }
+
 
         public void AddInventoryItem(SlotItem item)
         {
@@ -241,8 +202,6 @@ namespace Assets.AreaServer.Entity
                     Inventory[item.ID].Amount += item.Amount;
                     CurrentInventorySize += Inventory[item.ID].InventorySpace();
                 }
-                Debug.LogWarning(Connection);
-
                 AreaMessageSender.Instance.AddedItem(Connection, item);
             }
         }
@@ -265,6 +224,23 @@ namespace Assets.AreaServer.Entity
         }
         public virtual void OnRespawn()
         {
+
+        }
+        private void ApplyEffects(SlotItem slotItem)
+        {
+            if (EntityHealth > 0)
+                foreach (var effect in slotItem.effects)
+                {
+                    switch ((EffectType)effect.Key)
+                    {
+                        case EffectType.RestoreHealth:
+                            EntityHealth += (int)effect.Value.LeveledValue(slotItem.Level);
+                            break;
+                        case EffectType.RestoreMana:
+                            EntityMana += (int)effect.Value.LeveledValue(slotItem.Level);
+                            break;
+                    }
+                }
 
         }
     }

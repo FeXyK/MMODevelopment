@@ -1,7 +1,6 @@
 ﻿using Assets.Scripts.InventorySystem;
 using Assets.Scripts.UI;
 using Assets.Scripts.UI.UIItems;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,22 +10,13 @@ namespace Assets.Scripts.UI_Window
     {
         public UIInventory Inventory;
         List<WindowInventoryItem> InventoryObjects = new List<WindowInventoryItem>();
-        public UIItem DefaultUIItem;
         public GameObject PrefabSlot;
 
         public int MaxInventorySize;
         public int CurrentInventorySize;
 
-        private void Update()
+        public void AddItem(UIContainer newItem)
         {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                AddItem(new UIItemContainer(1, 1, ItemLibrary.Items()[1001]));
-            }
-        }
-        public void AddItem(UIItemContainer newItem)
-        {
-            SaveState();
             foreach (var item in Inventory.items)
             {
                 if (item.Item.ID == newItem.Item.ID && item.Amount != item.Item.MaxAmount)
@@ -70,25 +60,14 @@ namespace Assets.Scripts.UI_Window
                 }
             Refresh();
         }
-        public void RemoveItem(int ID, int amount)
+        public void RemoveItem(int slotID, int amount)
         {
-            foreach (var item in Inventory.items)
+            Inventory.items[slotID].Amount--;
+            if (Inventory.items[slotID].Amount == 0)
             {
-                if (item.Item.ID == ID)
-                {
-                    item.Amount--;
-                    if (item.Amount == 0)
-                    {
-                        item.Item = DefaultUIItem;
-                    }
-                    break;
-                }
+                Inventory.items[slotID] = DefaultContainer;
             }
             Refresh();
-        }
-        public void SortItems()
-        {
-
         }
         private void Start()
         {
@@ -102,43 +81,16 @@ namespace Assets.Scripts.UI_Window
             Inventory.items.Clear();
             for (int i = 0; i < MaxInventorySize; i++)
             {
-                Inventory.items.Add(new UIItemContainer(0, 0, DefaultUIItem));
+                InventoryObjects.Add(Instantiate(PrefabSlot, SlotContainer).GetComponent<WindowInventoryItem>());
+                Inventory.items.Add(DefaultContainer);
             }
-        }
-        public void SaveState()
-        {
-            if (InventoryObjects.Count == Inventory.items.Count)
-                for (int i = 0; i < MaxInventorySize; i++)
-                {
-                    Inventory.items[i].Amount = InventoryObjects[i].Amount;
-                    Inventory.items[i].Item = InventoryObjects[i].uiItem;
-                }
         }
         public override void Refresh()
         {
-            foreach (Transform child in SlotContainer.transform)
+            for (int i = 0; i < MaxInventorySize; i++)
             {
-                Destroy(child.gameObject);
-            }
-            InventoryObjects.Clear();
-            CurrentInventorySize = 0;
-            foreach (var item in Inventory.items)
-            {
-                WindowInventoryItem obj = Instantiate(PrefabSlot).GetComponent<WindowInventoryItem>();
-                obj.transform.SetParent(SlotContainer);
-
-                if (item.Item == null)
-                    obj.uiItem = DefaultUIItem;
-                else
-                {
-                    obj.uiItem = item.Item;
-                    obj.Amount = item.Amount;
-                }
-                if (item.Item.ID > 0)
-                    CurrentInventorySize++;
-
-                InventoryObjects.Add(obj);
-                obj.Refresh();
+                InventoryObjects[i].Container = Inventory.items[i];
+                InventoryObjects[i].Refresh();
             }
         }
         private void Upload()
@@ -147,7 +99,7 @@ namespace Assets.Scripts.UI_Window
             if (Player != null)
                 foreach (var item in Player.inventory)
                 {
-                    AddItemToSlot(item.Key, new UIItemContainer(
+                    AddItemToSlot(item.Key, new UIContainer(
                         item.Key,
                         item.Value[0],
                         item.Value[2],
@@ -157,11 +109,9 @@ namespace Assets.Scripts.UI_Window
                         ItemLibrary.Items()[item.Value[1]]));
                 }
         }
-        private void AddItemToSlot(int key, UIItemContainer container)
+        private void AddItemToSlot(int key, UIContainer container)
         {
-            Inventory.items[key] = new UIItemContainer(container);
-            Debug.Log(key);
-            Debug.Log(Inventory.items[key].Item.ID);
+            Inventory.items[key] = new UIContainer(container);
         }
     }
 }

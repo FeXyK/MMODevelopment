@@ -10,12 +10,10 @@ namespace Assets.Scripts.UI_Window
 {
     public class WindowHotbarItem : WindowItem, IDropHandler
     {
-        public int Amount;
-        public string Hotkey;
-        public int ListNumber;
+        public int Hotkey;
+        public string HotkeyText;
         public float CooldownTime;
 
-        public UIItem DefaultUISlot;
         public WindowHotbar Hotbar;
 
         private void Update()
@@ -27,8 +25,8 @@ namespace Assets.Scripts.UI_Window
             }
             else
                 Item.ItemCooldown.text = "";
-            if (Hotkey.Length > 0)
-                if (Input.GetKeyDown(Hotkey))
+            if (HotkeyText.Length > 0)
+                if (Input.GetKeyDown(HotkeyText))
                 {
                     Use();
                 }
@@ -48,8 +46,8 @@ namespace Assets.Scripts.UI_Window
         {
             if (eventData.pointerDrag != null)
             {
-                uiItem = DefaultUISlot;
-                Hotbar.Modify(ListNumber, ListNumber, DefaultUISlot);
+                Container = DefaultContainer;
+                Hotbar.Modify(Hotkey, DefaultContainer);
             }
             Refresh();
             base.CallOnEndDrag(eventData);
@@ -62,16 +60,11 @@ namespace Assets.Scripts.UI_Window
                 if (Hotbar == null)
                     Hotbar = FindObjectOfType<WindowHotbar>();
 
-                uiItem = draggedItem.uiItem;
-                Hotbar.Modify(ListNumber, 0, uiItem);
-                CooldownTime = 0;// uiItem.GetCooldown();
-
-                if (draggedItem.uiItem.ItemType != UI.UIItemType.Skill)
+                if ((draggedItem.Container.Item as EquippableItem) == null)
                 {
-                    if ((draggedItem as WindowInventoryItem) != null)
-                        Amount = (draggedItem as WindowInventoryItem).Amount;
-                    else
-                        Amount = (draggedItem as WindowHotbarItem).Amount;
+                    Container = new UIContainer(draggedItem.Container);
+                    Hotbar.Modify(Hotkey, Container);
+                    CooldownTime = 0;
                 }
                 if (eventData.pointerDrag == this.gameObject)
                 {
@@ -83,11 +76,12 @@ namespace Assets.Scripts.UI_Window
         }
         internal void SetCooldown()
         {
-            CooldownTime = uiItem.GetCooldown();
+            Debug.Log(Container.Item.GetCooldown());
+            CooldownTime = Container.Item.GetCooldown();
         }
         public override void Refresh()
         {
-            Item.ItemImage.sprite = uiItem.GetSprite();
+            Item.ItemImage.sprite = Container.Item.GetSprite();
             if (Item.ItemImage.sprite != null)
             {
                 originColor = Color.white;
@@ -96,7 +90,7 @@ namespace Assets.Scripts.UI_Window
             else
             {
                 originColor = new Color(1f, 1f, 1f, 20f / 255f);
-                Amount = 0;
+                Container.Amount = 0;
                 CooldownTime = 0;
                 Item.ItemAmount.text = "";
                 Item.ItemCooldown.text = "";
@@ -104,45 +98,55 @@ namespace Assets.Scripts.UI_Window
                 Item.ItemAmount.text = "";
 
             }
-            Item.ItemHotkey.text = Hotkey.ToString();
-            foreach (var effect in uiItem.effects)
+            Item.ItemHotkey.text = HotkeyText.ToString();
+            foreach (var effect in Container.Item.effects)
             {
                 if (effect.EffectType == EffectValue.Cooldown)
                 {
                     Item.ItemCooldown.text = effect.Value.ToString();
                 }
             }
-            if (uiItem.ItemType == UI.UIItemType.Skill)
+            if (Container.Item.ItemType == UI.EItemType.Skill)
             {
-                Item.ItemManaCost.text = (uiItem as SkillItem).ManaCost.ToString();
+                Item.ItemManaCost.text = (Container.Item as SkillItem).ManaCost.ToString();
             }
             else
             {
                 Item.ItemManaCost.text = "";
             }
-            if (Amount > 1)
+            if (Container.Amount > 1)
             {
-                Item.ItemAmount.text = Amount.ToString();
+                Item.ItemAmount.text = Container.Amount.ToString();
             }
         }
-        public override void LoadTooltip(UIItem item)
+        public override void LoadTooltip(UIContainer container)
         {
-            base.LoadTooltip(item);
+            base.LoadTooltip(container);
 
-            tooltip.ManaCost.text = ((SkillItem)item).ManaCost.ToString();
-            tooltip.Range.text = ((SkillItem)item).Range.ToString();
-            tooltip.NextLevelCost.text = ((SkillItem)item).GoldCost.ToString();
+            tooltip.ManaCost.text = ((SkillItem)Container.Item).ManaCost.ToString();
+            tooltip.Range.text = ((SkillItem)Container.Item).Range.ToString();
+            tooltip.NextLevelCost.text = ((SkillItem)Container.Item).GoldCost.ToString();
         }
         public override void Use()
         {
-            if (uiItem.ID >= 0)
+            if (Container.Item.ID >= 0)
             {
-                if (UIManager.Instance.ManaBar.value < (uiItem as SkillItem).GetManaCost())
-                    UIManager.Instance.SetFloatingNotification("Not enough mana");
-                else if (CooldownTime > 0)
-                    UIManager.Instance.SetFloatingNotification("Skill on cooldown");
-                else
-                    GameMessageSender.Instance.SendSkillCast(uiItem as SkillItem);
+                switch (Container.Item.ItemType)
+                {
+                    case EItemType.Skill:
+                        if (UIManager.Instance.ManaBar.value < (Container.Item as SkillItem).GetManaCost())
+                            UIManager.Instance.SetFloatingNotification("Not enough mana");
+                        else if (CooldownTime > 0)
+                            UIManager.Instance.SetFloatingNotification("Skill on cooldown");
+                        else
+                            GameMessageSender.Instance.SendSkillCast(Container.Item as SkillItem);
+                        break;
+                    case EItemType.Potion:
+                    case EItemType.Food:
+                        Debug.Log(Container.SlotID);
+                        base.Use();
+                        break;
+                }
             }
         }
     }

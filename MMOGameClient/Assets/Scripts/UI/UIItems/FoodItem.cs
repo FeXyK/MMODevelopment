@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.SkillSystem.SkillSys;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.UI.UIItems
 {
@@ -10,9 +9,7 @@ namespace Assets.Scripts.UI.UIItems
         {
             base.CallOnAwake();
             ID = 3001;
-            ItemType = UIItemType.Food;
-            effects.Add(new Effect(EffectValue.RestoreHealth, 20, 0, 1));
-            Name = "Bread";
+            ItemType = EItemType.Food;
         }
     }
 }

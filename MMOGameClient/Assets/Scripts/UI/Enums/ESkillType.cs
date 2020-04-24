@@ -1,6 +1,6 @@
 ﻿namespace Assets.Scripts.UI.UIItems
 {
-    public enum UISkillType
+    public enum ESkillType
     {
         Aoe,
         Projectile,

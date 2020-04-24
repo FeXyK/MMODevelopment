@@ -1,6 +1,6 @@
 ﻿namespace Assets.Scripts.UI
 {
-    public enum UIItemType
+    public enum EItemType
     {
         Skill,
         Weapon,

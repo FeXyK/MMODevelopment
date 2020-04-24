@@ -70,7 +70,7 @@ namespace MMOGameServer
                 target = dataHandler.entitiesByID[targetID] as Character;
             }
             if (target.EntityHealth > 0)
-                if (source.Cast(skillID))
+                if (source.CastSkill(skillID))
                 {
                     switch (source.Skills[skillID].skillType)
                     {
@@ -90,7 +90,7 @@ namespace MMOGameServer
                 }
         }
 
-        internal void LootPickUp(NetIncomingMessage msgIn)
+        internal void PickUpItem(NetIncomingMessage msgIn)
         {
             int transactionID = msgIn.ReadInt32();
             Entity entity = dataHandler.GetEntity(msgIn.SenderConnection);
@@ -106,14 +106,24 @@ namespace MMOGameServer
             }
         }
 
-        internal void Use(NetIncomingMessage msgIn)
+        public void EquipItem(NetIncomingMessage msgIn)
         {
-            int ID = msgIn.ReadInt32();
-            Entity entity = dataHandler.GetEntity(msgIn.SenderConnection);
-            Debug.LogWarning(entity.EntityName + "Using potion ID: " + ID);
-            entity.Use(ID);
+            int slotID = msgIn.ReadInt32();
+            dataHandler.GetEntity(msgIn.SenderConnection).EquipItem(slotID);
         }
-        internal void SkillLeveled(NetIncomingMessage msgIn)
+        public void UnequipItem(NetIncomingMessage msgIn)
+        {
+            int slotID = msgIn.ReadInt32();
+            dataHandler.GetEntity(msgIn.SenderConnection).UnequipItem(slotID);
+        }
+        public void Use(NetIncomingMessage msgIn)
+        {
+            int slotID = msgIn.ReadInt32();
+            Entity entity = dataHandler.GetEntity(msgIn.SenderConnection);
+            Debug.LogWarning(entity.EntityName + "Using potion ID: " + slotID);
+            entity.Use(slotID);
+        }
+        public void SkillLeveled(NetIncomingMessage msgIn)
         {
             Character source = dataHandler.GetEntity(msgIn.SenderConnection) as Character;
 
@@ -274,15 +284,30 @@ namespace MMOGameServer
                 }
                 else
                 {
-                    //newCharacter = LoadCharacterFrom(data);
-                    data.character.Connection = msgIn.SenderConnection;
+                    newCharacter = GameObject.Instantiate(characterEntity).GetComponent<Character>();
+                    newCharacter.name = data.character.EntityName;
+                    newCharacter.EntityName = data.character.EntityName;
+                    newCharacter.EntityID = data.character.EntityID;
+                    newCharacter.AccountID = data.character.AccountID;
+                    newCharacter.EntityGold = data.character.EntityGold;
+                    newCharacter.EntityMaxHealth = data.character.EntityMaxHealth;
+                    newCharacter.EntityHealth = data.character.EntityHealth;
+                    newCharacter.EntityMaxMana = data.character.EntityMaxMana;
+                    newCharacter.EntityMana = data.character.EntityMana;
+                    newCharacter.EntityLevel = data.character.EntityLevel;
+                    newCharacter.CharacterType = data.character.CharacterType;
+                    newCharacter.transform.position = data.position;
+                    newCharacter.Skills = data.character.Skills;
+                    newCharacter.Inventory = data.character.Inventory;
+                    newCharacter.Storage = data.character.Storage;
+                    newCharacter.Equipped = data.character.Equipped;
 
-                    data.character.EntityBaseArmor = 60;
-                    data.character.EntityBaseMagicResist = 60;
-                    data.character.MaxInventorySize = 32;
-                    data.character.MaxStorageSize = 50;
+                    newCharacter.Connection = msgIn.SenderConnection;
 
-                    dataHandler.AddEntity(data.character, msgIn.SenderConnection);
+                    newCharacter.MaxInventorySize = 32;
+                    newCharacter.MaxStorageSize = 50;
+
+                    dataHandler.AddEntity(newCharacter, msgIn.SenderConnection);
                 }
                 dataHandler.waitingForAuth.Remove(data);
             }
@@ -306,7 +331,6 @@ namespace MMOGameServer
             foreach (var character in dataHandler.entitiesByID.Values)
             {
                 msgOut = messageCreater.MovementMessage(character);
-                //if (dataHandler.entitiesByID.Count > 0)
                 netServer.SendToAll(msgOut, NetDeliveryMethod.UnreliableSequenced, 1);
             }
         }

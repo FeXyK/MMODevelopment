@@ -401,7 +401,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SlotContainer: {fileID: 7499684791574585296}
-  IsPivotCenter: 1
+  size: {x: 0, y: 0}
+  DefaultContainer:
+    UniqueID: 0
+    SlotID: 0
+    Amount: 0
+    Level: 0
+    Durability: 0
+    SlotType: 5
+    Item: {fileID: 11400000, guid: 79f19b11219e5994b9081752d0573021, type: 2}
   PrefabSlot: {fileID: 5002837495865364544, guid: 95ab7a212a6109340aa6c5141edc1f33,
     type: 3}
   SkillList: {fileID: 11400000, guid: b78558cb27c3edd4da9f17d29da5f16e, type: 2}

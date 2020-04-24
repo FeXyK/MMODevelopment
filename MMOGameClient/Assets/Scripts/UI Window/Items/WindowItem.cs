@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Handlers;
 using Assets.Scripts.UI;
+using Assets.Scripts.UI.UIItems;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -12,7 +13,8 @@ namespace Assets.Scripts.UI_Window
         public GameObject clone;
         public Image image;
         public CanvasGroup canvasGroup;
-        public UIItem uiItem;
+        public UIContainer Container;
+        public UIContainer DefaultContainer;
         public Item Item;
         public float showTooltipTime;
         public float timer;
@@ -33,8 +35,8 @@ namespace Assets.Scripts.UI_Window
         }
         private void Update()
         {
-            if (uiItem != null)
-                if (showTooltip && uiItem.ID >= 0)
+            if (Container.Item != null)
+                if (showTooltip && Container.Item.ID >= 0)
                 {
                     timer -= Time.deltaTime;
                     if (timer < 0)
@@ -93,17 +95,17 @@ namespace Assets.Scripts.UI_Window
                 clicked = 0;
             return false;
         }
-        public virtual void LoadTooltip(UIItem item)
+        public virtual void LoadTooltip(UIContainer container)
         {
             tooltip.Clear();
-            tooltip.Load(item);
+            tooltip.Load(container);
         }
         public virtual void ShowTooltip()
         {
             if (tooltip != null)
             {
                 tooltip.Show();
-                LoadTooltip(uiItem);
+                LoadTooltip(Container);
             }
         }
         public virtual void HideTooltip()
@@ -118,7 +120,7 @@ namespace Assets.Scripts.UI_Window
         }
         public virtual void CallOnBeginDrag(PointerEventData eventData)
         {
-            if (uiItem.ID >= 0)
+            if (Container.Item.ID >= 0)
             {
                 clone = Instantiate(this.gameObject);
 
@@ -131,7 +133,7 @@ namespace Assets.Scripts.UI_Window
         }
         public virtual void Use()
         {
-            GameMessageSender.Instance.SendUseMessage(uiItem);
+            GameMessageSender.Instance.SendUseMessage(Container.Item);
         }
         public virtual void Refresh()
         {

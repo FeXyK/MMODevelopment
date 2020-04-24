@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Character;
+using Assets.Scripts.UI.UIItems;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,7 +11,7 @@ namespace Assets.Scripts.UI_Window
         public Transform SlotContainer;
         public Vector2 size;
         Vector3 pivotShift;
-
+        public UIContainer DefaultContainer;
         WindowTooltip tooltip;
 
         public Entity Player;
