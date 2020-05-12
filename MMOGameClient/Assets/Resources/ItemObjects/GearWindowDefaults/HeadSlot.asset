@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4eadbe179dada664fbea52c4be96a624, type: 3}
-  m_Name: LeggingsSlot
+  m_Name: HeadSlot
   m_EditorClassIdentifier: 
   ID: -1
   Name: 
@@ -23,5 +23,5 @@ MonoBehaviour:
   Rarity: 0
   effects: []
   Prefab: {fileID: 0}
-  Sprite: {fileID: 21300000, guid: bf692fca05b2b1e4e97ff39ec88d25ad, type: 3}
-  ArmorPiece: 6
+  Sprite: {fileID: 21300000, guid: 7555de4ba9b2b3940a87a3e35a1b84a5, type: 3}
+  ArmorPiece: 4

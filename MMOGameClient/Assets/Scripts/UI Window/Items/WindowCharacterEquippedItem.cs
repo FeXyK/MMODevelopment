@@ -1,4 +1,5 @@
 ﻿
+using Assets.Scripts.Handlers;
 using Assets.Scripts.UI.UIItems;
 using UnityEngine.EventSystems;
 
@@ -6,27 +7,21 @@ namespace Assets.Scripts.UI_Window.Items
 {
     public class WindowCharacterEquippedItem : WindowItem, IDropHandler
     {
-        private void Start()
+        private void Awake()
         {
-            Container = DefaultContainer;
-            Refresh();
+            SetDefault();
         }
         public void OnDrop(PointerEventData eventData)
         {
             WindowItem draggedItem = eventData.pointerDrag.GetComponent<WindowItem>();
             if (draggedItem != null)
             {
-                if ((draggedItem.DefaultContainer.Item as EquippableItem) != null)
+                if ((draggedItem.Container.Item as EquippableItem) != null)
                 {
-                    Container = draggedItem.Container;
-
-                    if (draggedItem.Container.Item.ItemType == UI.EItemType.Armor)
+                    EArmorPiece piece = (draggedItem.Container.Item as EquippableItem).ArmorPiece;
+                    if (piece == (Container.Item as EquippableItem).ArmorPiece)
                     {
-
-                    }
-                    if (draggedItem.Container.Item.ItemType == UI.EItemType.Weapon)
-                    {
-
+                        GameMessageSender.Instance.Equip(draggedItem.Container);
                     }
                     Refresh();
                 }
@@ -38,7 +33,12 @@ namespace Assets.Scripts.UI_Window.Items
         }
         public override void Use()
         {
-            UIManager.Instance.wCharacter.Unequip(Container.Item.ID, 30);
+            GameMessageSender.Instance.Unequip(Container);
+        }
+        internal override void SetDefault()
+        {
+            Container = DefaultContainer;
+            Refresh();
         }
     }
 }

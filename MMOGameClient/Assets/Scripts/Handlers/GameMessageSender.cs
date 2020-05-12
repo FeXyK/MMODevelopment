@@ -39,6 +39,7 @@ namespace Assets.Scripts.Handlers
             }
         }
 
+
         internal void SendPickUpMessage(int transactionID)
         {
             NetOutgoingMessage msgOut = messageCreater.CreatePickUpMessage(transactionID);
@@ -105,29 +106,42 @@ namespace Assets.Scripts.Handlers
             }
         }
 
-        internal void SendUseMessage(UIItem item)
+        internal void SendUseMessage(UIContainer container)
         {
             NetOutgoingMessage msgOut = null;
-            switch (item.ItemType)
+            switch (container.Item.ItemType)
             {
                 case EItemType.Skill:
-                    msgOut = messageCreater.SkillLevelUp(item);
+                    msgOut = messageCreater.SkillLevelUp(container.Item);
                     break;
                 case EItemType.Weapon:
-                    msgOut = messageCreater.TakeOn(item);
+                    msgOut = messageCreater.Equip(container);
                     break;
                 case EItemType.Armor:
-                    msgOut = messageCreater.TakeOn(item);
+                    msgOut = messageCreater.Equip(container);
                     break;
                 case EItemType.Potion:
-                    msgOut = messageCreater.UsePotion(item);
+                    msgOut = messageCreater.UsePotion(container.Item);
                     break;
                 case EItemType.Food:
-                    msgOut = messageCreater.UseFood(item);
+                    msgOut = messageCreater.UseFood(container.Item);
                     break;
             }
             if (msgOut != null)
                 netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+        }
+        internal void Unequip(UIContainer container)
+        {
+            Debug.Log(container.SlotID);
+            NetOutgoingMessage msgOut = messageCreater.Unequip(container);
+
+            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+        }
+        internal void Equip(UIContainer container)
+        {
+            NetOutgoingMessage msgOut = messageCreater.Equip(container);
+
+            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Assets.Scripts.UI.UIItems
         public override void CallOnAwake()
         {
             base.CallOnAwake();
-            ArmorPiece = EArmorPiece.Weapon;
+            ArmorPiece = EArmorPiece.MainHand;
             ID = 5001;
             effects.Add(new Effect(EffectValue.AttackDamage, 10, 0, 1));
             Level = 1;

@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Handlers;
 using Assets.Scripts.UI;
 using Assets.Scripts.UI.UIItems;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -33,6 +34,12 @@ namespace Assets.Scripts.UI_Window
             originColor = image.color;
             timer = showTooltipTime;
         }
+
+        internal virtual void SetDefault()
+        {
+            Container = new UIContainer(DefaultContainer);
+        }
+
         private void Update()
         {
             if (Container.Item != null)
@@ -133,7 +140,7 @@ namespace Assets.Scripts.UI_Window
         }
         public virtual void Use()
         {
-            GameMessageSender.Instance.SendUseMessage(Container.Item);
+            GameMessageSender.Instance.SendUseMessage(Container);
         }
         public virtual void Refresh()
         {

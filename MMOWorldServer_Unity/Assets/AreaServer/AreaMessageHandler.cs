@@ -106,15 +106,25 @@ namespace MMOGameServer
             }
         }
 
+        internal void DestroyItem(NetIncomingMessage msgIn)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void MoveItem(NetIncomingMessage msgIn)
+        {
+            throw new NotImplementedException();
+        }
+
         public void EquipItem(NetIncomingMessage msgIn)
         {
-            int slotID = msgIn.ReadInt32();
+            int slotID = msgIn.ReadInt16();
             dataHandler.GetEntity(msgIn.SenderConnection).EquipItem(slotID);
         }
         public void UnequipItem(NetIncomingMessage msgIn)
         {
-            int slotID = msgIn.ReadInt32();
-            dataHandler.GetEntity(msgIn.SenderConnection).UnequipItem(slotID);
+            int slotID = msgIn.ReadInt16();
+            dataHandler.GetEntity(msgIn.SenderConnection).UnequipItem((Utility.Models.EItemType)slotID);
         }
         public void Use(NetIncomingMessage msgIn)
         {

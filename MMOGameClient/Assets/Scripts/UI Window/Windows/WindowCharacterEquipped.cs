@@ -15,7 +15,7 @@ namespace Assets.Scripts.UI_Window
 
         private void Start()
         {
-            foreach (var slot in this.GetComponentsInChildren<WindowCharacterEquippedItem>())
+            foreach (var slot in this.SlotContainer.GetComponentsInChildren<WindowCharacterEquippedItem>())
             {
                 EquippedObjects.Add(((EquippableItem)slot.GetComponent<WindowCharacterEquippedItem>().Container.Item).ArmorPiece, slot);
                 EquippedContainers.Add(((EquippableItem)slot.GetComponent<WindowCharacterEquippedItem>().Container.Item).ArmorPiece, slot.GetComponent<WindowCharacterEquippedItem>().Container);
@@ -29,9 +29,7 @@ namespace Assets.Scripts.UI_Window
                 {
                     EArmorPiece piece = ((EquippableItem)item.Item).ArmorPiece;
 
-                    EquippedContainers[piece] = item;
-                    EquippedObjects[piece].Container = item;
-                    EquippedObjects[piece].Refresh();
+                    EquipAtomic(piece, item);
 
                     Inventory.items[slotID] = DefaultContainer;
                     UIManager.Instance.wInvertory.Refresh();
@@ -40,18 +38,35 @@ namespace Assets.Scripts.UI_Window
                 }
             }
         }
-        public void Unequip(int itemID, int inventorySlotID)
+        private void EquipAtomic(EArmorPiece piece, UIContainer item)
         {
-            foreach (var item in EquippedContainers)
-            {
-                if (item.Value.Item.ID == itemID)
+            EquippedContainers[piece] = item;
+            EquippedObjects[piece].Container = item;
+            EquippedObjects[piece].Refresh();
+        }
+        public void Unequip(int eSlotID, int iSlotID)
+        {
+            if (iSlotID > 0)
+                foreach (var item in EquippedContainers)
                 {
-                    Inventory.items[inventorySlotID] = item.Value;
-                    EquippedObjects[item.Key].Refresh();
-                    UIManager.Instance.wInvertory.Refresh();
-                    break;
+                    if (item.Value.SlotID == eSlotID)
+                    {
+                        UIContainer Temp = Inventory.items[iSlotID];
+                        if (Inventory.items[iSlotID].Item.ID <= 0)
+                        {
+                            Inventory.items[iSlotID] = item.Value;
+                            EquippedObjects[item.Key].SetDefault();
+                            EquippedContainers.Remove(item.Key);
+                        }
+                        else
+                        {
+                            EquipAtomic(item.Key, Temp);
+                        }
+
+                        UIManager.Instance.wInvertory.Refresh();
+                        break;
+                    }
                 }
-            }
         }
     }
 }

@@ -129,6 +129,10 @@ namespace Assets.Scripts.GameNetworkScripts
                             Debug.Log(msgType);
                             messageHandler.EquipItem(msgIn);
                             break;
+                        case MessageType.UnequipItem:
+                            Debug.Log(msgType);
+                            messageHandler.UnequipItem(msgIn);
+                            break;
                         case MessageType.StorageInfo:
                             Debug.Log(msgType);
                             messageHandler.StorageInfo(msgIn);

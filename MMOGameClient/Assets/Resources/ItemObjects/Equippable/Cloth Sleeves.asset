@@ -28,4 +28,4 @@ MonoBehaviour:
     MinSkillLevel: 0
   Prefab: {fileID: 0}
   Sprite: {fileID: 21300000, guid: cb94467f22584f24a8ec0369c164449e, type: 3}
-  ArmorPiece: 1
+  ArmorPiece: 7

@@ -192,7 +192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2682a8f3e9d65a64b9f4d43d19a767b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originColor: {r: 0, g: 0, b: 0, a: 0}
+  originColor: {r: 1, g: 1, b: 1, a: 1}
   clone: {fileID: 0}
   image: {fileID: 2308684241289265674}
   canvasGroup: {fileID: 2015607559095166221}
@@ -216,4 +216,3 @@ MonoBehaviour:
   showTooltipTime: 0
   timer: 0
   tooltip: {fileID: 0}
-  DefaultUISlot: {fileID: 11400000, guid: 1a27b4660e8a4664b97f8299c9ff9e19, type: 2}

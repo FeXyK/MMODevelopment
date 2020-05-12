@@ -2113,7 +2113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09b29d1b44ea07748af59644f80442d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SlotContainer: {fileID: 0}
+  SlotContainer: {fileID: 4820172927126666924}
   size: {x: 0, y: 0}
   DefaultContainer:
     UniqueID: 0

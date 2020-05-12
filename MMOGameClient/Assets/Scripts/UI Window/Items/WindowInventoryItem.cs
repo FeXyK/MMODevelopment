@@ -82,12 +82,5 @@ namespace Assets.Scripts.UI_Window
             tooltip.Range.text = "";
             tooltip.NextLevelCost.text = "Value: " + container.Item.Value.ToString();
         }
-        public override void Use()
-        {
-            if (Container.Item.ItemType == EItemType.Potion)
-                base.Use();
-            else
-                UIManager.Instance.wCharacter.Equip(Container.SlotID);
-        }
     }
 }

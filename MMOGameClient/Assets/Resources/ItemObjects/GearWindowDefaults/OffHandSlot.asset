@@ -24,4 +24,4 @@ MonoBehaviour:
   effects: []
   Prefab: {fileID: 0}
   Sprite: {fileID: 21300000, guid: dd53cc2761b9aee48961d9d99af35336, type: 3}
-  ArmorPiece: 14
+  ArmorPiece: 3

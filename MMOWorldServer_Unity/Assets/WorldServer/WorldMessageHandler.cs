@@ -145,7 +145,7 @@ namespace MMOGameServer.WorldServer
                     }
                     foreach (var item in temp.Inventory)
                     {
-                        data.character.Inventory.Add(item.Key, new SlotItem(item.Value));
+                        data.character.Inventory.Add(item.Value.SlotID, new SlotItem(item.Value));
                     }
                     Debug.Log("CHARACTER PLAY INVENTORY SIZE: " + data.character.Inventory.Count);
                 }

@@ -169,29 +169,15 @@ namespace Assets.Scripts.Handlers
 
         internal void EquipItem(NetIncomingMessage msgIn)
         {
-            int uniqueID = msgIn.ReadInt32();
             int slotID = msgIn.ReadInt16();
-            if (slotID < 0)
-            {
 
-            }
-            else
-            {
-
-            }
+            uiManager.wCharacter.Equip(slotID);
         }
         internal void UnequipItem(NetIncomingMessage msgIn)
         {
-            int uniqueID = msgIn.ReadInt32();
             int slotID = msgIn.ReadInt16();
-            if (slotID < 0)
-            {
-
-            }
-            else
-            {
-                
-            }
+            int iSlotID = msgIn.ReadInt16();
+            uiManager.wCharacter.Unequip(slotID, iSlotID);
         }
 
         internal void StorageInfo(NetIncomingMessage msgIn)

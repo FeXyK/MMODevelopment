@@ -163,20 +163,121 @@ namespace Assets.AreaServer.Entity
 
         internal void EquipItem(int slotID)
         {
-            Equipped.Add(Inventory[slotID].ItemType, Inventory[slotID]);
-            RemoveInventoryItem(slotID, 1);
-        }
-        internal void UnequipItem(int slotID)
-        {
-            AddInventoryItem(Equipped[(EItemType)slotID]);
-            RemoveEquippedItem(slotID);
-        }
-        private void RemoveEquippedItem(int slotID)
-        {
-            AreaMessageSender.Instance.AddedItem(Connection, Equipped[(EItemType)slotID]);
-            Equipped.Remove((EItemType)slotID);
-        }
+            foreach (var item in Inventory)
+            {
+                Debug.Log(item.Key);
+            }
+            Debug.Log(slotID);
+            if (Inventory.ContainsKey(slotID))
+                if (Equipped.ContainsKey(Inventory[slotID].ItemType))
+                {
+                    UnequipItem(Inventory[slotID].ItemType, slotID);
+                    CalculateStats();
+                }
+                else
+                {
+                    Debug.Log("got: " + slotID);
+                    Debug.Log("got: " + Inventory[slotID].ItemType);
+                    switch (Inventory[slotID].ItemType)
+                    {
+                        case EItemType.MainHand:
+                        case EItemType.OffHand:
+                            if (Equipped.ContainsKey(EItemType.MainHand))
+                                if (!Equipped.ContainsKey(EItemType.MainHand))
+                                    Equipped.Add(EItemType.MainHand, Inventory[slotID]);
+                                else
+                                    Equipped.Add(EItemType.MainHand, Inventory[slotID]);
+                            else
+                                Equipped.Add(EItemType.MainHand, Inventory[slotID]);
+                            break;
+                        case EItemType.LeftRing:
+                        case EItemType.RightRing:
+                            if (Equipped.ContainsKey(EItemType.LeftRing))
+                                if (!Equipped.ContainsKey(EItemType.RightRing))
+                                    Equipped.Add(EItemType.RightRing, Inventory[slotID]);
+                                else
+                                    Equipped.Add(EItemType.LeftRing, Inventory[slotID]);
+                            else
+                                Equipped.Add(EItemType.LeftRing, Inventory[slotID]);
+                            break;
+                        case EItemType.LeftEarring:
+                        case EItemType.RightEarring:
+                            if (Equipped.ContainsKey(EItemType.LeftEarring))
+                                if (!Equipped.ContainsKey(EItemType.RightEarring))
+                                    Equipped.Add(EItemType.RightEarring, Inventory[slotID]);
+                                else
+                                    Equipped.Add(EItemType.LeftEarring, Inventory[slotID]);
+                            else
+                                Equipped.Add(EItemType.LeftEarring, Inventory[slotID]);
+                            break;
 
+                        default:
+                            Equipped.Add(Inventory[slotID].ItemType, Inventory[slotID]);
+                            Inventory.Remove(slotID);
+                            break;
+                    }
+                    AreaMessageSender.Instance.EquippedInventoryItem(Connection, slotID);
+                    CalculateStats();
+                }
+        }
+        internal void UnequipItem(EItemType eSlotID, int iSlotID = -1)
+        {
+
+            foreach (var item in Equipped)
+            {
+                if (eSlotID == (EItemType)item.Value.SlotID)
+                {
+                    if (iSlotID == -1)
+                    {
+                        for (int i = 0; i < MaxInventorySize; i++)
+                        {
+                            if (!Inventory.ContainsKey(i))
+                            {
+                                iSlotID = i;
+                                Inventory.Add(i, item.Value);
+                                Equipped.Remove(item.Key);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        SlotItem Temp = item.Value;
+                        Equipped[item.Key] = Inventory[iSlotID];
+                        Inventory[iSlotID] = Temp;
+                    }
+                    break;
+                }
+            }
+            if (iSlotID == -1)
+                Debug.LogError("iSlotID was: " + iSlotID);
+            AreaMessageSender.Instance.UnequippedInventoryItem(Connection, (int)eSlotID, iSlotID);
+            foreach (var item in Inventory)
+            {
+                Debug.Log(item.Value.ID);
+            }
+        }
+        public void CalculateStats()
+        {
+            Dictionary<EffectType, int> bonusEffects = new Dictionary<EffectType, int>();
+            foreach (var item in Equipped.Values)
+            {
+                foreach (var effect in item.effects)
+                {
+                    EffectType key = (EffectType)effect.Value.EffectID;
+                    if (bonusEffects.ContainsKey(key))
+                    {
+                        bonusEffects[key] += (int)effect.Value.LeveledValue(item.Level);
+                    }
+                    else
+                    {
+                        bonusEffects.Add(key, (int)effect.Value.LeveledValue(item.Level));
+                    }
+                }
+            }
+            MagicResist += bonusEffects.ContainsKey(EffectType.MagicResist) ? bonusEffects[EffectType.MagicResist] : 0;
+            Armor += bonusEffects.ContainsKey(EffectType.Armor) ? bonusEffects[EffectType.Armor] : 0;
+        }
         internal void Use(int slotID)
         {
             if (Inventory.ContainsKey(slotID))

@@ -2588,6 +2588,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 40
       objectReference: {fileID: 0}
+    - target: {fileID: 2135650116822659040, guid: 4457aa89146b26d469d8fd11bbb4042a,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2202532806760620457, guid: 4457aa89146b26d469d8fd11bbb4042a,
         type: 3}
       propertyPath: m_AnchorMin.y

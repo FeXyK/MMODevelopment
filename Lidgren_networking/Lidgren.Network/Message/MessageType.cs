@@ -48,6 +48,8 @@ namespace Lidgren.Network.Message
         EquipItem,
         UnequipItem,
         DropItem,
+        MoveItem,
+        DestroyItem,
 
         StorageInfo,
         StorageTakeOut,
@@ -55,7 +57,6 @@ namespace Lidgren.Network.Message
 
         LevelUpItem,
         LeveledItem,
-        DestroyItem,
         DisassembleItem,
 
         

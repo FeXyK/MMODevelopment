@@ -21,6 +21,9 @@ namespace Utility.Models
         public int? Gold { get; set; }
         public Dictionary<int, int> Skills = new Dictionary<int, int>();
         public Dictionary<int, CharacterItem> Inventory = new Dictionary<int, CharacterItem>();
+        public Dictionary<int, CharacterItem> Equipped = new Dictionary<int, CharacterItem>();
+        public Dictionary<int, CharacterItem> Storage = new Dictionary<int, CharacterItem>();
+        public Dictionary<int, CharacterItem> AuctionHouse = new Dictionary<int, CharacterItem>();
         public override string ToString()
         {
             return CharacterID + " " + AccountID + " " + Name;

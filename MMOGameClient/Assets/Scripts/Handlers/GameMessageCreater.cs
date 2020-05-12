@@ -105,12 +105,20 @@ namespace Assets.Scripts.Handlers
             return msgOut;
         }
 
-        internal NetOutgoingMessage TakeOn(UIItem item)
+        internal NetOutgoingMessage Equip(UIContainer container)
         {
             NetOutgoingMessage msgOut = netClient.CreateMessage();
-            msgOut.Write((byte)MessageType.SkillLeveled);
-            msgOut.Write(item.ID, 32);
-            //msgOut.Write(level, 16);
+            msgOut.Write((byte)MessageType.EquipItem);
+            Debug.LogWarning(container.SlotID);
+            msgOut.Write(container.SlotID, 16);
+            return msgOut;
+        }
+
+        internal NetOutgoingMessage Unequip(UIContainer container)
+        {
+            NetOutgoingMessage msgOut = netClient.CreateMessage();
+            msgOut.Write((byte)MessageType.UnequipItem);
+            msgOut.Write(container.SlotID, 16);
             return msgOut;
         }
 

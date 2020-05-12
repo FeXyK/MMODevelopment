@@ -129,5 +129,20 @@ namespace Assets.Scripts.Handlers
             connection.SendMessage(msgOut, NetDeliveryMethod.ReliableUnordered, 0);
         }
 
+        internal void EquippedInventoryItem(NetConnection connection, int slotID)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.EquipItem);
+            msgOut.Write(slotID, 16);
+            connection.SendMessage(msgOut, NetDeliveryMethod.ReliableUnordered, 0);
+        }
+        internal void UnequippedInventoryItem(NetConnection connection, int equippedSlotID,int inventorySlotID)
+        {
+            NetOutgoingMessage msgOut = netServer.CreateMessage();
+            msgOut.Write((byte)MessageType.UnequipItem);
+            msgOut.Write(equippedSlotID, 16);
+            msgOut.Write(inventorySlotID, 16);
+            connection.SendMessage(msgOut, NetDeliveryMethod.ReliableUnordered, 0);
+        }
     }
 }

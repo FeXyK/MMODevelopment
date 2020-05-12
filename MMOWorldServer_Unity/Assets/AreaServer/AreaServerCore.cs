@@ -81,6 +81,15 @@ namespace MMOGameServer
                         case MessageType.EquipItem:
                             messageHandler.EquipItem(msgIn);
                             break;
+                        case MessageType.UnequipItem:
+                            messageHandler.UnequipItem(msgIn);
+                            break;
+                        case MessageType.MoveItem:
+                            messageHandler.MoveItem(msgIn);
+                            break;
+                        case MessageType.DestroyItem:
+                            messageHandler.DestroyItem(msgIn);
+                            break;
                     }
                 }
                 netPeer.Recycle(msgIn);
