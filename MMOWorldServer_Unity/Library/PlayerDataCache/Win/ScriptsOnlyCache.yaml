@@ -1,11 +1,10 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - Assets.AreaServer.Entity.Character
+    - Assets.AreaServer.SkillSystem.SkillAoE
+    - Assets.AreaServer.SkillSystem.SkillProjectile
     - WorldServerManager
-    Unity.2D.Tilemap.Editor.dll:
-    - UnityEditor.Tilemaps.GridPaintingState
-    - UnityEditor.Tilemaps.SceneViewGridManager
-    - UnityEditor.Tilemaps.TileDragAndDropManager
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     UnityEditor.TestRunner.dll:
@@ -18,17 +17,49 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 4
       Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 23
+      Script: {instanceID: 0}
     - Class: 28
+      Script: {instanceID: 0}
+    - Class: 33
+      Script: {instanceID: 0}
+    - Class: 43
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 54
+      Script: {instanceID: 0}
+    - Class: 81
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
+    - Class: 108
+      Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 13060}
+      Script: {instanceID: 11658}
+    - Class: 114
+      Script: {instanceID: 11678}
+    - Class: 114
+      Script: {instanceID: 11906}
+    - Class: 114
+      Script: {instanceID: 12948}
     - Class: 115
+      Script: {instanceID: 0}
+    - Class: 135
+      Script: {instanceID: 0}
+    - Class: 154
+      Script: {instanceID: 0}
+    - Class: 156
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
+      Script: {instanceID: 0}
+    - Class: 218
       Script: {instanceID: 0}
   scriptHashData:
   - hash:
@@ -55,6 +86,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TMP_Dropdown
+  - hash:
+      serializedVersion: 2
+      Hash: 63d9b011913925bf2c9039bae16cfea9
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: Assets.AreaServer.Entity
+    className: MobBase
   - hash:
       serializedVersion: 2
       Hash: e7a73f5f78ba6445195ec23b74a1ce2d
@@ -159,6 +196,12 @@ ScriptsOnlyBuild:
     className: AspectRatioFitter
   - hash:
       serializedVersion: 2
+      Hash: 3fbc88a846cfd9498d57fc64d0996ef0
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: Assets.AreaServer.Entity
+    className: Entity
+  - hash:
+      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -175,6 +218,18 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: AnimationPlayableAsset
+  - hash:
+      serializedVersion: 2
+      Hash: 9e53b6e6645c01694bb22193777ba6ce
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: Assets.AreaServer.SkillSystem
+    className: SkillProjectile
+  - hash:
+      serializedVersion: 2
+      Hash: d184bfdba14fe3e36101677cbcbe6b46
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: Assets.AreaServer.Entity
+    className: Character
   - hash:
       serializedVersion: 2
       Hash: aba7b2852ef61d175dd9602e7723d5e5
@@ -217,6 +272,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: Selectable
+  - hash:
+      serializedVersion: 2
+      Hash: 75dfa5ec7efcb656bebfa5bae748912d
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: Assets.AreaServer.SkillSystem
+    className: SkillAoE
   - hash:
       serializedVersion: 2
       Hash: b3ab2106268377ffe25dd18ac23dca28
@@ -387,7 +448,7 @@ ScriptsOnlyBuild:
     className: Outline
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: 67f94f36754e052b298b4050f7c6409c
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: WorldServerManager
@@ -460,4 +521,4 @@ ScriptsOnlyBuild:
   platform: 5
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
-  playerPath: D:/Github/MMO_Server_Build/MMOWorldServer_Unity.exe
+  playerPath: F:/MMOServerBuild/MMOWorldServer_Unity.exe

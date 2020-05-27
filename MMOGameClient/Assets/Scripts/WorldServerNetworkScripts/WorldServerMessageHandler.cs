@@ -63,7 +63,18 @@ namespace Assets.Scripts.WorldServerNetworkScripts
             dataHandler.LoadCharacterData(msgIn);
             dataHandler.selectionController.CharacterForm.parent.parent.gameObject.SetActive(true);
             dataHandler.selectionController.ServerForm.gameObject.SetActive(false);
+            if (System.Environment.GetCommandLineArgs().Length > 3)
+                if (System.Environment.GetCommandLineArgs()[4] == "-bot")
+                    foreach (var character in dataHandler.selectionController.characterItems)
+                    {
+                        if (character.nameText.text == System.Environment.GetCommandLineArgs()[3].Remove(0, 1))
+                        {
+                            character.Selected();
+                            PlayCharacter();
+                        }
+                    }
         }
+
         internal void SendAuthenticationToken(NetIncomingMessage msgIn)
         {
             NetOutgoingMessage msgOut = netClient.CreateMessage();

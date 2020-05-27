@@ -22,11 +22,13 @@ namespace MMOLoginServer
             messageCreate = new MessageCreater();
 
             dbSelection = new Selection("192.168.0.24", "mmo", 3306, "fexyk", "asdqwe123");
+        
         }
 
 
         internal void KeyExchange(NetIncomingMessage msgIn)
         {
+            Debug.Log("KEY EXCHANGE STARTED AT: " + DateTime.Now);
             ConnectionData connectionData = new ConnectionData();
             connectionData.connection = msgIn.SenderConnection;
             connectionData.publicKey = msgIn.ReadString();
@@ -40,6 +42,8 @@ namespace MMOLoginServer
             msgOut.Write((byte)MessageType.KeyExchange);
             msgOut.Write(DataEncryption.publicKey);
             connectionData.connection.Approve(msgOut);
+            Debug.Log("CONNECTION APPROVED AT: " + DateTime.Now);
+
         }
 
         internal void AuthenticateWorldServer(NetIncomingMessage msgIn)
@@ -111,8 +115,10 @@ namespace MMOLoginServer
             msgOut.Write(msg);
             connection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
         }
-        public void RegisterAccount(NetIncomingMessage msgIn, ConnectionData account)
+        public void RegisterAccount(NetIncomingMessage msgIn)
         {
+            ConnectionData account = DataHandler.Instance.GetAccount(msgIn);
+
             string username = PacketHandler.ReadEncryptedString(msgIn);
             byte[] bytePassword = PacketHandler.ReadEncryptedByteArray(msgIn);
             string email = PacketHandler.ReadEncryptedString(msgIn);
@@ -146,8 +152,13 @@ namespace MMOLoginServer
             string hexPassword = BitConverter.ToString(password);
 
             Debug.Log("Logging in: " + username);
+            Debug.Log("At: " + DateTime.Now);
             if ((account.id = dbSelection.UserAuthentication(username, hexPassword)) != -1)
             {
+                if (account.id == -1)
+                    Debug.Log("BAD USERNAME");
+                Debug.Log("User Authenticated AT: " + DateTime.Now);
+
                 dataHandler.accounts.Add(account);
                 dataHandler.newConnections.Remove(account);
                 account.name = username;
@@ -179,6 +190,7 @@ namespace MMOLoginServer
                     msgOut.Write(server.publicKey);
                 }
                 msgIn.SenderConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+                Debug.Log("World server info sent AT: " + DateTime.Now);
 
                 Debug.Log(username + ": Authenticated");
             }

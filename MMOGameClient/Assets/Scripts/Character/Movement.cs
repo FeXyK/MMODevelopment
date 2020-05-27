@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Handlers;
+using UnityEngine;
 
 
 public class Movement : MonoBehaviour
@@ -34,7 +35,6 @@ public class Movement : MonoBehaviour
     }
 
     public float jumpSpeed = 10f;
-    private Vector3 moveDirection = Vector3.zero;
     new private Rigidbody rigidbody;
 
     public bool movementEnabled = true;
@@ -101,6 +101,7 @@ public class Movement : MonoBehaviour
             if (Input.GetMouseButton(1))
                 movement += -transform.forward * Input.GetAxis("Horizontal") * Time.deltaTime * speed;//, 0.0f, Input.GetAxis("Vertical"));
             rigidbody.velocity = movement + new Vector3(0, rigidbody.velocity.y, 0);
+            GameMessageSender.Instance.SendPositionUpdate();
         }
     }
 }

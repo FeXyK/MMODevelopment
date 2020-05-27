@@ -10,7 +10,7 @@ namespace Assets.Scripts.LoginScreen
         public Transform ServerForm;
         public Transform CharacterForm;
 
-        private List<CharacterSelectionItem> characterItems = new List<CharacterSelectionItem>();
+        public List<CharacterSelectionItem> characterItems = new List<CharacterSelectionItem>();
         private List<ServerSelectionItem> serverItems = new List<ServerSelectionItem>();
         private int selectedCharacter;
         private int selectedServer;

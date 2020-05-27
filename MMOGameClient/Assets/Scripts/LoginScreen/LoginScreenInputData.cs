@@ -28,4 +28,5 @@ public class LoginScreenInputData : MonoBehaviour
     {
         CharacterType = dropdown.value;
     }
+
 }

@@ -97,15 +97,18 @@ namespace Utility
         }
         public int UserAuthentication(string username, string hexPassword)
         {
+            
             Account account = SQLGetAccount(username);
             if (account == null)
             {
                 Console.WriteLine("No account with username: " + username);
                 return -1;
             }
+
             string hexSalt = account.Salt;
             string hexPasswordSalted = hexPassword + hexSalt;
             byte[] bytePasswordSalted = Encoding.UTF8.GetBytes(hexPasswordSalted);
+
 
             bytePasswordSalted = new System.Security.Cryptography.SHA256Managed().ComputeHash(bytePasswordSalted);
             string hexHashedPasswordSalted = BitConverter.ToString(bytePasswordSalted);

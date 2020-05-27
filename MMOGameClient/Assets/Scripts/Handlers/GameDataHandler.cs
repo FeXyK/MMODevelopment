@@ -22,7 +22,9 @@ namespace Assets.Scripts.Handlers
             if (entityID == myCharacter.entity.id)
                 return myCharacter;
             else
-                return otherCharacters[entityID];
+                if(otherCharacters.ContainsKey(entityID))
+                    return otherCharacters[entityID];
+            return null;
 
         }
     }

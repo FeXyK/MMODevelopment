@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Security.Cryptography;
+using System;
 
 namespace Lidgren.Network.ServerFiles
 {
@@ -28,7 +29,11 @@ namespace Lidgren.Network.ServerFiles
         {
             csp.FromXmlString(RSAPublicKey);
 
+
+            Console.WriteLine(data.Length);
+            Console.WriteLine(RSAPublicKey.Length);
             byte[] dataEncrypted = csp.Encrypt(data, false);
+
 
             return dataEncrypted;
         }
@@ -51,9 +56,17 @@ namespace Lidgren.Network.ServerFiles
         }
         public static byte[] RSADecrypt(byte[] data)
         {
+            byte[] dataDecrypted;
             csp.FromXmlString(privateKey);
+            try
+            {
+                dataDecrypted = csp.Decrypt(data, false);
 
-            byte[] dataDecrypted = csp.Decrypt(data, false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
             return dataDecrypted;
         }
         public static byte[] HashString(string dataString)

@@ -338,10 +338,18 @@ namespace MMOGameServer
         public void SendMovementMessages()
         {
             NetOutgoingMessage msgOut;
-            foreach (var character in dataHandler.entitiesByID.Values)
+            try
             {
-                msgOut = messageCreater.MovementMessage(character);
-                netServer.SendToAll(msgOut, NetDeliveryMethod.UnreliableSequenced, 1);
+                foreach (var character in dataHandler.entitiesByID.Values)
+                {
+                    msgOut = messageCreater.MovementMessage(character);
+                    netServer.SendToAll(msgOut, NetDeliveryMethod.UnreliableSequenced, 1);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
         public void SendLogoutMessages(int id)

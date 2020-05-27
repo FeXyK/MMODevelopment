@@ -114,6 +114,10 @@ namespace Assets.Scripts.Handlers
                 worldServers.Add(gameServer);
             }
             selectionController.DrawServerItems(worldServers);
+
+            if (System.Environment.GetCommandLineArgs().Length > 3)
+                if (System.Environment.GetCommandLineArgs()[4] == "-bot")
+                    GameObject.FindObjectOfType<LoginScreenHandler>().LoginWorldServer();
         }
     }
 }

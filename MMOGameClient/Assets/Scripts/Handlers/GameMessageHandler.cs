@@ -73,6 +73,7 @@ namespace Assets.Scripts.Handlers
 
             int targetID = msgIn.ReadInt16();
             EntityContainer target = dataHandler.GetEntity(targetID);
+            if (target == null) return;
             target.Health = msgIn.ReadInt16();
             target.Mana = msgIn.ReadInt16();
         }

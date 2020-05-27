@@ -94,7 +94,7 @@ namespace Assets.Scripts.Character
             entity.level = cLevel;
             entity.characterType = cType;
             entity.characterName = cName;
-            NameText.text = entity.id + ": " + entity.characterName;
+            NameText.text =  entity.characterName;
             MaxHealth = cMaxHealth;
             Health = cHealth;
             MaxMana = cMaxMana;
@@ -106,7 +106,7 @@ namespace Assets.Scripts.Character
             this.entity.level = entity.level;
             this.entity.characterType = entity.characterType;
             this.entity.characterName = entity.characterName;
-            NameText.text = this.entity.id + ": " + this.entity.characterName;
+            NameText.text = this.entity.characterName;
             MaxHealth = entity.maxHealth;
             Health = entity.health;
             MaxMana = entity.maxMana;

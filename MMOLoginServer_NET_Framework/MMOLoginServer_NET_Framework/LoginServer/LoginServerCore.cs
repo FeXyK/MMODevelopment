@@ -7,7 +7,6 @@ namespace MMOLoginServer
 {
     public class LoginServerCore : NetPeerOverride
     {
-        ConnectionData currentAccount = null;
         new MessageHandler messageHandler;
         int serverTick = 0;
         public override void Initialize(string SERVER_NAME, int LOGIN_SERVER_PORT, bool IS_SERVER = true, bool simulateLatency = true)
@@ -15,9 +14,10 @@ namespace MMOLoginServer
             base.Initialize(SERVER_NAME, LOGIN_SERVER_PORT);
             messageHandler = new MessageHandler((NetServer)netPeer);
         }
+
+        NetIncomingMessage msgIn;
         public override void ReceiveMessages()
         {
-            NetIncomingMessage msgIn;
             MessageType msgType;
             while ((msgIn = netPeer.ReadMessage()) != null)
             {
@@ -40,7 +40,6 @@ namespace MMOLoginServer
                     msgType = (MessageType)msgIn.ReadByte();
                     Debug.Log(((MessageType)msgType).ToString());
 
-                    currentAccount = DataHandler.Instance.GetAccount(msgIn);
                     switch (msgType)
                     {
                         case MessageType.ClientAuthentication:
@@ -53,7 +52,7 @@ namespace MMOLoginServer
                             messageHandler.AuthenticateWorldServer(msgIn);
                             break;
                         case MessageType.RegisterRequest:
-                            messageHandler.RegisterAccount(msgIn, currentAccount);
+                            messageHandler.RegisterAccount(msgIn);
                             break;
                         case MessageType.Alive:
                             messageHandler.Alive(msgIn);

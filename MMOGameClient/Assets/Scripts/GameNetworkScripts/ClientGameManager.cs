@@ -174,7 +174,6 @@ namespace Assets.Scripts.GameNetworkScripts
         public override void Update()
         {
             ReceiveMessages();
-            GameMessageSender.Instance.SendPositionUpdate();
         }
         private void ShowPing()
         {

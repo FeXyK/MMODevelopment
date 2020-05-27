@@ -2,6 +2,7 @@
 using Assets.Scripts.LoginNetworkScripts;
 using Assets.Scripts.WorldServerNetworkScripts;
 using Lidgren.Network;
+using Lidgren.Network.ServerFiles;
 using System;
 using System.Collections;
 using System.Threading;
@@ -35,7 +36,7 @@ public class LoginScreenHandler : MonoBehaviour
 
     float worldServerAuthTimer;
     float worldServerAuthTimerDefault = 1f;
-
+    String publicKey;
     private void Start()
     {
         QualitySettings.vSyncCount = 0;
@@ -48,6 +49,7 @@ public class LoginScreenHandler : MonoBehaviour
 
         loginMessageHandler = LoginMessageHandler.GetInstance();
         worldMessageHandler = WorldServerMessageHandler.GetInstance();
+        publicKey = DataEncryption.publicKey;
     }
     private void Update()
     {
@@ -99,11 +101,14 @@ public class LoginScreenHandler : MonoBehaviour
     }
     private void LoginThread()
     {
-        loginMessageHandler.SetupConnection();
-        loginMessageHandler.Login();
+        LoginMessageHandler.GetInstance().SetupConnection();
+        LoginMessageHandler.GetInstance().Login();
     }
     public void Login()
     {
+        var atnow = DateTime.Now;
+
+
         if (connectingThread != null && !connectingThread.IsAlive)
         {
             connectingThread.Abort();
@@ -112,7 +117,6 @@ public class LoginScreenHandler : MonoBehaviour
         if (connectingThread == null)
         {
             connectingThread = new Thread(new ThreadStart(LoginThread));
-
             //loginMessageHandler.SetupConnection(SERVER_IP, SERVER_PORT);
             //loginMessageHandler.Login();
             connectingThread.IsBackground = true;
