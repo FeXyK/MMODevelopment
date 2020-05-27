@@ -1,22 +1,31 @@
-﻿using Assets.Scripts.LoginScreen;
-using MMOLoginServer.ServerData;
-using System;
+﻿using Assets.Scripts.Character;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Handlers
 {
   public  class GameDataHandler
     {
-        public Dictionary<int, Character> otherCharacters = new Dictionary<int, Character>();
-        public Character myCharacter;
+        public Dictionary<int, EntityContainer> otherCharacters = new Dictionary<int, EntityContainer>();
+        public EntityContainer myCharacter;
+
         public GameDataHandler()
         {
-            myCharacter = GameObject.FindObjectOfType<Character>();
-            myCharacter.Set(LoginDataHandler.GetInstance().selectedCharacter);
+            //myCharacter = GameObject.FindObjectOfType<EntityContainer>();
+
+            //myCharacter.Set(LoginDataHandler.GetInstance().selectedCharacter);
+
+            //myCharacter.Health = myCharacter.MaxHealth;
+        }
+        public EntityContainer GetEntity(int entityID)
+        {
+            if (entityID == myCharacter.entity.id)
+                return myCharacter;
+            else
+                if(otherCharacters.ContainsKey(entityID))
+                    return otherCharacters[entityID];
+            return null;
+
         }
     }
 }

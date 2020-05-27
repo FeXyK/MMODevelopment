@@ -1,7 +1,6 @@
-﻿using Assets.Scripts.GameNetworkScripts;
+﻿using Assets.Scripts.Character;
+using Assets.Scripts.GameNetworkScripts;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -11,9 +10,9 @@ public class InGameManager : MonoBehaviour
     bool IS_SERVER = false;
     bool SIMULATE_LATENCY = true;
     ClientGameManager gameManager;
-    MenuController menuController;
+    //MenuController menuController;
 
-    void Start()
+    void Awake()
     {
         string[] lines = File.ReadAllLines(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MMOConfig\ClientConfig.cfg");
         string[] data;
@@ -27,12 +26,16 @@ public class InGameManager : MonoBehaviour
                     break;
             }
         }
-        Debug.Log(SIMULATE_LATENCY);
+        //Debug.Log(SIMULATE_LATENCY);
         gameManager = new ClientGameManager();
         gameManager.Initialize(PEER_NAME, 0, IS_SERVER, SIMULATE_LATENCY);
-        menuController = FindObjectOfType<MenuController>();
-        menuController.ChatWindow.gameObject.SetActive(true);
-        menuController.messageHandler = gameManager.messageHandler;
+
+        gameManager.SpawnPlayer();
+
+
+        //menuController = FindObjectOfType<MenuController>();
+        //menuController.ChatWindow.gameObject.SetActive(true);
+        //menuController.messageHandler = gameManager.messageHandler;
     }
 
     void Update()

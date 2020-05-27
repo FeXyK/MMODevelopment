@@ -1,8 +1,4 @@
-﻿using Assets.Scripts.LoginScreen;
-using MMOLoginServer.ServerData;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using Lidgren.Network.ServerFiles.Data;
 
 public class LoginDataController
 {
@@ -13,6 +9,5 @@ public class LoginDataController
     public string serverIP;
     public int serverPort;
 
-    public CharacterData characterData;
-
+    public Entity selectedCharacter;
 }

@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using Assets.Scripts.Handlers;
+using UnityEngine;
 
 
 public class Movement : MonoBehaviour
@@ -35,7 +35,6 @@ public class Movement : MonoBehaviour
     }
 
     public float jumpSpeed = 10f;
-    private Vector3 moveDirection = Vector3.zero;
     new private Rigidbody rigidbody;
 
     public bool movementEnabled = true;
@@ -43,14 +42,11 @@ public class Movement : MonoBehaviour
     void Start()
     {
         options = FindObjectOfType<GameOptions>();
-        Debug.Log(options.MouseY);
-        Debug.Log(options.MouseX);
         characterController = GetComponent<CharacterController>();
         rigidbody = GetComponent<Rigidbody>();
     }
     private void Update()
     {
-        inputValue = InputCheck(Input.GetAxis("Mouse Y") * options.MouseY * Time.deltaTime);
     }
     void LateUpdate()
     {
@@ -60,12 +56,20 @@ public class Movement : MonoBehaviour
             {
                 rigidbody.velocity = new Vector3(0, jumpSpeed, 0);
             }
-            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
-
-            transform.eulerAngles += new Vector3(0, Input.GetAxis("Mouse X") * options.MouseX* Time.deltaTime, 0);
-            Camera.main.transform.RotateAround(this.transform.position, this.transform.forward, inputValue );
-
         }
+        if (Input.GetMouseButton(1))
+        {
+            inputValue = InputCheck(Input.GetAxis("Mouse Y") * options.MouseY * Time.deltaTime);
+            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
+            transform.eulerAngles += new Vector3(0, Input.GetAxis("Mouse X") * options.MouseX * Time.deltaTime, 0);
+            Camera.main.transform.RotateAround(this.transform.position, this.transform.forward, inputValue);
+        }
+        else
+        {
+            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
+            transform.eulerAngles += new Vector3(0, Input.GetAxis("Horizontal") * options.MouseX * Time.deltaTime, 0);
+        }
+
     }
     float GetRotAngle(float angle)
     {
@@ -94,8 +98,10 @@ public class Movement : MonoBehaviour
         if (movementEnabled)
         {
             Vector3 movement = transform.right * Input.GetAxis("Vertical") * Time.deltaTime * speed;//, 0.0f, Input.GetAxis("Vertical"));
-            movement += -transform.forward * Input.GetAxis("Horizontal") * Time.deltaTime * speed;//, 0.0f, Input.GetAxis("Vertical"));
+            if (Input.GetMouseButton(1))
+                movement += -transform.forward * Input.GetAxis("Horizontal") * Time.deltaTime * speed;//, 0.0f, Input.GetAxis("Vertical"));
             rigidbody.velocity = movement + new Vector3(0, rigidbody.velocity.y, 0);
+            GameMessageSender.Instance.SendPositionUpdate();
         }
     }
 }

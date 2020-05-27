@@ -1,15 +1,9 @@
-﻿using Lidgren.Network;
-using Lidgren.Network.ServerFiles;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class LoginScreenInputData : MonoBehaviour
 {
-    private string characterType;
+    private int characterType;
     private string characterName;
 
     private string usernameReg;
@@ -17,8 +11,8 @@ public class LoginScreenInputData : MonoBehaviour
     private string passwordReg;
     private string passwordRegConfirm;
 
-    private string username;
-    private string password;
+    private string username="qwe";
+    private string password="qwe";
     public int selectedCharacterNumber { get; set; }
     public int selectedServerNumber { get; set; }
     public string Password { get => password; set => password = value; }
@@ -28,6 +22,11 @@ public class LoginScreenInputData : MonoBehaviour
     public string EmailReg { get => emailReg; set => emailReg = value; }
     public string UsernameReg { get => usernameReg; set => usernameReg = value; }
     public string CharacterName { get => characterName; set => characterName = value; }
-    public string CharacterType { get => characterType; set => characterType = value; }
-    public string MyProperty { get; set; }
+    public int CharacterType { get => characterType; set { characterType = value;Debug.LogError(characterType); } }
+    
+    public void OnDropDownChanged(TMP_Dropdown dropdown)
+    {
+        CharacterType = dropdown.value;
+    }
+
 }

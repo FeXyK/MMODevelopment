@@ -1,7 +1,7 @@
 ﻿using Assets.Scripts.Handlers;
 using Lidgren.Network;
+using Lidgren.Network.Message;
 using Lidgren.Network.ServerFiles;
-using System;
 using TMPro;
 using UnityEngine;
 
@@ -14,6 +14,8 @@ namespace Assets.Scripts.WorldServerNetworkScripts
         private static WorldServerMessageHandler instance;
         LoginScreenHandler loginScreenHandler;
         TMP_Text Notification;
+
+
         public static WorldServerMessageHandler GetInstance()
         {
             if (instance == null)
@@ -39,6 +41,8 @@ namespace Assets.Scripts.WorldServerNetworkScripts
             dataHandler.selectionController.loginDataController.serverIP = dataHandler.selectedWorldServer.ip;
             dataHandler.selectionController.loginDataController.serverPort = dataHandler.selectedWorldServer.areaServerPort;
 
+            dataHandler.selectionController.loginDataController.selectedCharacter = dataHandler.selectedCharacter;
+
         }
 
         internal void HandleNotification(NetIncomingMessage msgIn)
@@ -57,8 +61,18 @@ namespace Assets.Scripts.WorldServerNetworkScripts
         public void HandleCharacterData(NetIncomingMessage msgIn)
         {
             dataHandler.LoadCharacterData(msgIn);
-            dataHandler.selectionController.CharacterForm.gameObject.SetActive(true);
+            dataHandler.selectionController.CharacterForm.parent.parent.gameObject.SetActive(true);
             dataHandler.selectionController.ServerForm.gameObject.SetActive(false);
+            if (System.Environment.GetCommandLineArgs().Length > 3)
+                if (System.Environment.GetCommandLineArgs()[4] == "-bot")
+                    foreach (var character in dataHandler.selectionController.characterItems)
+                    {
+                        if (character.nameText.text == System.Environment.GetCommandLineArgs()[3].Remove(0, 1))
+                        {
+                            character.Selected();
+                            PlayCharacter();
+                        }
+                    }
         }
 
         internal void SendAuthenticationToken(NetIncomingMessage msgIn)
@@ -81,17 +95,21 @@ namespace Assets.Scripts.WorldServerNetworkScripts
 
         public void PlayCharacter()
         {
-            dataHandler.selectedCharacter = dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter];
-            dataHandler.selectedWorldServer = dataHandler.worldServers[dataHandler.selectionController.SelectedServerID];
+            if (dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter] != null)
+            {
+                dataHandler.selectedCharacter = dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter];
 
-            NetOutgoingMessage msgOut = netClient.CreateMessage();
+                dataHandler.selectedWorldServer = dataHandler.worldServers[dataHandler.selectionController.SelectedServerID];
 
-            msgOut.Write((byte)MessageType.PlayCharacter);
-            PacketHandler.WriteEncryptedByteArray(msgOut, dataHandler.inputData.Username, dataHandler.selectedWorldServer.publicKey);
-            PacketHandler.WriteEncryptedByteArray(msgOut, dataHandler.selectedCharacter.name, dataHandler.selectedWorldServer.publicKey);
-            msgOut.Write(dataHandler.selectedCharacter.id, 16);
-            Debug.Log(dataHandler.selectedCharacter.id);
-            netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+                NetOutgoingMessage msgOut = netClient.CreateMessage();
+
+                msgOut.Write((byte)MessageType.PlayCharacter);
+                PacketHandler.WriteEncryptedByteArray(msgOut, dataHandler.inputData.Username, dataHandler.selectedWorldServer.publicKey);
+                PacketHandler.WriteEncryptedByteArray(msgOut, dataHandler.selectedCharacter.characterName, dataHandler.selectedWorldServer.publicKey);
+                msgOut.Write(dataHandler.selectedCharacter.id, 16);
+                Debug.Log(dataHandler.selectedCharacter.id);
+                netClient.ServerConnection.SendMessage(msgOut, NetDeliveryMethod.ReliableOrdered, 1);
+            }
         }
         public void CreateCharacter()
         {
@@ -100,7 +118,7 @@ namespace Assets.Scripts.WorldServerNetworkScripts
             msgCreate.Write((byte)MessageType.CreateCharacter);
 
             PacketHandler.WriteEncryptedByteArray(msgCreate, dataHandler.inputData.CharacterName, dataHandler.selectedWorldServer.publicKey);
-            PacketHandler.WriteEncryptedByteArray(msgCreate, "male", dataHandler.selectedWorldServer.publicKey);
+            msgCreate.Write(dataHandler.inputData.CharacterType, 16);
             Debug.Log(dataHandler.inputData.CharacterName);
             Debug.Log(dataHandler.inputData.CharacterType);
             netClient.SendMessage(msgCreate, NetDeliveryMethod.ReliableOrdered);
@@ -112,7 +130,7 @@ namespace Assets.Scripts.WorldServerNetworkScripts
 
             msgDelete.Write((byte)MessageType.DeleteCharacter);
 
-            PacketHandler.WriteEncryptedByteArray(msgDelete, dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter].name, dataHandler.selectedWorldServer.publicKey);
+            PacketHandler.WriteEncryptedByteArray(msgDelete, dataHandler.myCharacters[dataHandler.selectionController.SelectedCharacter].characterName, dataHandler.selectedWorldServer.publicKey);
             netClient.SendMessage(msgDelete, NetDeliveryMethod.ReliableOrdered);
             loginScreenHandler.ClearCharacterSelection();
         }

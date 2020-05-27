@@ -63,17 +63,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\ChatController.cs" />
+    <Compile Include="Assets\DestroyAfter.cs" />
+    <Compile Include="Assets\DropItemController.cs" />
+    <Compile Include="Assets\FloatingNotification.cs" />
+    <Compile Include="Assets\Item.cs" />
     <Compile Include="Assets\ResourceBarController.cs" />
     <Compile Include="Assets\Scripts\Character\CameraOrbit.cs" />
     <Compile Include="Assets\Scripts\Character\Character.cs" />
+    <Compile Include="Assets\Scripts\Character\CharacterApperance.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterOverHead.cs" />
+    <Compile Include="Assets\Scripts\Character\Entity.cs" />
+    <Compile Include="Assets\Scripts\Character\EntityContainer.cs" />
     <Compile Include="Assets\Scripts\Character\Movement.cs" />
+    <Compile Include="Assets\Scripts\Character\NPC.cs" />
+    <Compile Include="Assets\Scripts\FormHandler.cs" />
     <Compile Include="Assets\Scripts\GameNetworkScripts\ClientGameManager.cs" />
     <Compile Include="Assets\Scripts\GameScripts\TargetSelector.cs" />
     <Compile Include="Assets\Scripts\Handlers\GameDataHandler.cs" />
+    <Compile Include="Assets\Scripts\Handlers\GameMessageCreater.cs" />
     <Compile Include="Assets\Scripts\Handlers\GameMessageHandler.cs" />
+    <Compile Include="Assets\Scripts\Handlers\GameMessageSender.cs" />
     <Compile Include="Assets\Scripts\Handlers\LoginDataHandler.cs" />
     <Compile Include="Assets\Scripts\InGame\InGameManager.cs" />
+    <Compile Include="Assets\Scripts\InventorySystem\ItemLibrary.cs" />
     <Compile Include="Assets\Scripts\LoginDataController.cs" />
     <Compile Include="Assets\Scripts\LoginNetworkScripts\LoginClientManager.cs" />
     <Compile Include="Assets\Scripts\LoginNetworkScripts\LoginMessageCreater.cs" />
@@ -89,18 +102,59 @@
     <Compile Include="Assets\Scripts\Settings\GameOptions.cs" />
     <Compile Include="Assets\Scripts\Settings\MenuController.cs" />
     <Compile Include="Assets\Scripts\Settings\SliderWithValue.cs" />
+    <Compile Include="Assets\Scripts\Settings\UIManager.cs" />
     <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
     <Compile Include="Assets\Scripts\SimpleLogic\DontDestroy.cs" />
+    <Compile Include="Assets\Scripts\SkillSystem\SkillSys\Effect.cs" />
+    <Compile Include="Assets\Scripts\SkillSystem\SkillSys\EffectValue.cs" />
+    <Compile Include="Assets\Scripts\SkillSystem\SkillSys\Skill.cs" />
+    <Compile Include="Assets\Scripts\SkillSystem\SkillSys\SkillLibrary.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Items\WindowCharacterEquippedItem.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Items\WindowHotbarItem.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Items\WindowInventoryItem.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Items\WindowItem.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Items\WindowSkillItem.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Windows\UIWindow.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Windows\WindowCharacterEquipped.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Windows\WindowHotbar.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Windows\WindowInventory.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Windows\WindowMap.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Windows\WindowSkillIventory.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Windows\WindowStats.cs" />
+    <Compile Include="Assets\Scripts\UI Window\Windows\WindowTooltip.cs" />
+    <Compile Include="Assets\Scripts\UI\Enums\EArmorPiece.cs" />
+    <Compile Include="Assets\Scripts\UI\Enums\EItemRarity.cs" />
+    <Compile Include="Assets\Scripts\UI\Enums\EItemType.cs" />
+    <Compile Include="Assets\Scripts\UI\Enums\ERarityColors.cs" />
+    <Compile Include="Assets\Scripts\UI\Enums\ESkillType.cs" />
+    <Compile Include="Assets\Scripts\UI\Enums\ESlotType.cs" />
+    <Compile Include="Assets\Scripts\UI\Enums\EWeaponType.cs" />
+    <Compile Include="Assets\Scripts\UI\UIContainer.cs" />
+    <Compile Include="Assets\Scripts\UI\UIHotbar.cs" />
+    <Compile Include="Assets\Scripts\UI\UIInventory.cs" />
+    <Compile Include="Assets\Scripts\UI\UIItem.cs" />
+    <Compile Include="Assets\Scripts\UI\UIItems\ArmorItem.cs" />
+    <Compile Include="Assets\Scripts\UI\UIItems\EquippableItem.cs" />
+    <Compile Include="Assets\Scripts\UI\UIItems\FoodItem.cs" />
+    <Compile Include="Assets\Scripts\UI\UIItems\PotionItem.cs" />
+    <Compile Include="Assets\Scripts\UI\UIItems\SkillItem.cs" />
+    <Compile Include="Assets\Scripts\UI\UIItems\WeaponItem.cs" />
+    <Compile Include="Assets\Scripts\UI\UISkillList.cs" />
     <Compile Include="Assets\Scripts\WorldServerNetworkScripts\WorldServerMessageCreater.cs" />
     <Compile Include="Assets\Scripts\WorldServerNetworkScripts\WorldServerMessageHandler.cs" />
     <Compile Include="Assets\Scripts\WorldServerNetworkScripts\WorldServerMessageReader.cs" />
     <Compile Include="Assets\Scripts\WorldServerNetworkScripts\WorldServerNetwork.cs" />
+    <Compile Include="Assets\Skill_FireballScript.cs" />
     <Compile Include="Assets\TargetFrameController.cs" />
-    <Compile Include="Assets\UIManager.cs" />
+    <None Include="Assets\Resources\SkillIcons\SkillTreeInfo.txt" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
+    <None Include="Assets\VFX\Shaders\CFX3 Multiply Color.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
+    <None Include="Assets\Resources\ItemObjects\README.txt" />
+    <None Include="Assets\SkillSystem\SkillTreeInfo.txt" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\Resources\SkillIcons\SkillConnections.txt" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
@@ -110,6 +164,7 @@
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\models\low_poly_nature_pack\License.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+    <None Include="Assets\VFX\Shaders\CFXM_MobileParticleAdd_Alpha8.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Mobile.shader" />
@@ -117,58 +172,64 @@
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
     <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Shaders">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VSCode.Editor">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Editor">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Runtime">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualEffectGraph.Runtime">
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.VisualEffectGraph.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Runtime">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Editor">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Editor.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rider.Editor">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualEffectGraph.Editor">
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.VisualEffectGraph.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ShaderGraph.Editor">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.ShaderGraph.Editor.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.ShaderGraph.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.1f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -348,7 +409,7 @@
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.1f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
     </Reference>
     <Reference Include="Lidgren.Network">
-      <HintPath>D:/Github/MMODevelopment/MMOGameClient/Assets/Include/Lidgren.Network.dll</HintPath>
+      <HintPath>F:/Github/MMODevelopment/MMOGameClient/Assets/Include/Lidgren.Network.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.1f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

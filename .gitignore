@@ -18,6 +18,9 @@ mono_crash.*
 
 # Build results
 [Dd]ebug/
+[Tt]emp/
+[Ll]ibrary/
+Library/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
@@ -417,3 +420,17 @@ MMOGameClient/Library/ArtifactDB
 *.dwlt
 MMOGameClient/Library/ShaderCache/EditorEncounteredVariants
 MMOGameClient/Library/SourceAssetDB
+*.dwlt
+*.json
+MMOGameClient/Library/SourceAssetDB
+MMOGameClient/Temp/UnityLockfile
+MMOGameClient/Library/CurrentLayout-default.dwlt
+MMOGameClient/Library/ArtifactDB
+MMOWorldServer_Unity/Library/PlayerDataCache/Win/Data/boot.config
+MMOWorldServer_Unity/Library/PlayerDataCache/Win/Data/globalgamemanagers
+MMOWorldServer_Unity/Library/PlayerDataCache/Win/Data/level0
+MMOWorldServer_Unity/Library/PlayerDataCache/Win/ScriptsOnlyCache.yaml
+MMOGameClient/Library/SourceAssetDB
+MMOGameClient/Library/CurrentLayout-default.dwlt
+MMOGameClient/Library/ArtifactDB
+*.dwlt

@@ -1,12 +1,16 @@
 ﻿using Lidgren.Network.ServerFiles;
+using Lidgren.Network.ServerFiles.Data;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.LoginScreen
 {
-    class ServerSelectionItem : MonoBehaviour
+    class ServerSelectionItem : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler
     {
         private SelectionController selectionController;
+        public Image Border;
+        public Image Background;
 
         private int id;
 
@@ -54,8 +58,28 @@ namespace Assets.Scripts.LoginScreen
         }
         public void Selected()
         {
+            selectionController = FindObjectOfType<SelectionController>();
             selectionController.SelectedServerID = ServerID;
         }
-
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            Background.color = new Color(0.5f, 0.5f, 0.5f);
+        }
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            Background.color = Color.white;
+        }
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            Border.gameObject.SetActive(true);
+        }
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            Border.gameObject.SetActive(false);
+        }
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            Selected();
+        }
     }
 }
